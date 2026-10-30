@@ -7,19 +7,21 @@ interface Props {
   /** extrusion depth in viewBox units */
   depth?: number
   animate?: boolean
+  /** 0..1 — when set, the extrusion is driven externally (e.g. by scroll) */
+  extrude?: number
 }
 
-const WORD = 'AI BHARAT'
-const FONT = { fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: 180, letterSpacing: -3 } as const
+const WORD = 'Bharat.Ai'
+const FONT = { fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: 180, letterSpacing: -5 } as const
 
 /**
- * The AI Bharat typographic shadow.
+ * The Bharat.Ai typographic shadow.
  * A flat, crisp front face sits on a stepped extrusion that runs along one
  * precise diagonal — blue at the face, easing to teal at depth — finished
  * with a single saffron edge line and a soft directional shadow.
  * The extrusion grows out from behind the face when the mark enters view.
  */
-export function BrandMark({ tone = 'light', className = '', depth = 14, animate = true }: Props) {
+export function BrandMark({ tone = 'light', className = '', depth = 14, animate = true, extrude }: Props) {
   const uid = useId().replace(/:/g, '')
   const svgRef = useRef<SVGSVGElement>(null)
   const faceRef = useRef<SVGTextElement>(null)
@@ -64,11 +66,14 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
     return () => io.disconnect()
   }, [animate])
 
-  const face = tone === 'light' ? '#182b3d' : '#eef3f7'
-  const near = tone === 'light' ? '#8fb3cb' : '#3f6f8f'
-  const far = tone === 'light' ? '#b7d3cf' : '#2c5a63'
-  const rim = tone === 'light' ? '#c4852f' : '#e9b56b'
-  const shadow = tone === 'light' ? '#182b3d' : '#000000'
+  const face = tone === 'light' ? '#102a40' : '#eaf1f4'
+  const aiFace = tone === 'light' ? '#1d6a80' : '#9ad5e5'
+  const near = tone === 'light' ? '#7fa9bd' : '#2b5670'
+  const far = tone === 'light' ? '#a9d2cf' : '#1e5961'
+  const rim = tone === 'light' ? '#b08a55' : '#d5b68a'
+  const shadow = tone === 'light' ? '#102a40' : '#000000'
+  const driven = extrude !== undefined
+  const e = driven ? Math.max(0, Math.min(1, extrude!)) : open ? 1 : 0
   const steps = Array.from({ length: depth }, (_, i) => depth - i) // far → near
   const pad = 6
 
@@ -78,7 +83,7 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
       viewBox={`${box.x - pad} ${box.y - pad} ${box.w + depth * 1.6 + pad * 2} ${box.h + depth * 1.6 + pad * 2}`}
       className={`brandmark block w-full overflow-visible ${className}`}
       role="img"
-      aria-label="AI Bharat"
+      aria-label="Bharat.Ai"
     >
       <defs>
         <linearGradient id={`ex-${uid}`} x1="0" y1="0" x2="1" y2="1">
@@ -91,14 +96,14 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
       </defs>
 
       {/* soft directional shadow, furthest back */}
-      <g data-layer style={{ transform: `translate(${open ? depth * 1.5 : 0}px, ${open ? depth * 1.5 : 0}px)` }}>
+      <g data-layer style={{ opacity: e, transform: `translate(${depth * 1.5 * e}px, ${depth * 1.5 * e}px)` }}>
         <text {...FONT} fill={shadow} fillOpacity={tone === 'light' ? 0.14 : 0.45} filter={`url(#sh-${uid})`}>
           {WORD}
         </text>
       </g>
 
       {/* saffron edge line at the back of the extrusion */}
-      <g data-layer style={{ transform: `translate(${open ? depth : 0}px, ${open ? depth : 0}px)` }}>
+      <g data-layer style={{ transform: `translate(${depth * e}px, ${depth * e}px)` }}>
         <text {...FONT} fill="none" stroke={rim} strokeWidth={1.6} strokeLinejoin="round">
           {WORD}
         </text>
@@ -106,7 +111,7 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
 
       {/* stepped extrusion */}
       {steps.map((k) => (
-        <g key={k} data-layer style={{ transform: `translate(${open ? k : 0}px, ${open ? k : 0}px)`, transitionDelay: `${(depth - k) * 18}ms` }}>
+        <g key={k} data-layer style={{ transform: `translate(${k * e}px, ${k * e}px)`, transitionDelay: driven ? '0ms' : `${(depth - k) * 18}ms`, transitionDuration: driven ? '0ms' : undefined }}>
           <text {...FONT} fill={`url(#ex-${uid})`}>
             {WORD}
           </text>
@@ -115,7 +120,8 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
 
       {/* flat front face */}
       <text ref={faceRef} {...FONT} fill={face}>
-        {WORD}
+        Bharat<tspan fill={rim}>.</tspan>
+        <tspan fill={aiFace}>Ai</tspan>
       </text>
     </svg>
   )

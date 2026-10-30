@@ -31,7 +31,7 @@ export default function DevelopersPage() {
         eyebrow="Developers"
         title={
           <>
-            Build on AI Bharat, <span className="serif-accent text-gradient">your way.</span>
+            Build on Bharat.Ai, <span className="serif-accent text-gradient">your way.</span>
           </>
         }
         lead="Visual workflows when you want speed, APIs when you want control. Here’s how the platform fits into your stack."

@@ -13,6 +13,7 @@ export default function SolutionsPage() {
   return (
     <div ref={ref}>
       <PageHero
+        visual="enterprise"
         docTitle="Industry Solutions"
         accent="#2e8d81"
         eyebrow="Industry solutions"

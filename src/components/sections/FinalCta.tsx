@@ -13,7 +13,6 @@ export function FinalCta({
   return (
     <Section labelledBy="cta-title" className="overflow-hidden bg-ink-900 py-28 md:py-36">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="jaali absolute inset-0 opacity-[0.03] [mask-image:radial-gradient(50%_60%_at_50%_50%,black,transparent)]" />
         <div className="absolute inset-0 bg-[radial-gradient(40%_50%_at_50%_55%,rgba(69,211,230,.12),transparent_70%)]" />
         <svg className="absolute left-1/2 top-1/2 h-[140%] -translate-x-1/2 -translate-y-1/2 opacity-40" viewBox="-200 -200 400 400">
           {[80, 120, 160, 195].map((r, i) => (
@@ -32,7 +31,7 @@ export function FinalCta({
           {body}
         </p>
         <div data-reveal="3" className="mt-10 flex flex-wrap justify-center gap-3">
-          <Button to="/build-with-us">Start Building with AI Bharat</Button>
+          <Button to="/build-with-us">Start Building with Bharat.Ai</Button>
           <Button to="/contact" variant="secondary">
             Discuss Your Project
           </Button>

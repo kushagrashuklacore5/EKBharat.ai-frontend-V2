@@ -23,13 +23,13 @@ export default function AboutPage() {
       <PageHero
         docTitle="About"
         accent="#c4852f"
-        eyebrow="About AI Bharat"
+        eyebrow="About Bharat.Ai"
         title={
           <>
             An AI infrastructure & intelligence partner, <span className="serif-accent text-gradient">built in India.</span>
           </>
         }
-        lead="AI Bharat brings together the pieces organisations need to put AI to work: compute, models, agents, workflows — and the engineering team to assemble them into systems that run reliably."
+        lead="Bharat.Ai brings together the pieces organisations need to put AI to work: compute, models, agents, workflows — and the engineering team to assemble them into systems that run reliably."
         actions={
           <>
             <Button to="/contact">Get in touch</Button>
@@ -47,7 +47,7 @@ export default function AboutPage() {
               inside real processes.
             </p>
             <p>
-              AI Bharat is a hybrid AI-as-a-Service company. Developers and teams can use our platform — Workflow Studio, agents, multi-model orchestration and
+              Bharat.Ai is a hybrid AI-as-a-Service company. Developers and teams can use our platform — Workflow Studio, agents, multi-model orchestration and
               partner-powered GPU Cloud — to build for themselves. Businesses that prefer a complete solution can engage our team to design, build, deploy and
               maintain it.
             </p>
@@ -56,7 +56,7 @@ export default function AboutPage() {
             <p className="label text-faint">Ownership</p>
             <p className="mt-4 text-2xl tracking-tight text-fg font-semibold">{SITE.owner}</p>
             <p className="mt-3 leading-relaxed text-muted">
-              AI Bharat is owned and operated by Core5 Systems and Services Pvt. Ltd., which provides the engineering, delivery and support behind the platform and
+              Bharat.Ai is owned and operated by Core5 Systems and Services Pvt. Ltd., which provides the engineering, delivery and support behind the platform and
               its services.
             </p>
           </div>

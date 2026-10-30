@@ -35,6 +35,7 @@ export default function AiAgentsPage() {
   return (
     <div ref={ref}>
       <PageHero
+        visual="agents"
         docTitle="AI Agents & Multi-Agent Orchestration"
         accent="#2c64a0"
         eyebrow="AI agents · multi-agent orchestration"

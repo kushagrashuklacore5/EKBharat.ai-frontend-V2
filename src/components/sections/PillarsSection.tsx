@@ -100,13 +100,13 @@ const PILLARS = [
 
 export function PillarsSection({ index = '10' }: { index?: string }) {
   return (
-    <Section id="why" labelledBy="why-title" className="surface-dark py-28 md:py-36">
+    <Section id="why" labelledBy="why-title" className="surface-dark deep-blend pb-48 pt-48 md:pb-56 md:pt-56">
       <div className="container-x">
         <SectionHeading
           id="why-title"
           index={index}
           align="center"
-          eyebrow="Why AI Bharat"
+          eyebrow="Why Bharat.Ai"
           title={
             <>
               Built on three <span className="serif-accent text-gradient">principles.</span>

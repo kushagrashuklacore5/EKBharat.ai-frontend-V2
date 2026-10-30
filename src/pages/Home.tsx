@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Hero } from '../components/hero/Hero'
-import { EcosystemSection } from '../components/ecosystem/Ecosystem'
+import { ProductExplorer } from '../components/sections/ProductExplorer'
 import { StudioSection } from '../components/workflow-studio/StudioSection'
 import { ArchitectureSection } from '../components/architecture/ArchitectureSection'
 import { AgentsSection } from '../components/sections/AgentsSection'
@@ -11,17 +11,17 @@ import { IndustriesSection } from '../components/sections/IndustriesSection'
 import { ProcessSection } from '../components/sections/ProcessSection'
 import { PillarsSection } from '../components/sections/PillarsSection'
 import { FinalCta } from '../components/sections/FinalCta'
-import { BrandStatement } from '../components/sections/BrandStatement'
+import { BrandReveal } from '../components/sections/BrandReveal'
 
 export default function Home() {
   useEffect(() => {
-    document.title = 'AI Bharat — Build, Connect, Automate, Orchestrate'
+    document.title = 'Bharat.Ai — Build, Connect, Automate, Orchestrate'
   }, [])
   return (
     <>
       <Hero />
-      <BrandStatement />
-      <EcosystemSection index="01" />
+      <BrandReveal />
+      <ProductExplorer />
       <StudioSection index="02" />
       <ArchitectureSection index="03" />
       <AgentsSection index="04" />

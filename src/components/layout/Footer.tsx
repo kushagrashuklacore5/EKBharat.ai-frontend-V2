@@ -54,11 +54,11 @@ const SOCIAL_LABELS: Record<string, string> = { linkedin: 'LinkedIn', x: 'X', gi
 export function Footer() {
   const socials = Object.entries(SITE.social).filter(([, url]) => url)
   return (
-    <footer className="surface-dark relative overflow-hidden">
-      <div className="container-x relative pb-10 pt-20">
+    <footer className="surface-dark relative overflow-hidden" style={{ background: 'radial-gradient(50% 30% at 80% 35%, rgba(56,166,162,.14), transparent 70%), linear-gradient(180deg, #e6edf0 0px, #9fbfcc 70px, #17475b 190px, #0f2a40 320px, #0b2034 100%)' }}>
+      <div className="container-x relative pb-10 pt-56">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_2fr]">
           <div>
-            <Logo />
+            <Logo tone="dark" />
             <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-fg-soft">
               Your complete AI infrastructure &amp; intelligence partner — from GPU compute to governed, autonomous AI workflows.
             </p>
@@ -101,7 +101,7 @@ export function Footer() {
         <p className="mt-6 text-[13px] font-medium tracking-[0.02em] text-muted">Build · Connect · Automate · Orchestrate</p>
 
         <div className="mt-8 flex flex-col gap-3 border-t border-line pt-6 text-[12.5px] text-faint sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} AI Bharat. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Bharat.Ai. All rights reserved.</p>
           <p className="text-muted">Owned by {SITE.owner}</p>
         </div>
       </div>

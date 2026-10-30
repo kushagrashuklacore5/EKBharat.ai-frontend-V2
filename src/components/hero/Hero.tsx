@@ -1,16 +1,15 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
-import { Link } from 'react-router'
+import { Cpu, Network, Sparkles, Workflow } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { gsap, prefersReducedMotion } from '../../lib/gsap'
 
 const HeroCanvas = lazy(() => import('./HeroCanvas'))
 
-const CAPS = [
-  { label: 'Workflow Studio', to: '/workflow-studio' },
-  { label: 'AI Agents', to: '/ai-agents' },
-  { label: 'Model Orchestration', to: '/ai-orchestration' },
-  { label: 'GPU Cloud', to: '/gpu-cloud' },
-  { label: 'Custom AI', to: '/custom-ai-development' },
+const PILLARS = [
+  { t: 'Infrastructure', icon: Cpu },
+  { t: 'Intelligence', icon: Sparkles },
+  { t: 'Automation', icon: Workflow },
+  { t: 'Orchestration', icon: Network },
 ]
 
 export function Hero() {
@@ -22,77 +21,68 @@ export function Hero() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
       tl.from('[data-h="eyebrow"]', { y: 10, opacity: 0, duration: 0.9 }, 0.1)
-        .from('.line-mask > span', { yPercent: 105, duration: 1.1, stagger: 0.08 }, 0.15)
-        .from('[data-h="lead"]', { y: 12, opacity: 0, duration: 0.9 }, 0.55)
-        .from('[data-h="cta"] > *', { y: 10, opacity: 0, duration: 0.8, stagger: 0.07 }, 0.7)
-        .from('[data-h="meta"], [data-h="caps"]', { opacity: 0, duration: 1 }, 0.95)
+        .from('.line-mask > span', { yPercent: 105, duration: 1.2, stagger: 0.09 }, 0.15)
+        .from('[data-h="lead"]', { y: 12, opacity: 0, duration: 0.9 }, 0.6)
+        .from('[data-h="cta"] > *', { y: 10, opacity: 0, duration: 0.8, stagger: 0.07 }, 0.75)
+        .from('[data-h="pillars"] > *', { y: 8, opacity: 0, duration: 0.8, stagger: 0.06 }, 0.95)
     }, el)
     return () => ctx.revert()
   }, [])
 
   return (
     <section ref={root} aria-labelledby="hero-title" className="relative isolate overflow-hidden">
-      {/* soft, luminous atmosphere */}
+      {/* atmosphere: misty blue light, soft folds of colour */}
       <div className="absolute inset-0 -z-10" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(70%_70%_at_75%_35%,#ffffff_0%,rgba(255,255,255,0)_60%),linear-gradient(180deg,#eef2f5_0%,#e9eef2_100%)]" />
-        <div className="absolute right-[-10%] top-[-20%] h-[70%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgba(47,127,168,.10),transparent)]" />
-        <div className="grid-bg absolute inset-0 [mask-image:radial-gradient(60%_60%_at_70%_45%,black,transparent)]" />
-        <div className="jaali absolute inset-y-0 left-0 hidden w-[40%] opacity-[0.035] md:block [mask-image:linear-gradient(90deg,black,transparent)]" />
+        <div className="atmos absolute inset-0" />
+        <div className="absolute -right-[10%] top-[5%] h-[85%] w-[70%] rounded-full bg-[radial-gradient(closest-side,rgba(154,213,229,.55),transparent)]" />
+        <div className="absolute -left-[15%] bottom-[-30%] h-[70%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgba(56,166,162,.16),transparent)]" />
+        <div className="absolute right-[20%] top-[40%] h-[40%] w-[30%] rounded-full bg-[radial-gradient(closest-side,rgba(213,182,138,.18),transparent)]" />
+        <div className="grid-bg absolute inset-0 opacity-60 [mask-image:radial-gradient(55%_55%_at_70%_45%,black,transparent)]" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#dce6eb]" />
       </div>
 
-      <div className="container-x relative grid items-center pb-8 pt-28 lg:min-h-[calc(100svh-64px)] lg:grid-cols-[1fr_1fr] lg:pt-20">
-        <div className="relative z-10 max-w-[36rem]">
+      <div className="container-x relative grid items-center pb-6 pt-28 lg:min-h-[100svh] lg:grid-cols-[0.95fr_1.05fr] lg:pb-24 lg:pt-24">
+        <div className="relative z-10 max-w-[37rem]">
           <p data-h="eyebrow" className="eyebrow">
-            The unified AI platform
+            India’s AI infrastructure &amp; automation platform
           </p>
-          <h1 id="hero-title" className="display mt-6 text-[clamp(2.6rem,4.7vw,4.6rem)] text-fg">
+          <h1 id="hero-title" className="display mt-6 text-[clamp(2.9rem,5.6vw,5.4rem)] text-fg">
             <span className="line-mask">
-              <span>Everything you need to</span>
+              <span>Build intelligent systems.</span>
             </span>
             <span className="line-mask">
-              <span>
-                <span className="serif-accent text-gradient pr-1 text-[1.08em]">build, deploy</span>
-              </span>
+              <span className="serif-accent text-gradient pr-2">Orchestrate what</span>
             </span>
             <span className="line-mask">
-              <span>&amp; orchestrate AI.</span>
+              <span className="serif-accent text-gradient pr-2">comes next.</span>
             </span>
           </h1>
-          <p data-h="lead" className="mt-7 max-w-[34rem] text-[1.125rem] leading-[1.7] text-muted">
-            From GPU computing and multi-model orchestration to intelligent workflows and enterprise AI systems — build your entire AI
-            ecosystem with AI Bharat.
+          <p data-h="lead" className="mt-7 max-w-[33rem] text-[1.125rem] leading-[1.7] text-muted">
+            GPU compute, multi-model orchestration, AI agents and a visual workflow studio — one platform that connects infrastructure to
+            intelligent automation, with a team that can build the whole system for you.
           </p>
           <div data-h="cta" className="mt-9 flex flex-wrap items-center gap-3">
             <Button to="/workflow-studio">Explore Workflow Studio</Button>
-            <Button to="/build-with-us" variant="secondary">
-              Build Your AI Solution
+            <Button href="#platform" variant="secondary">
+              Explore Platform
             </Button>
           </div>
-          <p data-h="meta" className="mt-6 text-[13.5px] font-medium text-faint">
-            Infrastructure <span className="text-saffron">·</span> Intelligence <span className="text-teal">·</span> Automation
-          </p>
+          <ul data-h="pillars" className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
+            {PILLARS.map(({ t, icon: Icon }) => (
+              <li key={t} className="flex items-center gap-2 text-[13.5px] font-semibold text-fg-soft">
+                <Icon size={16} className="text-cyan" />
+                {t}
+              </li>
+            ))}
+          </ul>
         </div>
 
-      </div>
-
-      {/* 3D object: full-bleed right column on desktop, its own band on mobile */}
-      <div className="relative h-[340px] sm:h-[460px] lg:absolute lg:bottom-16 lg:right-0 lg:top-0 lg:h-auto lg:w-[54%]">
-        <Suspense fallback={null}>
-          <HeroCanvas />
-        </Suspense>
-      </div>
-
-      {/* capability index */}
-      <div data-h="caps" className="container-x relative pb-10">
-        <nav aria-label="Platform capabilities" className="flex flex-wrap items-center gap-x-1 gap-y-2 border-t border-line pt-5 text-[14px]">
-          <span className="mr-3 font-semibold text-fg">The platform</span>
-          {CAPS.map((c, i) => (
-            <Link key={c.to} to={c.to} className="group inline-flex items-center gap-2 rounded-md px-2 py-1 font-medium text-muted transition-colors hover:text-fg">
-              <span className="font-mono text-[11px] text-faint group-hover:text-cyan">0{i + 1}</span>
-              {c.label}
-            </Link>
-          ))}
-        </nav>
+        {/* 3D stack with interactive floating labels */}
+        <div className="relative -mx-[var(--gutter)] mt-8 h-[380px] sm:mx-0 sm:h-[520px] lg:absolute lg:bottom-6 lg:right-0 lg:top-20 lg:mt-0 lg:h-auto lg:w-[56%]">
+          <Suspense fallback={null}>
+            <HeroCanvas />
+          </Suspense>
+        </div>
       </div>
     </section>
   )

@@ -33,6 +33,7 @@ export default function CustomAiDevelopmentPage() {
   return (
     <div ref={ref}>
       <PageHero
+        visual="custom"
         docTitle="Custom AI Development"
         accent="#c4852f"
         eyebrow="Custom AI development & enterprise solutions"

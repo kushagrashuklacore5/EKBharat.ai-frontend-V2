@@ -15,7 +15,7 @@ const POINTS = [
 
 export function StudioSection({ index = '04' }: { index?: string }) {
   return (
-    <Section id="workflow-studio" labelledBy="studio-title" className="surface-dark overflow-hidden py-28 md:py-36">
+    <Section id="workflow-studio" labelledBy="studio-title" className="surface-dark deep-blend overflow-hidden pb-48 pt-48 md:pb-56 md:pt-56">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_70%,rgba(124,196,221,.10),transparent_70%)]" aria-hidden="true" />
       <div className="container-x relative">
         <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end">

@@ -32,6 +32,7 @@ export default function GpuCloudPage() {
   return (
     <div ref={ref}>
       <PageHero
+        visual="gpu"
         docTitle="GPU Cloud"
         accent="#5d7083"
         eyebrow="GPU Cloud · AI infrastructure"
@@ -40,7 +41,7 @@ export default function GpuCloudPage() {
             GPU compute, <span className="serif-accent text-gradient">when you need it.</span>
           </>
         }
-        lead="Access high-performance computing resources on flexible usage-based pricing without purchasing and maintaining your own GPU hardware. AI Bharat provides capacity through third-party GPU infrastructure partners, with setup and management handled by our team."
+        lead="Access high-performance computing resources on flexible usage-based pricing without purchasing and maintaining your own GPU hardware. Bharat.Ai provides capacity through third-party GPU infrastructure partners, with setup and management handled by our team."
         actions={
           <>
             <Button to="/build-with-us?type=gpu">Request GPU capacity</Button>
@@ -50,10 +51,10 @@ export default function GpuCloudPage() {
           </>
         }
         aside={
-          <div className="panel p-6">
+          <div className="border-l-2 border-saffron/70 pl-5">
             <p className="label text-faint">How we provide compute</p>
-            <p className="mt-3 text-[14.5px] leading-relaxed text-fg-soft">
-              We are a partner-powered GPU service provider: capacity runs in our partners’ data centres, and AI Bharat handles sizing, provisioning, deployment
+            <p className="mt-2 text-[14px] leading-relaxed text-muted">
+              We are a partner-powered GPU service provider: capacity runs in our partners’ data centres, and Bharat.Ai handles sizing, provisioning, deployment
               and support. Availability and pricing are confirmed per request.
             </p>
           </div>

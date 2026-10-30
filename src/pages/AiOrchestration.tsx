@@ -33,6 +33,7 @@ export default function AiOrchestrationPage() {
   return (
     <div ref={ref}>
       <PageHero
+        visual="router"
         docTitle="Multi-Model Orchestration"
         accent="#5867a8"
         eyebrow="AI orchestration · multi-model"
@@ -75,7 +76,7 @@ export default function AiOrchestrationPage() {
           <SectionHeading
             eyebrow="Capabilities"
             title="Orchestration, not just access."
-            lead="Delivered through the AI Bharat platform and managed integrations with model providers. Items marked “Planned” are on the roadmap."
+            lead="Delivered through the Bharat.Ai platform and managed integrations with model providers. Items marked “Planned” are on the roadmap."
           />
           <div className="mt-12">
             <FeatureGrid items={FEATURES} />

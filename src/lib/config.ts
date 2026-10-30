@@ -4,7 +4,7 @@
  * handled honestly by the UI (forms complete locally; social links are hidden).
  */
 export const SITE = {
-  name: 'AI Bharat',
+  name: 'Bharat.Ai',
   owner: 'Core5 Systems and Services Pvt. Ltd.',
   /** POST endpoint that receives JSON form submissions (Build With Us, Contact). */
   formEndpoint: '' as string,

@@ -52,7 +52,7 @@ export default function BuildWithUsPage() {
   const brief = useMemo(() => composeBrief(form), [form])
 
   useEffect(() => {
-    document.title = 'Build With Us — AI Bharat'
+    document.title = 'Build With Us — Bharat.Ai'
   }, [])
   useEffect(() => {
     try {
@@ -155,7 +155,7 @@ export default function BuildWithUsPage() {
                 <p className="mt-4 leading-relaxed text-fg-soft">
                   {state === 'sent'
                     ? 'Thank you. Our team will review it and reply to your work email.'
-                    : 'Online submission isn’t connected in this version of the site, so nothing has been sent yet. Copy or download the brief below and share it with the AI Bharat team.'}
+                    : 'Online submission isn’t connected in this version of the site, so nothing has been sent yet. Copy or download the brief below and share it with the Bharat.Ai team.'}
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <button type="button" onClick={copy} className="inline-flex h-11 items-center gap-2 rounded-lg bg-fg px-5 text-sm font-medium text-ink-950">

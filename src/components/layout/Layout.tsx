@@ -43,7 +43,7 @@ export function Layout() {
         </Suspense>
       </main>
       <Footer />
-      <ScrollRestoration getKey={(l) => l.pathname} />
+      <ScrollRestoration />
       <HashScroll />
     </>
   )

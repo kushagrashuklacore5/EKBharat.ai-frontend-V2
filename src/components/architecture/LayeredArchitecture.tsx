@@ -11,7 +11,7 @@ import { useReducedMotion } from '../../hooks/useReducedMotion'
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v))
 
 /**
- * Signature component: an exploded, extruded 3D stack of the AI Bharat
+ * Signature component: an exploded, extruded 3D stack of the Bharat.Ai
  * architecture with linked descriptions, connectors, scroll assembly and
  * click-through into each layer's detail view.
  */

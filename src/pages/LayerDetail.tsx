@@ -23,7 +23,7 @@ export default function LayerDetail() {
   })
 
   useEffect(() => {
-    if (layer) document.title = `${layer.name} — AI Bharat Architecture`
+    if (layer) document.title = `${layer.name} — Bharat.Ai Architecture`
   }, [layer])
 
   if (!layer) return <NotFound />

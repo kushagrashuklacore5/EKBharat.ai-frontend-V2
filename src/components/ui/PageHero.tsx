@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { useReveal } from '../../hooks/useReveal'
+import { PRODUCT_VISUALS, type VisualKind } from '../visuals/ProductVisuals'
 
 interface Props {
   eyebrow: string
@@ -7,42 +8,60 @@ interface Props {
   lead: ReactNode
   actions?: ReactNode
   aside?: ReactNode
+  /** a product visual shown in a dark showcase card, or any custom node */
+  visual?: VisualKind | ReactNode
   accent?: string
   docTitle: string
 }
 
-/** Typographic header used by every inner page. */
-export function PageHero({ eyebrow, title, lead, actions, aside, accent = '#2f7fa8', docTitle }: Props) {
+/** Header used by every inner page: copy on the left, a purpose-built visual on the right. */
+export function PageHero({ eyebrow, title, lead, actions, aside, visual, accent = '#9ad5e5', docTitle }: Props) {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   useEffect(() => {
-    document.title = `${docTitle} — AI Bharat`
+    document.title = `${docTitle} — Bharat.Ai`
   }, [docTitle])
-  return (
-    <section ref={ref} className="noise relative overflow-hidden pb-20 pt-36 md:pb-28 md:pt-44">
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute inset-0" style={{ background: `radial-gradient(55% 60% at 80% 20%, ${accent}1c, transparent 70%)` }} />
-        <div className="grid-bg absolute inset-0 opacity-50 [mask-image:radial-gradient(60%_70%_at_70%_30%,black,transparent)]" />
-        <div className="jaali absolute inset-y-0 left-0 w-1/3 opacity-[0.03] [mask-image:linear-gradient(90deg,black,transparent)]" />
+  const Visual = typeof visual === 'string' ? PRODUCT_VISUALS[visual as VisualKind] : null
+  const right = Visual ? (
+    <div className="deep-card surface-dark relative overflow-hidden rounded-[20px] px-4 py-8 sm:px-8">
+      <div className="pointer-events-none absolute inset-0 grid-bg opacity-40" aria-hidden="true" />
+      <div className="relative">
+        <Visual />
       </div>
-      <div className="container-x relative grid items-end gap-12 lg:grid-cols-[1.4fr_1fr]">
+    </div>
+  ) : (
+    (visual as ReactNode) ?? null
+  )
+  return (
+    <section ref={ref} className="atmos relative overflow-hidden pb-20 pt-32 md:pb-24 md:pt-40">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute inset-0" style={{ background: `radial-gradient(45% 55% at 85% 30%, ${accent}40, transparent 70%)` }} />
+        <div className="grid-bg absolute inset-0 opacity-50 [mask-image:radial-gradient(60%_70%_at_75%_30%,black,transparent)]" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#dce6eb]" />
+      </div>
+      <div className={`container-x relative grid items-center gap-12 ${right ? 'lg:grid-cols-[1fr_1.05fr] lg:gap-16' : 'lg:grid-cols-[1.4fr_1fr]'}`}>
         <div>
           <p data-reveal className="eyebrow">
             {eyebrow}
           </p>
-          <h1 data-reveal="1" className="display mt-6 text-[clamp(2.5rem,6vw,5.2rem)]">
+          <h1 data-reveal="1" className="display mt-6 text-[clamp(2.5rem,4.6vw,4.4rem)] text-fg">
             {title}
           </h1>
-          <p data-reveal="2" className="mt-7 max-w-2xl text-[1.08rem] leading-relaxed text-fg-soft">
+          <p data-reveal="2" className="mt-6 max-w-xl text-[1.08rem] leading-relaxed text-muted">
             {lead}
           </p>
           {actions && (
-            <div data-reveal="3" className="mt-10 flex flex-wrap gap-3">
+            <div data-reveal="3" className="mt-9 flex flex-wrap gap-3">
               {actions}
             </div>
           )}
+          {right && aside && (
+            <div data-reveal="4" className="mt-10 max-w-xl">
+              {aside}
+            </div>
+          )}
         </div>
-        {aside && <div data-reveal="3">{aside}</div>}
+        {right ? <div data-reveal="2">{right}</div> : aside && <div data-reveal="3">{aside}</div>}
       </div>
     </section>
   )

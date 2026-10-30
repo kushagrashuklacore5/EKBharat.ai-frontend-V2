@@ -47,11 +47,12 @@ export default function WorkflowStudioPage() {
   return (
     <div ref={ref}>
       <PageHero
+        visual="workflow"
         docTitle="AI Workflow Studio"
         eyebrow="Flagship product · AI Workflow Studio"
         title={
           <>
-            The visual builder for <span className="serif-accent text-gradient">AI-native</span> automation.
+            The visual builder for <span className="serif-accent text-gradient">AI‑native</span> automation.
           </>
         }
         lead="Connect applications, data, models and intelligent agents through a visual workflow builder to automate complex business processes — then deploy and monitor them on managed infrastructure."
@@ -64,9 +65,9 @@ export default function WorkflowStudioPage() {
           </>
         }
         aside={
-          <div className="panel p-6">
+          <div className="border-l-2 border-saffron/70 pl-5">
             <p className="label text-faint">Product status</p>
-            <p className="mt-3 text-[14.5px] leading-relaxed text-fg-soft">
+            <p className="mt-2 text-[14px] leading-relaxed text-muted">
               Workflow Studio is in active development. The demo on this page is a browser-only simulation of the builder experience. Capabilities marked
               “Planned” are on the roadmap.
             </p>
