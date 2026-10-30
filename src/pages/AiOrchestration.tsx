@@ -34,7 +34,7 @@ export default function AiOrchestrationPage() {
     <div ref={ref}>
       <PageHero
         docTitle="Multi-Model Orchestration"
-        accent="#a48bff"
+        accent="#5867a8"
         eyebrow="AI orchestration · multi-model"
         title={
           <>
@@ -53,11 +53,11 @@ export default function AiOrchestrationPage() {
       />
       <Section className="pb-20">
         <div className="container-x">
-          <ol className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-5">
+          <ol className="grid gap-x-10 gap-y-10 md:grid-cols-5">
             {PIPELINE.map(([t, d], i) => (
-              <li key={t} data-reveal={String(i)} className="relative bg-ink-950 p-6">
+              <li key={t} data-reveal={String(i)} className="relative border-t-2 border-line-strong pt-5">
                 <span className="font-mono text-[11px] text-electric">0{i + 1}</span>
-                <p className="mt-4 text-fg">{t}</p>
+                <p className="mt-4 text-fg font-semibold">{t}</p>
                 <p className="mt-2 text-[13px] leading-relaxed text-muted">{d}</p>
                 {i < PIPELINE.length - 1 && <span className="absolute right-3 top-6 hidden font-mono text-faint md:block">→</span>}
               </li>

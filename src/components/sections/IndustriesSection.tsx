@@ -10,7 +10,7 @@ export function IndustryCard({ ind, i }: { ind: (typeof INDUSTRIES)[number]; i: 
     <Link
       to={`/solutions#${ind.id}`}
       data-reveal={String(i % 4)}
-      className="ind-card group relative flex min-h-[300px] flex-col overflow-hidden rounded-2xl border border-line bg-ink-900/70 p-6 transition-colors duration-500 hover:border-line-strong focus-visible:border-line-strong"
+      className="ind-card group relative flex min-h-[300px] flex-col overflow-hidden rounded-xl border border-line bg-ink-900 p-6 transition-[background-color,box-shadow,transform] duration-500 hover:-translate-y-0.5 hover:bg-ink-850 hover:shadow-[var(--shadow-md)] focus-visible:bg-ink-850"
     >
       <div
         className="pointer-events-none absolute -right-20 -top-20 size-56 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-100 group-focus-visible:opacity-100"
@@ -20,15 +20,15 @@ export function IndustryCard({ ind, i }: { ind: (typeof INDUSTRIES)[number]; i: 
         <IndustryGlyph glyph={ind.glyph} color={ind.color} />
         <ArrowUpRight size={18} className="text-faint transition-all duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-fg" />
       </div>
-      <h3 className="mt-6 text-xl tracking-tight text-fg">{ind.name}</h3>
+      <h3 className="mt-6 text-xl tracking-tight text-fg font-semibold">{ind.name}</h3>
       {/* problem → solution swap */}
       <div className="relative mt-3 flex-1">
         <div className="transition-all duration-500 group-hover:-translate-y-2 group-hover:opacity-0 group-focus-visible:opacity-0">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">The problem</p>
+          <p className="label text-faint">The problem</p>
           <p className="mt-2 text-[13.5px] leading-relaxed text-muted">{ind.problem}</p>
         </div>
         <div className="absolute inset-0 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: ind.color }}>
+          <p className="label" style={{ color: ind.color }}>
             How we solve it
           </p>
           <p className="mt-2 text-[13.5px] leading-relaxed text-fg-soft">{ind.solution}</p>
@@ -61,11 +61,11 @@ export function IndustriesSection({ index = '08' }: { index?: string }) {
           <Link
             to="/build-with-us"
             data-reveal="3"
-            className="group flex min-h-[300px] flex-col justify-between rounded-2xl border border-dashed border-line-strong p-6 transition-colors hover:border-fg-soft/40"
+            className="group flex min-h-[300px] flex-col justify-between rounded-xl border border-dashed border-line-strong p-6 transition-colors hover:border-fg-soft/40"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">Your industry</span>
+            <span className="label text-faint">Your industry</span>
             <span>
-              <span className="block text-xl tracking-tight text-fg">Not listed?</span>
+              <span className="block text-xl tracking-tight text-fg font-semibold">Not listed?</span>
               <span className="mt-2 block text-[13.5px] leading-relaxed text-muted">
                 Describe your process and we’ll assess where AI can help — and where it can’t.
               </span>

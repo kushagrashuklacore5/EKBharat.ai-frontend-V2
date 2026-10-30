@@ -32,7 +32,7 @@ export const LAYERS: ArchitectureLayer[] = [
       'Multi-agent coordination, task delegation, deterministic execution and intelligent automation.',
     summary:
       'Plans work, delegates it to specialised agents, tracks state and combines their outputs into a complete result.',
-    accent: '#45d3e6',
+    accent: '#2f7fa8',
     capabilities: [
       {
         title: 'Task decomposition & delegation',
@@ -73,7 +73,7 @@ export const LAYERS: ArchitectureLayer[] = [
       'Unified model routing, multi-provider orchestration, model selection and intelligent inference.',
     summary:
       'One interface in front of many models, routing each request by task, cost, latency and availability.',
-    accent: '#5b8cff',
+    accent: '#2c64a0',
     capabilities: [
       {
         title: 'Unified model gateway',
@@ -114,7 +114,7 @@ export const LAYERS: ArchitectureLayer[] = [
       'Secure execution, access policies, data protection, model governance and enterprise controls.',
     summary:
       'Defines who can run what, on which data, with which models — and records it.',
-    accent: '#e09a52',
+    accent: '#c4852f',
     capabilities: [
       {
         title: 'Role-based access',
@@ -155,7 +155,7 @@ export const LAYERS: ArchitectureLayer[] = [
       'RAG pipelines, vector search, contextual retrieval and domain-specific enterprise intelligence.',
     summary:
       'Grounds model responses in your own documents and data instead of general knowledge alone.',
-    accent: '#2fb9a6',
+    accent: '#2e8d81',
     capabilities: [
       {
         title: 'Ingestion & chunking',
@@ -196,7 +196,7 @@ export const LAYERS: ArchitectureLayer[] = [
       'AI-ready data transformation across fragmented enterprise systems, databases and APIs.',
     summary:
       'Connects the systems you already run and shapes their data into a form AI can use.',
-    accent: '#7aae86',
+    accent: '#4b8a5c',
     capabilities: [
       {
         title: 'Connectors & webhooks',
@@ -237,7 +237,7 @@ export const LAYERS: ArchitectureLayer[] = [
       'GPU-backed inference, model hosting, workload optimization and cost-efficient AI computing.',
     summary:
       'Partner-powered GPU capacity for running, fine-tuning and serving models — without buying hardware.',
-    accent: '#8fa3c7',
+    accent: '#5d7083',
     capabilities: [
       {
         title: 'On-demand GPU instances',

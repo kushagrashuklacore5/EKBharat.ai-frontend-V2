@@ -14,7 +14,7 @@ export default function SolutionsPage() {
     <div ref={ref}>
       <PageHero
         docTitle="Industry Solutions"
-        accent="#2fb9a6"
+        accent="#2e8d81"
         eyebrow="Industry solutions"
         title={
           <>
@@ -43,18 +43,18 @@ export default function SolutionsPage() {
                 </div>
                 <div className="space-y-6">
                   <div>
-                    <p className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-faint">The problem</p>
+                    <p className="label text-faint">The problem</p>
                     <p className="mt-2 leading-relaxed text-fg-soft">{ind.problem}</p>
                   </div>
                   <div>
-                    <p className="font-mono text-[10.5px] uppercase tracking-[0.14em]" style={{ color: ind.color }}>
+                    <p className="label" style={{ color: ind.color }}>
                       Our approach
                     </p>
                     <p className="mt-2 leading-relaxed text-fg-soft">{ind.solution}</p>
                   </div>
                 </div>
                 <div>
-                  <p className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-faint">Example solutions</p>
+                  <p className="label text-faint">Example solutions</p>
                   <ul className="mt-3 space-y-2">
                     {ind.examples.map((e) => (
                       <li key={e} className="flex items-center gap-3 rounded-xl border border-line px-4 py-3 text-[14px] text-fg-soft">

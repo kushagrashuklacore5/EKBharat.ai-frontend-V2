@@ -15,8 +15,8 @@ const POINTS = [
 
 export function StudioSection({ index = '04' }: { index?: string }) {
   return (
-    <Section id="workflow-studio" labelledBy="studio-title" className="py-28 md:py-36">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_40%_at_50%_60%,rgba(69,211,230,.07),transparent_70%)]" aria-hidden="true" />
+    <Section id="workflow-studio" labelledBy="studio-title" className="surface-dark overflow-hidden py-28 md:py-36">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_70%,rgba(124,196,221,.10),transparent_70%)]" aria-hidden="true" />
       <div className="container-x relative">
         <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end">
           <SectionHeading
@@ -41,9 +41,9 @@ export function StudioSection({ index = '04' }: { index?: string }) {
           </LazyMount>
         </div>
 
-        <dl className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="mt-12 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {POINTS.map(([t, d], i) => (
-            <div key={t} data-reveal={String(i)} className="bg-ink-950 p-6">
+            <div key={t} data-reveal={String(i)} className="border-t-2 border-line-strong pt-5">
               <dt className="flex items-center gap-2 text-[15px] text-fg">
                 <span className="font-mono text-[11px] text-cyan">0{i + 1}</span>
                 {t}

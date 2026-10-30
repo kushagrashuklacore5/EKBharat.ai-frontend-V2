@@ -11,13 +11,13 @@ export function FinalCta({
   body = 'Whether you need computing power, intelligent automation or a complete enterprise AI ecosystem, let’s build it together.',
 }: Props) {
   return (
-    <Section labelledBy="cta-title" className="overflow-hidden py-28 md:py-40">
+    <Section labelledBy="cta-title" className="overflow-hidden bg-ink-900 py-28 md:py-36">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="jaali absolute inset-0 opacity-[0.06] [mask-image:radial-gradient(50%_60%_at_50%_50%,black,transparent)]" />
+        <div className="jaali absolute inset-0 opacity-[0.03] [mask-image:radial-gradient(50%_60%_at_50%_50%,black,transparent)]" />
         <div className="absolute inset-0 bg-[radial-gradient(40%_50%_at_50%_55%,rgba(69,211,230,.12),transparent_70%)]" />
         <svg className="absolute left-1/2 top-1/2 h-[140%] -translate-x-1/2 -translate-y-1/2 opacity-40" viewBox="-200 -200 400 400">
           {[80, 120, 160, 195].map((r, i) => (
-            <circle key={r} r={r} fill="none" stroke={i === 1 ? '#e09a52' : '#94aad2'} strokeOpacity={i === 1 ? 0.25 : 0.12} strokeDasharray={i % 2 ? '2 6' : undefined} />
+            <circle key={r} r={r} fill="none" stroke={i === 1 ? '#c4852f' : '#94aad2'} strokeOpacity={i === 1 ? 0.25 : 0.12} strokeDasharray={i % 2 ? '2 6' : undefined} />
           ))}
         </svg>
       </div>

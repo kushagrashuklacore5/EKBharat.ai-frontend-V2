@@ -65,15 +65,15 @@ export function ProcessSection({ index = '09' }: { index?: string }) {
               <li key={s.n} className="relative">
                 <span
                   className="absolute -left-10 top-7 grid size-6 place-items-center rounded-full border bg-ink-950 font-mono text-[9px] transition-all duration-500 sm:-left-14 sm:size-10 sm:text-[11px]"
-                  style={{ borderColor: on ? '#45d3e6' : 'var(--color-line-strong)', color: on ? '#45d3e6' : 'var(--color-faint)', boxShadow: i === active ? '0 0 24px -4px #45d3e6' : 'none' }}
+                  style={{ borderColor: on ? '#2f7fa8' : 'var(--color-line-strong)', color: on ? '#2f7fa8' : 'var(--color-faint)', boxShadow: i === active ? '0 0 0 4px rgba(47,127,168,.14)' : 'none' }}
                   aria-hidden="true"
                 >
                   {s.n}
                 </span>
                 <article className={`panel p-6 transition-all duration-700 sm:p-8 ${i === active ? 'border-line-strong' : 'opacity-60'}`}>
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
-                    <h3 className="text-2xl tracking-tight text-fg">{s.t}</h3>
-                    <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-faint">Output · {s.out}</span>
+                    <h3 className="text-2xl tracking-tight text-fg font-semibold">{s.t}</h3>
+                    <span className="label text-faint">Output · {s.out}</span>
                   </div>
                   <p className="mt-2 text-fg-soft">{s.d}</p>
                   <p className="mt-3 text-[14px] leading-relaxed text-muted">{s.more}</p>

@@ -1,232 +1,181 @@
 import * as THREE from 'three'
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 
 export interface HeroSceneOptions {
   reducedMotion: boolean
   compact: boolean
-  /** DOM elements that should follow labelled anchor nodes */
+  /** DOM labels that follow anchors: [core, ...satellites] */
   labels: (HTMLElement | null)[]
 }
 
+const C = {
+  surface: '#f6f8fa',
+  stratum1: '#e3eaf0',
+  stratum2: '#cfdbe5',
+  blue: '#2f7fa8',
+  deepBlue: '#2c64a0',
+  teal: '#2e8d81',
+  saffron: '#e3a957',
+  conduit: '#8fa5b8',
+  navy: '#182b3d',
+}
+
 /**
- * The hero computational ecosystem:
- *  - a central core (wireframe icosahedron + fresnel sphere)
- *  - three tilted orbital layers carrying workflow / agent nodes
- *  - curved links from the core with travelling data pulses
- *  - a calm, deep particle field
- * Everything is additive & unlit so it stays cheap.
+ * Hero object: a stratified compute platform (the foundation) with an
+ * accelerator die on top, connected to four floating capability modules
+ * — models, agents, workflows, data — by conduits carrying data pulses.
+ * Lit with soft physically-based lighting for a light, premium surface.
  */
 export function createHeroScene(canvas: HTMLCanvasElement, opts: HeroSceneOptions) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, opts.compact ? 1.5 : 1.75))
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, opts.compact ? 1.5 : 2))
   renderer.setClearColor(0x000000, 0)
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.toneMappingExposure = 1.05
+  renderer.outputColorSpace = THREE.SRGBColorSpace
 
   const scene = new THREE.Scene()
-  scene.fog = new THREE.FogExp2(0x04060b, 0.045)
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100)
-  camera.position.set(0, 0.6, 13)
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100)
+  const target = new THREE.Vector3(0.9, 0.9, -0.4)
 
-  const world = new THREE.Group()
-  scene.add(world)
+  scene.add(new THREE.HemisphereLight('#ffffff', '#9fb2c4', 1.5))
+  const key = new THREE.DirectionalLight('#ffffff', 2.3)
+  key.position.set(6, 11, 7)
+  scene.add(key)
+  const rim = new THREE.DirectionalLight('#8cc6e0', 1.3)
+  rim.position.set(-9, 3, -6)
+  scene.add(rim)
+  const warm = new THREE.DirectionalLight('#f3d3a6', 0.45)
+  warm.position.set(8, 1, -4)
+  scene.add(warm)
 
-  const CYAN = new THREE.Color('#45d3e6')
-  const BLUE = new THREE.Color('#5b8cff')
-  const SAFFRON = new THREE.Color('#e09a52')
-  const TEAL = new THREE.Color('#2fb9a6')
-  const SOFT = new THREE.Color('#8fa3c7')
-
-  // ── Core ────────────────────────────────────────────────
-  const core = new THREE.Group()
-  world.add(core)
-
-  const coreGeo = new THREE.IcosahedronGeometry(1.15, 1)
-  const coreEdges = new THREE.LineSegments(
-    new THREE.EdgesGeometry(coreGeo),
-    new THREE.LineBasicMaterial({ color: CYAN, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }),
-  )
-  core.add(coreEdges)
-
-  const fresnelMat = new THREE.ShaderMaterial({
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    uniforms: { uTime: { value: 0 }, uA: { value: CYAN }, uB: { value: BLUE } },
-    vertexShader: /* glsl */ `
-      varying vec3 vN; varying vec3 vV;
-      void main(){
-        vec4 mv = modelViewMatrix * vec4(position,1.0);
-        vN = normalize(normalMatrix * normal);
-        vV = normalize(-mv.xyz);
-        gl_Position = projectionMatrix * mv;
-      }`,
-    fragmentShader: /* glsl */ `
-      uniform float uTime; uniform vec3 uA; uniform vec3 uB;
-      varying vec3 vN; varying vec3 vV;
-      void main(){
-        float f = pow(1.0 - max(dot(vN, vV), 0.0), 2.4);
-        float pulse = 0.85 + 0.15 * sin(uTime * 1.4);
-        vec3 c = mix(uB, uA, f);
-        gl_FragColor = vec4(c, f * 0.9 * pulse + 0.05);
-      }`,
-  })
-  const coreSphere = new THREE.Mesh(new THREE.SphereGeometry(0.82, 48, 48), fresnelMat)
-  core.add(coreSphere)
-
-  // inner bright seed
-  const seed = new THREE.Mesh(
-    new THREE.SphereGeometry(0.16, 24, 24),
-    new THREE.MeshBasicMaterial({ color: 0xe8f6ff, transparent: true, opacity: 0.95 }),
-  )
-  core.add(seed)
-
-  // 24-tick precision ring around the core — a quiet geometric nod
-  const tickPos: number[] = []
-  for (let i = 0; i < 24; i++) {
-    const a = (i / 24) * Math.PI * 2
-    const r1 = 1.62
-    const r2 = i % 6 === 0 ? 1.82 : 1.72
-    tickPos.push(Math.cos(a) * r1, Math.sin(a) * r1, 0, Math.cos(a) * r2, Math.sin(a) * r2, 0)
+  const root = new THREE.Group()
+  scene.add(root)
+  const disposables: { dispose(): void }[] = []
+  const mat = (color: string, extra: Partial<THREE.MeshStandardMaterialParameters> = {}) => {
+    const m = new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0.06, ...extra })
+    disposables.push(m)
+    return m
   }
-  const tickGeo = new THREE.BufferGeometry()
-  tickGeo.setAttribute('position', new THREE.Float32BufferAttribute(tickPos, 3))
-  const ticks = new THREE.LineSegments(
-    tickGeo,
-    new THREE.LineBasicMaterial({ color: SAFFRON, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false }),
-  )
-  core.add(ticks)
-  const tickRing = circleLine(1.62, 128, SOFT, 0.25)
-  core.add(tickRing)
-
-  // ── Orbital layers with nodes ─────────────────────────────
-  interface Orbit {
-    group: THREE.Group
-    radius: number
-    speed: number
-    nodes: THREE.Object3D[]
+  const rbox = (w: number, h: number, d: number, r: number) => {
+    const g = new RoundedBoxGeometry(w, h, d, 4, r)
+    disposables.push(g)
+    return g
   }
-  const orbitDefs = [
-    { radius: 2.7, tilt: [1.2, 0.0, 0.25], speed: 0.06, count: 6, color: CYAN },
-    { radius: 3.7, tilt: [1.38, 0.0, -0.32], speed: -0.04, count: 8, color: BLUE },
-    { radius: 4.8, tilt: [1.05, 0.0, 0.08], speed: 0.025, count: 10, color: TEAL },
+
+  // ── Foundation: three strata + accent seams ─────────────────
+  const platform = new THREE.Group()
+  root.add(platform)
+  platform.add(new THREE.Mesh(rbox(4.4, 0.42, 4.4, 0.16), mat(C.surface, { roughness: 0.42 })))
+  const s1 = new THREE.Mesh(rbox(4.0, 0.36, 4.0, 0.14), mat(C.stratum1))
+  s1.position.y = -0.52
+  platform.add(s1)
+  const s2 = new THREE.Mesh(rbox(3.5, 0.32, 3.5, 0.12), mat(C.stratum2))
+  s2.position.y = -0.98
+  platform.add(s2)
+  const seam1 = new THREE.Mesh(rbox(4.06, 0.035, 4.06, 0.015), mat(C.teal, { emissive: C.teal, emissiveIntensity: 0.55 }))
+  seam1.position.y = -0.27
+  platform.add(seam1)
+  const seam2 = new THREE.Mesh(rbox(3.56, 0.035, 3.56, 0.015), mat(C.saffron, { emissive: C.saffron, emissiveIntensity: 0.35 }))
+  seam2.position.y = -0.76
+  platform.add(seam2)
+
+  // accelerator die on top of the platform
+  const dies: { mesh: THREE.Mesh; active: boolean; phase: number }[] = []
+  const dieGeo = rbox(0.74, 0.22, 0.74, 0.07)
+  const tint = [C.blue, C.teal, C.deepBlue]
+  for (let i = 0; i < 16; i++) {
+    const x = (i % 4) - 1.5
+    const z = Math.floor(i / 4) - 1.5
+    const active = [1, 6, 9, 14, 4].includes(i)
+    const color = i === 4 ? C.saffron : active ? tint[i % 3] : '#ffffff'
+    const m = new THREE.Mesh(dieGeo, mat(color, active ? { emissive: color, emissiveIntensity: 0.18 } : { roughness: 0.35 }))
+    m.position.set(x * 0.94, 0.32, z * 0.94)
+    platform.add(m)
+    dies.push({ mesh: m, active, phase: Math.random() * Math.PI * 2 })
+  }
+
+  // ── Satellite modules ───────────────────────────────
+  const satDefs = [
+    { angle: -0.35, r: 4.7, y: 2.3, color: C.blue }, // models
+    { angle: 1.25, r: 4.5, y: 1.25, color: C.teal }, // agents
+    { angle: 2.75, r: 4.6, y: 2.75, color: C.saffron }, // workflows
+    { angle: 4.35, r: 4.4, y: 1.6, color: C.deepBlue }, // data & knowledge
   ]
-  const orbits: Orbit[] = []
-  const nodeGeo = new THREE.OctahedronGeometry(0.11, 0)
-  const haloTex = makeHaloTexture()
-
-  orbitDefs.forEach((d, oi) => {
+  const satGeo = rbox(1.5, 0.38, 1.5, 0.13)
+  const capGeo = rbox(1.08, 0.07, 1.08, 0.03)
+  const nubGeo = new THREE.SphereGeometry(0.075, 16, 16)
+  disposables.push(nubGeo)
+  const sats = satDefs.map((d, i) => {
     const g = new THREE.Group()
-    g.rotation.set(d.tilt[0], d.tilt[1], d.tilt[2])
-    world.add(g)
-    g.add(circleLine(d.radius, 220, d.color, 0.16 - oi * 0.03))
-    const nodes: THREE.Object3D[] = []
-    for (let i = 0; i < d.count; i++) {
-      const a = (i / d.count) * Math.PI * 2 + oi * 0.7
-      const n = new THREE.Group()
-      n.position.set(Math.cos(a) * d.radius, Math.sin(a) * d.radius, 0)
-      const accent = i % 5 === 0 && oi === 1 ? SAFFRON : d.color
-      const m = new THREE.Mesh(nodeGeo, new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.95 }))
-      m.scale.setScalar(i % 3 === 0 ? 1.25 : 0.85)
-      n.add(m)
-      const halo = new THREE.Sprite(
-        new THREE.SpriteMaterial({ map: haloTex, color: accent, transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false }),
-      )
-      halo.scale.setScalar(0.55)
-      n.add(halo)
-      g.add(n)
-      nodes.push(n)
+    g.position.set(Math.cos(d.angle) * d.r, d.y, Math.sin(d.angle) * d.r)
+    const inner = new THREE.Group()
+    g.add(inner)
+    inner.add(new THREE.Mesh(satGeo, mat('#ffffff', { roughness: 0.35 })))
+    const cap = new THREE.Mesh(capGeo, mat(d.color, { emissive: d.color, emissiveIntensity: 0.22 }))
+    cap.position.y = 0.22
+    inner.add(cap)
+    for (let k = 0; k < 4; k++) {
+      const nub = new THREE.Mesh(nubGeo, mat(k === i ? C.saffron : '#ffffff'))
+      nub.position.set(((k % 2) - 0.5) * 0.5, 0.3, (Math.floor(k / 2) - 0.5) * 0.5)
+      inner.add(nub)
     }
-    orbits.push({ group: g, radius: d.radius, speed: d.speed, nodes })
+    root.add(g)
+    return { group: g, inner, def: d, phase: i * 1.3 }
   })
 
-  // ── Links from core to selected nodes, with pulses ─────────
-  interface Link {
-    node: THREE.Object3D
-    line: THREE.Line
-    curve: THREE.QuadraticBezierCurve3
-    t: number
-    speed: number
-  }
-  const links: Link[] = []
-  const linkMat = new THREE.LineBasicMaterial({ color: SOFT, transparent: true, opacity: 0.14, blending: THREE.AdditiveBlending, depthWrite: false })
-  const linkTargets: THREE.Object3D[] = []
-  orbits.forEach((o, oi) => o.nodes.forEach((n, i) => (i % (oi + 2) === 0 ? linkTargets.push(n) : null)))
-  // node-to-node links between neighbouring orbits (agent ↔ workflow communication)
-  const peerPairs: [THREE.Object3D, THREE.Object3D][] = []
-  for (let i = 0; i < 6; i++) peerPairs.push([orbits[0].nodes[i % orbits[0].nodes.length], orbits[1].nodes[(i * 2 + 1) % orbits[1].nodes.length]])
-  for (let i = 0; i < 5; i++) peerPairs.push([orbits[1].nodes[(i * 2) % orbits[1].nodes.length], orbits[2].nodes[(i * 2 + 1) % orbits[2].nodes.length]])
+  // ── Conduits with pulses ────────────────────────────
+  const conduitMat = mat(C.conduit, { roughness: 0.6 })
+  const pulseGeo = new THREE.SphereGeometry(0.075, 16, 16)
+  disposables.push(pulseGeo)
+  const pulses: { mesh: THREE.Mesh; curve: THREE.CatmullRomCurve3; t: number; speed: number }[] = []
+  sats.forEach((s) => {
+    const dir = new THREE.Vector3(s.group.position.x, 0, s.group.position.z).normalize()
+    const start = dir.clone().multiplyScalar(2.15).setY(0.12)
+    const end = s.group.position.clone().setY(s.group.position.y - 0.2)
+    const mid = dir.clone().multiplyScalar(3.6).setY((start.y + end.y) / 2 - 0.35)
+    const curve = new THREE.CatmullRomCurve3([start, mid, end])
+    const tube = new THREE.TubeGeometry(curve, 48, 0.024, 8, false)
+    disposables.push(tube)
+    root.add(new THREE.Mesh(tube, conduitMat))
+    for (let k = 0; k < 2; k++) {
+      const m = new THREE.Mesh(pulseGeo, mat(s.def.color, { emissive: s.def.color, emissiveIntensity: 0.9 }))
+      root.add(m)
+      pulses.push({ mesh: m, curve, t: k * 0.5, speed: 0.22 + Math.random() * 0.08 })
+    }
+  })
 
-  const tmpA = new THREE.Vector3()
-  const tmpB = new THREE.Vector3()
-  const tmpC = new THREE.Vector3()
+  // orbit hairline at platform level
+  const ringGeo = new THREE.TorusGeometry(3.25, 0.008, 6, 160)
+  disposables.push(ringGeo)
+  const ring = new THREE.Mesh(ringGeo, mat(C.navy, { transparent: true, opacity: 0.25 }))
+  ring.rotation.x = Math.PI / 2
+  ring.position.y = 0.2
+  root.add(ring)
 
-  const makeLink = (node: THREE.Object3D, from: THREE.Object3D | null, opacity: number) => {
-    const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3())
-    const geo = new THREE.BufferGeometry().setFromPoints(new Array(24).fill(0).map(() => new THREE.Vector3()))
-    const mat = linkMat.clone()
-    mat.opacity = opacity
-    const line = new THREE.Line(geo, mat)
-    world.add(line)
-    const l: Link & { from: THREE.Object3D | null } = { node, line, curve, t: Math.random(), speed: 0.12 + Math.random() * 0.18, from }
-    links.push(l)
-    return l
-  }
-  const allLinks = [
-    ...linkTargets.map((n) => makeLink(n, null, 0.16)),
-    ...peerPairs.map(([a, b]) => makeLink(b, a, 0.08)),
-  ] as (Link & { from: THREE.Object3D | null })[]
+  // contact shadow
+  const shadowTex = radialTexture()
+  disposables.push(shadowTex)
+  const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false })
+  disposables.push(shadowMat)
+  const shadowGeo = new THREE.PlaneGeometry(13, 13)
+  disposables.push(shadowGeo)
+  const shadow = new THREE.Mesh(shadowGeo, shadowMat)
+  shadow.rotation.x = -Math.PI / 2
+  shadow.position.y = -1.5
+  root.add(shadow)
 
-  const pulseGeo = new THREE.BufferGeometry()
-  const pulsePos = new Float32Array(allLinks.length * 3)
-  pulseGeo.setAttribute('position', new THREE.BufferAttribute(pulsePos, 3))
-  const pulses = new THREE.Points(
-    pulseGeo,
-    new THREE.PointsMaterial({
-      size: 0.2,
-      map: haloTex,
-      color: 0xbff4ff,
-      transparent: true,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      sizeAttenuation: true,
-    }),
-  )
-  world.add(pulses)
+  // label anchors: core corner + satellites
+  const coreAnchor = new THREE.Object3D()
+  coreAnchor.position.set(2.2, -0.6, 2.2)
+  root.add(coreAnchor)
+  const anchors = [coreAnchor, ...sats.map((s) => s.group)]
 
-  // ── Particle field ─────────────────────────────────────
-  const pCount = opts.compact ? 700 : 1600
-  const pGeo = new THREE.BufferGeometry()
-  const pp = new Float32Array(pCount * 3)
-  const pc = new Float32Array(pCount * 3)
-  const palette = [SOFT, CYAN, BLUE, TEAL, SAFFRON]
-  for (let i = 0; i < pCount; i++) {
-    const r = 6 + Math.random() * 18
-    const th = Math.random() * Math.PI * 2
-    const ph = Math.acos(2 * Math.random() - 1)
-    pp[i * 3] = r * Math.sin(ph) * Math.cos(th)
-    pp[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th) * 0.55
-    pp[i * 3 + 2] = r * Math.cos(ph) - 4
-    const c = palette[Math.random() < 0.04 ? 4 : Math.floor(Math.random() * 4)]
-    pc[i * 3] = c.r
-    pc[i * 3 + 1] = c.g
-    pc[i * 3 + 2] = c.b
-  }
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pp, 3))
-  pGeo.setAttribute('color', new THREE.BufferAttribute(pc, 3))
-  const field = new THREE.Points(
-    pGeo,
-    new THREE.PointsMaterial({ size: 0.05, vertexColors: true, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending }),
-  )
-  scene.add(field)
-
-  // ── Labelled anchors (DOM labels follow these nodes) ─────────
-  const anchors: THREE.Object3D[] = [orbits[0].nodes[1], orbits[1].nodes[4], orbits[2].nodes[7], orbits[1].nodes[0]]
-
-  // ── Interaction state ──────────────────────────────────
+  // ── State ───────────────────────────────────────
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 }
-  let scrollFade = 0
+  let scroll = 0
   let width = 1
   let height = 1
-  let offsetX = 0
-  let offsetY = 0
 
   const resize = () => {
     const parent = canvas.parentElement!
@@ -234,10 +183,11 @@ export function createHeroScene(canvas: HTMLCanvasElement, opts: HeroSceneOption
     height = parent.clientHeight
     renderer.setSize(width, height, false)
     camera.aspect = width / height
-    // shift the system to the right on wide screens so the headline has room
-    offsetX = width > 1024 ? 3.2 : width > 720 ? 1.6 : 1.2
-    offsetY = width > 720 ? 0 : -2.7
-    camera.position.z = width < 720 ? 16 : 13
+    const dist = width < 640 ? 27 : 25
+    if (width < 1024) target.set(0, 0.6, 0)
+    else target.set(0.9, 0.9, -0.4)
+    camera.position.set(dist * 0.55, dist * 0.42, dist * 0.72)
+    camera.lookAt(target)
     camera.updateProjectionMatrix()
   }
   resize()
@@ -248,57 +198,28 @@ export function createHeroScene(canvas: HTMLCanvasElement, opts: HeroSceneOption
     pointer.tx = (e.clientX / window.innerWidth) * 2 - 1
     pointer.ty = (e.clientY / window.innerHeight) * 2 - 1
   }
-  const onScroll = () => {
-    scrollFade = Math.min(1, window.scrollY / (window.innerHeight * 0.9))
-  }
+  const onScroll = () => (scroll = Math.min(1, window.scrollY / (window.innerHeight * 0.9)))
   window.addEventListener('pointermove', onPointer, { passive: true })
   window.addEventListener('scroll', onScroll, { passive: true })
 
-  // ── Loop ───────────────────────────────────────────
+  const ease = (x: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3)
   let last = performance.now()
-  let elapsed = 0
+  let elapsed = opts.reducedMotion ? 10 : 0
   let raf = 0
   let running = false
-  let intro = opts.reducedMotion ? 1 : 0
+  const v = new THREE.Vector3()
 
-  const updateLinks = () => {
-    allLinks.forEach((l, i) => {
-      if (l.from) l.from.getWorldPosition(tmpA)
-      else tmpA.set(0, 0, 0)
-      world.worldToLocal(tmpA)
-      l.node.getWorldPosition(tmpB)
-      world.worldToLocal(tmpB)
-      tmpC.copy(tmpA).add(tmpB).multiplyScalar(0.5)
-      tmpC.y += l.from ? 0.25 : 0.9
-      l.curve.v0.copy(tmpA)
-      l.curve.v1.copy(tmpC)
-      l.curve.v2.copy(tmpB)
-      const pos = l.line.geometry.attributes.position as THREE.BufferAttribute
-      for (let k = 0; k < pos.count; k++) {
-        l.curve.getPoint(k / (pos.count - 1), tmpC)
-        pos.setXYZ(k, tmpC.x, tmpC.y, tmpC.z)
-      }
-      pos.needsUpdate = true
-      l.curve.getPoint(l.t, tmpC)
-      pulsePos[i * 3] = tmpC.x
-      pulsePos[i * 3 + 1] = tmpC.y
-      pulsePos[i * 3 + 2] = tmpC.z
-    })
-    pulseGeo.attributes.position.needsUpdate = true
-  }
-
-  const project = new THREE.Vector3()
-  const updateLabels = () => {
+  const updateLabels = (alpha: number) => {
     anchors.forEach((a, i) => {
       const el = opts.labels[i]
       if (!el) return
-      a.getWorldPosition(project)
-      project.project(camera)
-      const x = (project.x * 0.5 + 0.5) * width
-      const y = (-project.y * 0.5 + 0.5) * height
-      const visible = project.z < 1 && x > 40 && x < width - 40 && y > 80 && y < height - 40
+      a.getWorldPosition(v)
+      v.project(camera)
+      const x = (v.x * 0.5 + 0.5) * width
+      const y = (-v.y * 0.5 + 0.5) * height
+      const inside = x > 30 && x < width - 180 && y > 30 && y < height - 30
       el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`
-      el.style.opacity = visible ? String(Math.max(0, (intro - 0.6) * 2.5) * (1 - scrollFade)) : '0'
+      el.style.opacity = inside ? String(Math.max(0, alpha * (1 - scroll * 1.4))) : '0'
     })
   }
 
@@ -306,42 +227,37 @@ export function createHeroScene(canvas: HTMLCanvasElement, opts: HeroSceneOption
     const now = performance.now()
     const dt = Math.min((now - last) / 1000, 0.05)
     last = now
-    elapsed += dt
+    if (!opts.reducedMotion) elapsed += dt
     const t = elapsed
-    if (!opts.reducedMotion) {
-      intro = Math.min(1, intro + dt * 0.45)
-      orbits.forEach((o) => (o.group.rotation.z += o.speed * dt))
-      core.rotation.y += dt * 0.12
-      coreEdges.rotation.x += dt * 0.05
-      ticks.rotation.z -= dt * 0.05
-      field.rotation.y += dt * 0.006
-      allLinks.forEach((l) => {
-        l.t += l.speed * dt
-        if (l.t > 1) l.t = 0
-      })
-      orbits.forEach((o) =>
-        o.nodes.forEach((n, i) => {
-          n.children[0].rotation.y += dt * (0.6 + (i % 3) * 0.2)
-        }),
-      )
-    }
-    fresnelMat.uniforms.uTime.value = t
 
-    pointer.x += (pointer.tx - pointer.x) * 0.04
-    pointer.y += (pointer.ty - pointer.y) * 0.04
-    const ease = 1 - Math.pow(1 - intro, 3)
-    world.position.x = offsetX
-    world.rotation.y = pointer.x * 0.22 + (1 - ease) * -0.8
-    world.rotation.x = pointer.y * 0.12 + 0.1
-    world.scale.setScalar(0.75 + ease * 0.25 - scrollFade * 0.08)
-    world.position.y = offsetY + scrollFade * 1.2
-    field.position.x = -pointer.x * 0.4
-    field.position.y = pointer.y * 0.25
-    camera.lookAt(0, 0, 0)
+    // assembly on load: strata, die, then satellites
+    platform.position.y = -0.6 * (1 - ease(t / 1.2))
+    dies.forEach((d, i) => {
+      const k = ease((t - 0.35 - i * 0.035) / 0.6)
+      d.mesh.scale.setScalar(Math.max(0.001, k))
+      d.mesh.position.y = 0.32 + (d.active && !opts.reducedMotion ? Math.max(0, Math.sin(t * 1.4 + d.phase)) * 0.12 : 0)
+    })
+    sats.forEach((s, i) => {
+      const k = ease((t - 0.9 - i * 0.15) / 0.8)
+      s.group.scale.setScalar(Math.max(0.001, k))
+      s.inner.position.y = opts.reducedMotion ? 0 : Math.sin(t * 0.8 + s.phase) * 0.08
+    })
+    const linkIn = ease((t - 1.6) / 0.6)
+    pulses.forEach((p) => {
+      if (!opts.reducedMotion) p.t = (p.t + p.speed * dt) % 1
+      p.curve.getPointAt(p.t, v)
+      p.mesh.position.copy(v)
+      p.mesh.scale.setScalar(Math.max(0.001, linkIn * (0.6 + Math.sin(p.t * Math.PI) * 0.6)))
+    })
 
-    updateLinks()
+    pointer.x += (pointer.tx - pointer.x) * 0.05
+    pointer.y += (pointer.ty - pointer.y) * 0.05
+    root.rotation.y = -0.35 + Math.sin(t * 0.12) * 0.12 + pointer.x * 0.22
+    root.rotation.x = pointer.y * 0.05
+    root.position.y = width >= 1024 ? scroll * 1.4 : 0
+
     renderer.render(scene, camera)
-    updateLabels()
+    updateLabels(Math.min(1, Math.max(0, (t - 1.8) / 0.6)))
     if (running) raf = requestAnimationFrame(frame)
   }
 
@@ -356,10 +272,6 @@ export function createHeroScene(canvas: HTMLCanvasElement, opts: HeroSceneOption
     cancelAnimationFrame(raf)
   }
 
-  if (opts.reducedMotion) {
-    frame()
-  }
-
   return {
     start: () => (opts.reducedMotion ? frame() : start()),
     stop,
@@ -368,41 +280,22 @@ export function createHeroScene(canvas: HTMLCanvasElement, opts: HeroSceneOption
       ro.disconnect()
       window.removeEventListener('pointermove', onPointer)
       window.removeEventListener('scroll', onScroll)
-      scene.traverse((o) => {
-        const m = o as THREE.Mesh
-        m.geometry?.dispose?.()
-        const mat = m.material as THREE.Material | THREE.Material[] | undefined
-        if (Array.isArray(mat)) mat.forEach((x) => x.dispose())
-        else mat?.dispose?.()
-      })
-      haloTex.dispose()
+      disposables.forEach((d) => d.dispose())
       renderer.dispose()
     },
   }
 }
 
-function circleLine(radius: number, segments: number, color: THREE.Color, opacity: number) {
-  const pts: THREE.Vector3[] = []
-  for (let i = 0; i <= segments; i++) {
-    const a = (i / segments) * Math.PI * 2
-    pts.push(new THREE.Vector3(Math.cos(a) * radius, Math.sin(a) * radius, 0))
-  }
-  return new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(pts),
-    new THREE.LineBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false }),
-  )
-}
-
-function makeHaloTexture() {
+function radialTexture() {
   const c = document.createElement('canvas')
-  c.width = c.height = 64
+  c.width = c.height = 128
   const g = c.getContext('2d')!
-  const grd = g.createRadialGradient(32, 32, 0, 32, 32, 32)
-  grd.addColorStop(0, 'rgba(255,255,255,1)')
-  grd.addColorStop(0.25, 'rgba(255,255,255,.55)')
-  grd.addColorStop(1, 'rgba(255,255,255,0)')
+  const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64)
+  grd.addColorStop(0, 'rgba(24,43,61,0.26)')
+  grd.addColorStop(0.45, 'rgba(24,43,61,0.1)')
+  grd.addColorStop(1, 'rgba(24,43,61,0)')
   g.fillStyle = grd
-  g.fillRect(0, 0, 64, 64)
+  g.fillRect(0, 0, 128, 128)
   const tex = new THREE.CanvasTexture(c)
   tex.colorSpace = THREE.SRGBColorSpace
   return tex

@@ -119,53 +119,54 @@ export function LayerSlab({ layer, size, depth = 14, state = 'idle', className =
   const active = state === 'active'
   const dim = state === 'dim'
   const faceFx: CSSProperties = {
-    opacity: `calc(var(--fade, 1) * ${dim ? 0.32 : 1})` as unknown as number,
-    filter: dim ? 'blur(1.4px) saturate(.5)' : active ? 'brightness(1.35)' : 'none',
+    opacity: `calc(var(--fade, 1) * ${dim ? 0.3 : 1})` as unknown as number,
+    filter: dim ? 'blur(1.2px) saturate(.6)' : 'none',
     transition: 'opacity .5s, filter .5s',
   }
   return (
     <div className={`absolute left-0 top-0 [transform-style:preserve-3d] ${className}`} style={{ width: size, height: size, ...style }}>
-      {/* top surface */}
+      {/* top surface — porcelain with a tinted wash */}
       <div
-        className="absolute inset-0 overflow-hidden rounded-[14px]"
+        className="absolute inset-0 overflow-hidden rounded-[12px]"
         style={{
           ...faceFx,
-          background: `linear-gradient(135deg, ${layer.accent}${active ? '33' : '1a'}, rgba(10,16,29,.92) 55%), #0a101d`,
-          border: `1px solid ${layer.accent}${active ? 'cc' : '55'}`,
+          background: `linear-gradient(140deg, #ffffff 0%, #f7f9fb 45%, ${layer.accent}${active ? '2e' : '14'} 100%)`,
+          border: `1px solid ${active ? layer.accent : 'rgba(24,43,61,.12)'}`,
           boxShadow: active
-            ? `0 0 0 1px ${layer.accent}55, 0 0 60px -6px ${layer.accent}88, inset 0 0 40px -10px ${layer.accent}66`
-            : `inset 0 0 30px -14px ${layer.accent}55`,
+            ? `0 0 0 3px ${layer.accent}22, 0 40px 60px -30px ${layer.accent}88`
+            : '0 30px 50px -34px rgba(24,43,61,.45)',
+          transition: 'opacity .5s, filter .5s, border-color .4s, box-shadow .5s',
           ...faceStyle,
         }}
       >
-        <div className="grid-bg absolute inset-0 opacity-50" />
-        <div className="absolute inset-[6%]" style={{ opacity: active ? 1 : 0.7 }}>
+        <div className="grid-bg absolute inset-0" />
+        <div className="absolute inset-[6%]" style={{ opacity: active ? 1 : 0.62, transition: 'opacity .4s' }}>
           <LayerPattern id={layer.id} color={layer.accent} />
         </div>
         {showLabel && (
-          <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between font-mono text-[10px] uppercase tracking-[0.16em]" style={{ color: layer.accent }}>
-            <span>{layer.index}</span>
-            <span className="text-right opacity-80">{layer.short}</span>
+          <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between text-[11px] font-bold" style={{ color: layer.accent }}>
+            <span className="font-mono">{layer.index}</span>
+            <span className="text-right">{layer.short}</span>
           </div>
         )}
       </div>
       {/* extruded edges (visible sides for the isometric view) */}
       <div
-        className="absolute bottom-0 left-[10px] right-[10px] origin-bottom"
+        className="absolute bottom-0 left-[8px] right-[8px] origin-bottom"
         style={{
           ...faceFx,
           height: depth,
           transform: 'rotateX(90deg)',
-          background: `linear-gradient(180deg, ${layer.accent}${active ? '88' : '44'}, #060a12)`,
+          background: `linear-gradient(180deg, ${active ? layer.accent : '#c9d5df'}, ${active ? layer.accent + 'aa' : '#aebdcb'})`,
         }}
       />
       <div
-        className="absolute bottom-[10px] left-0 top-[10px] origin-left"
+        className="absolute bottom-[8px] left-0 top-[8px] origin-left"
         style={{
           ...faceFx,
           width: depth,
           transform: 'rotateY(90deg)',
-          background: `linear-gradient(90deg, #060a12, ${layer.accent}${active ? '66' : '2a'})`,
+          background: `linear-gradient(90deg, ${active ? layer.accent + 'cc' : '#b8c6d3'}, ${active ? layer.accent : '#d5dee6'})`,
         }}
       />
     </div>

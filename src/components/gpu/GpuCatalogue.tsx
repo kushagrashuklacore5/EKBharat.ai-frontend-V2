@@ -44,7 +44,7 @@ export function GpuCatalogue() {
   return (
     <div className="panel overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
-        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-fg-soft">Compute catalogue</p>
+        <p className="label text-fg-soft">Compute catalogue</p>
         <DemoBadge label="Demonstration data — not live inventory or pricing" />
       </div>
       <div className="grid lg:grid-cols-[1.6fr_1fr]">
@@ -53,7 +53,7 @@ export function GpuCatalogue() {
           <table className="w-full min-w-[560px] text-left text-[13px]">
             <caption className="sr-only">Illustrative GPU configurations</caption>
             <thead>
-              <tr className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
+              <tr className="label text-faint">
                 <th className="px-5 py-3 font-normal sm:px-6">Configuration</th>
                 <th className="px-3 py-3 font-normal">VRAM</th>
                 <th className="px-3 py-3 font-normal">Availability</th>
@@ -68,13 +68,13 @@ export function GpuCatalogue() {
                   <tr
                     key={t.id}
                     onClick={() => setSel(t.id)}
-                    className={`cursor-pointer border-t border-line transition-colors ${on ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
+                    className={`cursor-pointer border-t border-line transition-colors ${on ? 'bg-ink-850 shadow-[var(--shadow-sm)]' : 'hover:bg-ink-850/70'}`}
                   >
                     <td className="px-5 py-4 sm:px-6">
                       <label className="flex cursor-pointer items-start gap-3">
                         <input type="radio" name="gpu-tier" checked={on} onChange={() => setSel(t.id)} className="mt-1 accent-cyan" />
                         <span>
-                          <span className="block text-fg">{t.name}</span>
+                          <span className="block text-fg font-semibold">{t.name}</span>
                           <span className="block text-[12px] text-muted">{t.bestFor}</span>
                         </span>
                       </label>
@@ -113,9 +113,9 @@ export function GpuCatalogue() {
 
         {/* estimator */}
         <div className="p-5 sm:p-6">
-          <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">Cost estimator</p>
-          <p className="mt-2 text-fg">{tier.name}</p>
-          <div className="mt-5 inline-flex rounded-full border border-line p-1" role="radiogroup" aria-label="Billing model">
+          <p className="label text-faint">Cost estimator</p>
+          <p className="mt-2 text-fg font-semibold">{tier.name}</p>
+          <div className="mt-5 inline-flex rounded-lg bg-ink-900 p-1" role="radiogroup" aria-label="Billing model">
             {(['Hourly', 'Monthly'] as const).map((m) => {
               const ok = tier.deployment.includes(m)
               return (
@@ -126,7 +126,7 @@ export function GpuCatalogue() {
                   aria-checked={effMode === m}
                   disabled={!ok}
                   onClick={() => setMode(m)}
-                  className={`rounded-full px-4 py-1.5 text-[12.5px] transition-colors disabled:opacity-30 ${effMode === m ? 'bg-fg text-ink-950' : 'text-muted hover:text-fg'}`}
+                  className={`rounded-md px-4 py-1.5 text-[13px] font-semibold transition-colors disabled:opacity-30 ${effMode === m ? 'bg-fg text-ink-950' : 'text-muted hover:text-fg'}`}
                 >
                   {m === 'Hourly' ? 'Pay as you go' : 'Monthly'}
                 </button>
@@ -140,7 +140,7 @@ export function GpuCatalogue() {
               <Range label="Days per month" value={days} min={1} max={31} onChange={setDays} suffix="days" />
             </>
           )}
-          <div className="mt-6 rounded-2xl border border-line bg-ink-950 p-5">
+          <div className="mt-6 rounded-xl border border-line bg-ink-950 p-5">
             <p className="text-[12px] text-muted">Estimated monthly cost (illustrative)</p>
             <p className="mt-1 font-mono text-3xl tracking-tight text-fg">{fmt(est)}</p>
             <p className="mt-2 text-[11.5px] leading-relaxed text-faint">

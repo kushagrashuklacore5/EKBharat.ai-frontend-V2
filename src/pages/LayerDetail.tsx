@@ -44,12 +44,12 @@ export default function LayerDetail() {
           <button
             type="button"
             onClick={back}
-            className="group inline-flex items-center gap-2 rounded-full border border-line px-3.5 py-1.5 text-[12.5px] text-fg-soft transition-colors hover:border-line-strong hover:text-fg"
+            className="group inline-flex items-center gap-2 rounded-lg border border-line px-3.5 py-1.5 text-[12.5px] text-fg-soft transition-colors hover:border-line-strong hover:text-fg"
           >
             <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
             Back to architecture <span className="font-mono text-[10px] text-faint">ESC</span>
           </button>
-          <p data-reveal className="mt-10 font-mono text-[12px] uppercase tracking-[0.18em]" style={{ color: layer.accent }}>
+          <p data-reveal className="mt-10 label" style={{ color: layer.accent }}>
             Layer {layer.index} / 06
           </p>
           <h1 data-reveal="1" className="display mt-4 text-[clamp(2.6rem,6vw,5.4rem)]">
@@ -69,7 +69,7 @@ export default function LayerDetail() {
                 to={`/architecture/${l.id}`}
                 viewTransition
                 aria-current={l.id === layer.id ? 'page' : undefined}
-                className="rounded-full border px-3 py-1 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors"
+                className="rounded-full border px-3 py-1 label transition-colors"
                 style={
                   l.id === layer.id
                     ? { borderColor: `${l.accent}aa`, color: l.accent, background: `${l.accent}14` }
@@ -98,11 +98,11 @@ export default function LayerDetail() {
         <h2 id="flow-title" data-reveal className="eyebrow">
           How a request moves through this layer
         </h2>
-        <ol data-reveal="1" className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3 lg:grid-cols-6">
+        <ol data-reveal="1" className="mt-8 grid gap-x-10 gap-y-10 sm:grid-cols-3 lg:grid-cols-6">
           {layer.flow.map((step, k) => (
-            <li key={step} className="relative bg-ink-900 p-5">
+            <li key={step} className="relative border-t-2 border-line-strong pt-5">
               <span className="font-mono text-[11px] text-faint">{String(k + 1).padStart(2, '0')}</span>
-              <p className="mt-6 text-[15px] text-fg">{step}</p>
+              <p className="mt-6 text-[15px] text-fg font-semibold">{step}</p>
               <span className="absolute bottom-0 left-0 h-px" style={{ width: `${((k + 1) / layer.flow.length) * 100}%`, background: layer.accent, opacity: 0.6 }} />
             </li>
           ))}
@@ -115,13 +115,13 @@ export default function LayerDetail() {
           <h2 id="cap-title" data-reveal className="display text-3xl md:text-4xl">
             Capabilities
           </h2>
-          <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2">
+          <div className="grid gap-x-10 gap-y-10 md:grid-cols-2">
             {layer.capabilities.map((c, k) => (
-              <article key={c.title} data-reveal={String(k)} className="bg-ink-900 p-7">
+              <article key={c.title} data-reveal={String(k)} className="border-t-2 border-line-strong pt-5">
                 <span className="font-mono text-[11px]" style={{ color: layer.accent }}>
                   {layer.index}.{k + 1}
                 </span>
-                <h3 className="mt-4 text-lg text-fg">{c.title}</h3>
+                <h3 className="mt-4 text-lg text-fg font-semibold">{c.title}</h3>
                 <p className="mt-3 text-[14.5px] leading-relaxed text-fg-soft/85">{c.body}</p>
               </article>
             ))}
@@ -137,7 +137,7 @@ export default function LayerDetail() {
             <ul className="mt-6 space-y-5">
               {layer.useCases.map((u) => (
                 <li key={u.title}>
-                  <p className="text-fg">{u.title}</p>
+                  <p className="text-fg font-semibold">{u.title}</p>
                   <p className="mt-1 text-[14px] leading-relaxed text-muted">{u.body}</p>
                 </li>
               ))}
@@ -170,7 +170,7 @@ export default function LayerDetail() {
           <Link to={`/architecture/${prev.id}`} viewTransition className="group flex items-center gap-3 text-fg-soft hover:text-fg">
             <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
             <span>
-              <span className="block font-mono text-[10.5px] uppercase tracking-[0.14em] text-faint">Previous layer</span>
+              <span className="block label text-faint">Previous layer</span>
               {prev.name}
             </span>
           </Link>
@@ -180,7 +180,7 @@ export default function LayerDetail() {
           <Link to={`/architecture/${next.id}`} viewTransition className="group flex items-center gap-3 text-right text-fg-soft hover:text-fg sm:flex-row-reverse">
             <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             <span>
-              <span className="block font-mono text-[10.5px] uppercase tracking-[0.14em] text-faint">Next layer</span>
+              <span className="block label text-faint">Next layer</span>
               {next.name}
             </span>
           </Link>

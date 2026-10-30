@@ -7,10 +7,10 @@ type Task = 'classify' | 'reason' | 'code' | 'sensitive'
 type Policy = 'quality' | 'balanced' | 'cost' | 'latency'
 
 const POOLS: Record<Pool, { name: string; via: string; color: string; q: number; s: number; c: number }> = {
-  frontier: { name: 'Large reasoning model', via: 'Hosted provider A', color: '#5b8cff', q: 4, s: 2, c: 1 },
-  compact: { name: 'Fast compact model', via: 'Hosted provider B', color: '#45d3e6', q: 2, s: 4, c: 4 },
-  code: { name: 'Code-specialised model', via: 'Hosted provider C', color: '#a48bff', q: 3, s: 3, c: 3 },
-  open: { name: 'Open-weight model', via: 'Self-hosted · GPU Cloud', color: '#2fb9a6', q: 3, s: 3, c: 3 },
+  frontier: { name: 'Large reasoning model', via: 'Hosted provider A', color: '#2c64a0', q: 4, s: 2, c: 1 },
+  compact: { name: 'Fast compact model', via: 'Hosted provider B', color: '#2f7fa8', q: 2, s: 4, c: 4 },
+  code: { name: 'Code-specialised model', via: 'Hosted provider C', color: '#5867a8', q: 3, s: 3, c: 3 },
+  open: { name: 'Open-weight model', via: 'Self-hosted · GPU Cloud', color: '#2e8d81', q: 3, s: 3, c: 3 },
 }
 
 const TASKS: { id: Task; label: string; example: string }[] = [
@@ -59,7 +59,7 @@ export function ModelRouter() {
       {/* controls */}
       <div className="grid gap-6 border-b border-line p-5 sm:p-7 lg:grid-cols-[1.4fr_1fr_auto] lg:items-end">
         <fieldset>
-          <legend className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">1 · Request</legend>
+          <legend className="label text-faint">1 · Request</legend>
           <div className="mt-3 flex flex-wrap gap-2">
             {TASKS.map((t) => (
               <button
@@ -67,7 +67,7 @@ export function ModelRouter() {
                 type="button"
                 aria-pressed={task === t.id}
                 onClick={() => setTask(t.id)}
-                className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${task === t.id ? 'border-fg/40 bg-white/[0.06] text-fg' : 'border-line text-muted hover:text-fg-soft'}`}
+                className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${task === t.id ? 'border-fg/40 bg-ink-850 shadow-[var(--shadow-sm)] text-fg' : 'border-line text-muted hover:text-fg-soft'}`}
               >
                 {t.label}
               </button>
@@ -75,7 +75,7 @@ export function ModelRouter() {
           </div>
         </fieldset>
         <fieldset>
-          <legend className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">2 · Routing policy</legend>
+          <legend className="label text-faint">2 · Routing policy</legend>
           <div className="mt-3 flex flex-wrap gap-2">
             {POLICIES.map((p) => (
               <button
@@ -83,7 +83,7 @@ export function ModelRouter() {
                 type="button"
                 aria-pressed={policy === p.id}
                 onClick={() => setPolicy(p.id)}
-                className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${policy === p.id ? 'border-fg/40 bg-white/[0.06] text-fg' : 'border-line text-muted hover:text-fg-soft'}`}
+                className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${policy === p.id ? 'border-fg/40 bg-ink-850 shadow-[var(--shadow-sm)] text-fg' : 'border-line text-muted hover:text-fg-soft'}`}
               >
                 {p.label}
               </button>
@@ -106,7 +106,7 @@ export function ModelRouter() {
           <svg viewBox="0 0 900 410" className="w-full" role="img" aria-label={`Request routed to ${POOLS[served].name}`}>
             {/* app → gateway → policy */}
             <Box x={20} y={175} w={130} label="Your application" sub="one API call" />
-            <Box x={200} y={175} w={150} label="Model Gateway" sub="auth · format · meter" accent="#45d3e6" />
+            <Box x={200} y={175} w={150} label="Model Gateway" sub="auth · format · meter" accent="#2f7fa8" />
             <Box x={400} y={175} w={130} label="Policy engine" sub={POLICIES.find((p) => p.id === policy)!.label.toLowerCase()} accent={color} />
             <line x1={150} y1={205} x2={200} y2={205} stroke={color} strokeWidth="1.5" />
             <line x1={350} y1={205} x2={400} y2={205} stroke={color} strokeWidth="1.5" />
@@ -118,23 +118,23 @@ export function ModelRouter() {
               const back = `M790 ${PY[i]} C 820 ${PY[i]}, 810 205, 840 205`
               return (
                 <g key={p}>
-                  <path d={path} fill="none" stroke={isServed ? POOLS[p].color : isFailed ? '#ef7a7a' : 'rgba(148,170,210,.14)'} strokeWidth={isServed ? 1.8 : 1} strokeDasharray={isFailed ? '4 4' : undefined} style={{ transition: 'stroke .4s' }} />
-                  <path d={back} fill="none" stroke={isServed ? POOLS[p].color : 'rgba(148,170,210,.1)'} strokeWidth={isServed ? 1.8 : 1} style={{ transition: 'stroke .4s' }} />
+                  <path d={path} fill="none" stroke={isServed ? POOLS[p].color : isFailed ? '#c04a4a' : 'rgba(24,43,61,.14)'} strokeWidth={isServed ? 1.8 : 1} strokeDasharray={isFailed ? '4 4' : undefined} style={{ transition: 'stroke .4s' }} />
+                  <path d={back} fill="none" stroke={isServed ? POOLS[p].color : 'rgba(24,43,61,.1)'} strokeWidth={isServed ? 1.8 : 1} style={{ transition: 'stroke .4s' }} />
                   {isServed && (
-                    <circle r="4" fill="#fff" style={{ filter: `drop-shadow(0 0 6px ${POOLS[p].color})` }}>
+                    <circle r="4" fill="#fff" style={{ filter: `drop-shadow(0 2px 3px ${POOLS[p].color})` }}>
                       <animateMotion dur="1.4s" repeatCount="indefinite" path={`M150 205 L530 205 ${path.replace('M530 205', '')} L790 ${PY[i]} ${back.replace(`M790 ${PY[i]}`, '')}`} />
                     </circle>
                   )}
-                  <g opacity={isServed ? 1 : isFailed ? 0.8 : 0.45} style={{ transition: 'opacity .4s' }}>
-                    <rect x={610} y={PY[i] - 30} width={180} height={60} rx={12} fill="#0e1524" stroke={isServed ? POOLS[p].color : isFailed ? '#ef7a7a' : 'rgba(148,170,210,.2)'} />
-                    <text x={624} y={PY[i] - 7} fill="#e8eef8" fontFamily="Geist" fontSize="13">
+                  <g opacity={isServed ? 1 : isFailed ? 0.85 : 0.72} style={{ transition: 'opacity .4s' }}>
+                    <rect x={610} y={PY[i] - 30} width={180} height={60} rx={12} fill="var(--color-ink-850)" stroke={isServed ? POOLS[p].color : isFailed ? '#c04a4a' : 'rgba(24,43,61,.2)'} />
+                    <text x={624} y={PY[i] - 7} fill="var(--color-fg)" fontFamily="Manrope" fontWeight="700" fontSize="13.5">
                       {POOLS[p].name}
                     </text>
-                    <text x={624} y={PY[i] + 10} fill="#7d8aa3" fontFamily="Geist Mono" fontSize="9.5">
+                    <text x={624} y={PY[i] + 10} fill="var(--color-muted)" fontFamily="Manrope" fontWeight="500" fontSize="10.5">
                       {POOLS[p].via}
                     </text>
                     {isFailed && (
-                      <text x={624} y={PY[i] + 23} fill="#ef7a7a" fontFamily="Geist Mono" fontSize="9">
+                      <text x={624} y={PY[i] + 23} fill="#c04a4a" fontFamily="Manrope" fontWeight="600" fontSize="10">
                         unavailable → fallback
                       </text>
                     )}
@@ -144,10 +144,10 @@ export function ModelRouter() {
                           <rect key={k} x={624 + k * 9} y={PY[i] + 18} width="6" height="4" rx="1" fill={POOLS[p].color} opacity={k < POOLS[p].q ? 0.9 : 0.2} />
                         ))}
                         {[0, 1, 2, 3].map((k) => (
-                          <rect key={k} x={672 + k * 9} y={PY[i] + 18} width="6" height="4" rx="1" fill="#e8c27a" opacity={k < POOLS[p].s ? 0.9 : 0.2} />
+                          <rect key={k} x={672 + k * 9} y={PY[i] + 18} width="6" height="4" rx="1" fill="#a8731c" opacity={k < POOLS[p].s ? 0.9 : 0.2} />
                         ))}
                         {[0, 1, 2, 3].map((k) => (
-                          <rect key={k} x={720 + k * 9} y={PY[i] + 18} width="6" height="4" rx="1" fill="#7aae86" opacity={k < POOLS[p].c ? 0.9 : 0.2} />
+                          <rect key={k} x={720 + k * 9} y={PY[i] + 18} width="6" height="4" rx="1" fill="#4b8a5c" opacity={k < POOLS[p].c ? 0.9 : 0.2} />
                         ))}
                       </g>
                     )}
@@ -157,16 +157,16 @@ export function ModelRouter() {
             })}
             <Box x={840} y={175} w={0} label="" sub="" />
             <g>
-              <rect x={812} y={225} width={80} height={44} rx={10} fill="#0e1524" stroke={color} />
-              <text x={852} y={244} textAnchor="middle" fill="#e8eef8" fontFamily="Geist" fontSize="11">
+              <rect x={812} y={225} width={80} height={44} rx={10} fill="var(--color-ink-850)" stroke={color} />
+              <text x={852} y={244} textAnchor="middle" fill="var(--color-fg)" fontFamily="Manrope" fontWeight="700" fontSize="11.5">
                 Validate
               </text>
-              <text x={852} y={259} textAnchor="middle" fill="#7d8aa3" fontFamily="Geist Mono" fontSize="8.5">
+              <text x={852} y={259} textAnchor="middle" fill="var(--color-muted)" fontFamily="Manrope" fontSize="9.5">
                 schema ✓
               </text>
               <line x1={852} y1={205} x2={852} y2={225} stroke={color} strokeWidth="1.5" />
             </g>
-            <text x={20} y={395} fill="#4f5b73" fontFamily="Geist Mono" fontSize="9.5">
+            <text x={20} y={395} fill="var(--color-faint)" fontFamily="Manrope" fontWeight="500" fontSize="10.5">
               bars: quality · speed · cost-efficiency (relative, illustrative)
             </text>
           </svg>
@@ -176,7 +176,7 @@ export function ModelRouter() {
         <div className="p-6 sm:p-7" aria-live="polite">
           <DemoBadge label="Illustrative routing" />
           <p className="mt-5 text-[13px] text-muted">{TASKS.find((t) => t.id === task)!.example}</p>
-          <p className="mt-5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">Routed to</p>
+          <p className="mt-5 label text-faint">Routed to</p>
           <p className="mt-2 text-2xl font-medium tracking-tight" style={{ color }}>
             {POOLS[served].name}
           </p>
@@ -205,11 +205,11 @@ function Box({ x, y, w, label, sub, accent }: { x: number; y: number; w: number;
   if (!w) return null
   return (
     <g>
-      <rect x={x} y={y} width={w} height={60} rx={12} fill="#0e1524" stroke={accent ?? 'rgba(148,170,210,.25)'} style={{ transition: 'stroke .4s' }} />
-      <text x={x + 14} y={y + 26} fill="#e8eef8" fontFamily="Geist" fontSize="13">
+      <rect x={x} y={y} width={w} height={60} rx={12} fill="var(--color-ink-850)" stroke={accent ?? 'rgba(24,43,61,.25)'} style={{ transition: 'stroke .4s' }} />
+      <text x={x + 14} y={y + 26} fill="var(--color-fg)" fontFamily="Manrope" fontWeight="700" fontSize="13.5">
         {label}
       </text>
-      <text x={x + 14} y={y + 43} fill="#7d8aa3" fontFamily="Geist Mono" fontSize="9.5">
+      <text x={x + 14} y={y + 43} fill="var(--color-muted)" fontFamily="Manrope" fontWeight="500" fontSize="10.5">
         {sub}
       </text>
     </g>

@@ -155,7 +155,7 @@ export function LayeredArchitecture() {
           onMouseLeave={() => desktop && setActive(null)}
         >
           {/* floor glow */}
-          <div className="pointer-events-none absolute left-1/2 top-[72%] h-40 w-[80%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(69,211,230,.12),transparent)] blur-2xl" />
+          <div className="pointer-events-none absolute left-1/2 top-[74%] h-36 w-[78%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(24,43,61,.16),transparent)] blur-xl" />
           <div
             className="absolute left-1/2 top-[50%] [transform-style:preserve-3d]"
             style={{
@@ -206,7 +206,7 @@ export function LayeredArchitecture() {
 
           {/* hover caption on the stage */}
           {desktop && (
-            <div className="pointer-events-none absolute bottom-2 left-0 flex items-center gap-2 font-mono text-[11px] text-muted">
+            <div className="pointer-events-none absolute bottom-2 left-0 flex items-center gap-2 text-[13px] font-medium text-muted">
               <MousePointerClick size={14} />
               {active ? (
                 <span>
@@ -233,8 +233,8 @@ export function LayeredArchitecture() {
                 }}
               >
                 <div
-                  className={`group relative rounded-2xl border transition-all duration-500 ${
-                    isFocus ? 'border-line-strong bg-white/[0.035]' : 'border-transparent'
+                  className={`group relative rounded-xl border transition-all duration-500 ${
+                    isFocus ? 'border-line-strong bg-ink-850 shadow-[var(--shadow-sm)]' : 'border-transparent'
                   } ${isDim ? 'opacity-45' : 'opacity-100'}`}
                   onMouseEnter={() => desktop && setActive(layer.id)}
                   onMouseLeave={() => desktop && setActive(null)}
@@ -256,14 +256,14 @@ export function LayeredArchitecture() {
                       style={{
                         borderColor: layer.accent,
                         background: isFocus ? layer.accent : 'transparent',
-                        boxShadow: isFocus ? `0 0 14px ${layer.accent}` : 'none',
+                        boxShadow: isFocus ? `0 0 0 3px ${layer.accent}22` : 'none',
                       }}
                     />
                     <span className="min-w-0 flex-1">
                       <span className="flex items-baseline gap-3">
                         <span className="font-mono text-[11px] text-faint">{layer.index}</span>
                         <span
-                          className="font-mono text-[12px] uppercase tracking-[0.14em] transition-colors"
+                          className="label transition-colors"
                           style={{ color: isFocus ? layer.accent : 'var(--color-fg)' }}
                         >
                           {layer.name}
@@ -291,7 +291,7 @@ export function LayeredArchitecture() {
                       <button
                         type="button"
                         onClick={() => open(layer.id)}
-                        className="inline-flex h-10 items-center gap-1.5 rounded-full border px-4 text-[13px]"
+                        className="inline-flex h-10 items-center gap-1.5 rounded-lg border px-4 text-[13px]"
                         style={{ borderColor: `${layer.accent}66`, color: layer.accent }}
                       >
                         Explore {layer.short.toLowerCase()} layer <ArrowUpRight size={14} />
@@ -318,18 +318,18 @@ export function LayeredArchitecture() {
                 }}
                 pathLength={1}
                 fill="none"
-                stroke={isFocus ? layer.accent : 'rgba(148,170,210,.22)'}
+                stroke={isFocus ? layer.accent : 'rgba(24,43,61,.22)'}
                 strokeWidth={isFocus ? 1.5 : 1}
                 strokeDasharray="1"
                 style={{
                   opacity: active && !isFocus ? 0.25 : 1,
                   transition: 'stroke .4s, opacity .4s',
-                  filter: isFocus ? `drop-shadow(0 0 4px ${layer.accent})` : undefined,
+                  filter: undefined,
                 }}
               />
             )
           })}
-          <circle ref={pulseRef} r="3" fill="#fff" style={{ opacity: 0, filter: 'drop-shadow(0 0 6px #45d3e6)' }} />
+          <circle ref={pulseRef} r="4" fill="#ffffff" stroke="#2f7fa8" strokeWidth="2" style={{ opacity: 0 }} />
         </svg>
       )}
     </div>

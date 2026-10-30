@@ -36,7 +36,7 @@ export default function AiAgentsPage() {
     <div ref={ref}>
       <PageHero
         docTitle="AI Agents & Multi-Agent Orchestration"
-        accent="#5b8cff"
+        accent="#2c64a0"
         eyebrow="AI agents · multi-agent orchestration"
         title={
           <>
@@ -64,7 +64,7 @@ export default function AiAgentsPage() {
           <div className="mt-12 divide-y divide-line border-y border-line">
             {CONCEPTS.map(([t, d, v], i) => (
               <div key={t} data-reveal={String(i % 3)} className="grid gap-3 py-7 md:grid-cols-[0.8fr_1.4fr_1fr] md:gap-10">
-                <h3 className="flex items-baseline gap-3 text-lg text-fg">
+                <h3 className="flex items-baseline gap-3 text-lg text-fg font-semibold">
                   <span className="font-mono text-[11px] text-faint">{String(i + 1).padStart(2, '0')}</span>
                   {t}
                 </h3>

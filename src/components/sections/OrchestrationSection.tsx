@@ -31,7 +31,7 @@ export function OrchestrationSection({ index = '05' }: { index?: string }) {
           <dl data-reveal="2" className="grid content-end gap-3">
             {TERMS.map(([t, d]) => (
               <div key={t} className="flex gap-4 border-b border-line pb-3">
-                <dt className="w-44 shrink-0 text-[13.5px] text-fg">{t}</dt>
+                <dt className="w-44 shrink-0 text-[13.5px] text-fg font-semibold">{t}</dt>
                 <dd className="text-[13px] text-muted">{d}</dd>
               </div>
             ))}
@@ -42,7 +42,7 @@ export function OrchestrationSection({ index = '05' }: { index?: string }) {
         </div>
         <p data-reveal="3" className="mt-6 flex flex-wrap items-center justify-between gap-4 text-[13px] text-muted">
           <span>Capabilities are delivered through our platform and managed integrations with model providers; routing policies are configured per project.</span>
-          <Button to="/ai-orchestration" variant="ghost">
+          <Button to="/ai-orchestration" variant="tertiary">
             Learn about orchestration
           </Button>
         </p>

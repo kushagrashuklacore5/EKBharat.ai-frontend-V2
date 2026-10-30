@@ -65,7 +65,7 @@ export default function WorkflowStudioPage() {
         }
         aside={
           <div className="panel p-6">
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">Product status</p>
+            <p className="label text-faint">Product status</p>
             <p className="mt-3 text-[14.5px] leading-relaxed text-fg-soft">
               Workflow Studio is in active development. The demo on this page is a browser-only simulation of the builder experience. Capabilities marked
               “Planned” are on the roadmap.
@@ -103,7 +103,7 @@ export default function WorkflowStudioPage() {
                   <span className="grid size-9 place-items-center rounded-xl" style={{ background: `${m.color}1a`, color: m.color }}>
                     <Icon size={16} />
                   </span>
-                  <p className="mt-4 text-fg">{m.label}</p>
+                  <p className="mt-4 text-fg font-semibold">{m.label}</p>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-muted">{n.d}</p>
                 </li>
               )

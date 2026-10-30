@@ -158,10 +158,10 @@ export default function BuildWithUsPage() {
                     : 'Online submission isn’t connected in this version of the site, so nothing has been sent yet. Copy or download the brief below and share it with the AI Bharat team.'}
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <button type="button" onClick={copy} className="inline-flex h-11 items-center gap-2 rounded-full bg-fg px-5 text-sm font-medium text-ink-950">
+                  <button type="button" onClick={copy} className="inline-flex h-11 items-center gap-2 rounded-lg bg-fg px-5 text-sm font-medium text-ink-950">
                     {copied ? <Check size={15} /> : <Copy size={15} />} {copied ? 'Copied' : 'Copy brief'}
                   </button>
-                  <button type="button" onClick={download} className="inline-flex h-11 items-center gap-2 rounded-full border border-line-strong px-5 text-sm text-fg">
+                  <button type="button" onClick={download} className="inline-flex h-11 items-center gap-2 rounded-lg border border-line-strong px-5 text-sm text-fg">
                     <Download size={15} /> Download .txt
                   </button>
                   <button type="button" onClick={() => setState('editing')} className="inline-flex h-11 items-center gap-2 px-3 text-sm text-fg-soft hover:text-fg">
@@ -191,7 +191,7 @@ export default function BuildWithUsPage() {
                         className="block w-full text-left"
                       >
                         <span className={`block h-0.5 rounded-full transition-colors duration-500 ${i <= step ? 'bg-cyan' : 'bg-line-strong'}`} />
-                        <span className={`mt-2 block font-mono text-[10.5px] uppercase tracking-[0.12em] ${i === step ? 'text-fg' : 'text-faint'}`}>
+                        <span className={`mt-2 block label ${i === step ? 'text-fg' : 'text-faint'}`}>
                           <span className="hidden sm:inline">{String(i + 1).padStart(2, '0')} · </span>
                           {s}
                         </span>
@@ -303,7 +303,7 @@ export default function BuildWithUsPage() {
                             >
                               <input type="radio" name="deployment" value={d.id} checked={form.deployment === d.id} onChange={() => set('deployment', d.id)} className="mt-1 accent-cyan" />
                               <span>
-                                <span className="block text-[14px] text-fg">{d.label}</span>
+                                <span className="block text-[14px] text-fg font-semibold">{d.label}</span>
                                 <span className="block text-[12px] text-muted">{d.d}</span>
                               </span>
                             </label>
@@ -342,7 +342,7 @@ export default function BuildWithUsPage() {
                   <button type="button" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0} className="inline-flex h-11 items-center gap-2 px-2 text-sm text-fg-soft hover:text-fg disabled:invisible">
                     <ArrowLeft size={15} /> Back
                   </button>
-                  <button type="submit" disabled={state === 'sending'} className="inline-flex h-11 items-center gap-2 rounded-full bg-fg px-6 text-sm font-medium text-ink-950 transition-colors hover:bg-white disabled:opacity-60">
+                  <button type="submit" disabled={state === 'sending'} className="inline-flex h-11 items-center gap-2 rounded-lg bg-fg px-6 text-sm font-medium text-ink-950 transition-colors hover:bg-white disabled:opacity-60">
                     {step < STEPS.length - 1 ? (
                       <>
                         Continue <ArrowRight size={15} />
@@ -364,7 +364,7 @@ export default function BuildWithUsPage() {
           <aside className="lg:sticky lg:top-28 lg:self-start" aria-label="Project brief preview">
             <div className="panel overflow-hidden">
               <div className="flex items-center justify-between border-b border-line px-6 py-4">
-                <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-fg-soft">
+                <span className="flex items-center gap-2 label text-fg-soft">
                   <FileText size={14} /> Project brief
                 </span>
                 <span className="flex items-center gap-1.5 font-mono text-[10px] text-faint">
@@ -373,7 +373,7 @@ export default function BuildWithUsPage() {
               </div>
               <div className="space-y-6 p-6 text-[14px]">
                 <div>
-                  <p className="text-xl tracking-tight text-fg">{brief.title}</p>
+                  <p className="text-xl tracking-tight text-fg font-semibold">{brief.title}</p>
                   <p className="mt-1 text-[12.5px] text-muted">{[form.name, form.role, form.company].filter(Boolean).join(' · ') || 'Your details appear here'}</p>
                 </div>
                 <BriefBlock title="Problem">{form.problem || <span className="text-faint">Describe the problem in step 2.</span>}</BriefBlock>
@@ -425,7 +425,7 @@ export default function BuildWithUsPage() {
 }
 
 const input =
-  'w-full rounded-xl border border-line bg-ink-950 px-4 py-3 text-[14.5px] text-fg placeholder:text-faint transition-colors focus:border-cyan/50 focus:outline-none aria-[invalid=true]:border-danger/60'
+  'w-full rounded-lg border border-line-strong bg-ink-800 px-4 py-3 text-[14.5px] text-fg placeholder:text-faint transition-colors focus:border-cyan/50 focus:outline-none aria-[invalid=true]:border-danger/60'
 const label = 'text-[13.5px] text-fg-soft'
 
 function Field({ label: l, id, error, hint, children }: { label: string; id: string; error?: string; hint?: string; children: ReactNode }) {
@@ -465,7 +465,7 @@ function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; chi
 function BriefBlock({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">{title}</p>
+      <p className="label text-faint">{title}</p>
       <div className="mt-2 leading-relaxed text-fg-soft">{children}</div>
     </div>
   )

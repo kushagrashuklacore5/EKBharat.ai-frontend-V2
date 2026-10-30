@@ -22,7 +22,7 @@ export default function AboutPage() {
     <div ref={ref}>
       <PageHero
         docTitle="About"
-        accent="#e09a52"
+        accent="#c4852f"
         eyebrow="About AI Bharat"
         title={
           <>
@@ -53,8 +53,8 @@ export default function AboutPage() {
             </p>
           </div>
           <div data-reveal="1" className="panel p-8">
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">Ownership</p>
-            <p className="mt-4 text-2xl tracking-tight text-fg">{SITE.owner}</p>
+            <p className="label text-faint">Ownership</p>
+            <p className="mt-4 text-2xl tracking-tight text-fg font-semibold">{SITE.owner}</p>
             <p className="mt-3 leading-relaxed text-muted">
               AI Bharat is owned and operated by Core5 Systems and Services Pvt. Ltd., which provides the engineering, delivery and support behind the platform and
               its services.
@@ -65,11 +65,11 @@ export default function AboutPage() {
       <Section className="py-24">
         <div className="container-x">
           <SectionHeading eyebrow="What we believe" title="How we approach AI work." />
-          <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2">
+          <div className="mt-12 grid gap-x-10 gap-y-10 md:grid-cols-2">
             {BELIEFS.map(([t, d], i) => (
-              <div key={t} data-reveal={String(i)} className="bg-ink-950 p-8">
+              <div key={t} data-reveal={String(i)} className="border-t-2 border-line-strong pt-5">
                 <span className="font-mono text-[11px] text-saffron">0{i + 1}</span>
-                <h3 className="mt-4 text-xl text-fg">{t}</h3>
+                <h3 className="mt-4 text-xl text-fg font-semibold">{t}</h3>
                 <p className="mt-2 leading-relaxed text-muted">{d}</p>
               </div>
             ))}

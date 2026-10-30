@@ -1,29 +1,23 @@
 import { Link } from 'react-router'
 
+/** Stacked-layer mark: a solid top plane over two offset strata (blue, saffron). */
 export function LogoMark({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-      <defs>
-        <linearGradient id="logo-g" x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0" stopColor="#e09a52" />
-          <stop offset=".55" stopColor="#3fc1c9" />
-          <stop offset="1" stopColor="#5b8cff" />
-        </linearGradient>
-      </defs>
-      <path d="M16 4.5 27 10.5 16 16.5 5 10.5Z" fill="none" stroke="url(#logo-g)" strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M5 15.5 16 21.5 27 15.5" fill="none" stroke="#9fb3d6" strokeOpacity=".6" strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M5 20.5 16 26.5 27 20.5" fill="none" stroke="#9fb3d6" strokeOpacity=".35" strokeWidth="1.4" strokeLinejoin="round" />
-      <circle cx="16" cy="10.5" r="1.6" fill="#e8eef8" />
+      <rect width="32" height="32" rx="7" fill="var(--color-fg)" />
+      <path d="M16 6 26 11.5 16 17 6 11.5Z" fill="var(--color-ink-950)" />
+      <path d="M6 16 16 21.5 26 16" fill="none" stroke="#7cc4dd" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M6 20.5 16 26 26 20.5" fill="none" stroke="#e9b56b" strokeWidth="1.7" strokeLinejoin="round" />
     </svg>
   )
 }
 
 export function Logo({ className = '' }: { className?: string }) {
   return (
-    <Link to="/" className={`group inline-flex items-center gap-2.5 ${className}`} aria-label="AI Bharat — home">
+    <Link to="/" className={`inline-flex items-center gap-2.5 ${className}`} aria-label="AI Bharat — home">
       <LogoMark />
-      <span className="text-[15px] font-semibold tracking-[0.14em] text-fg">
-        AI<span className="ml-1.5 font-normal text-fg-soft">BHARAT</span>
+      <span className="text-[16px] font-extrabold tracking-[-0.01em] text-fg">
+        AI <span className="font-semibold text-fg-soft">Bharat</span>
       </span>
     </Link>
   )

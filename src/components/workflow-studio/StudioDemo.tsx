@@ -210,6 +210,7 @@ function Studio() {
   const reset = () => {
     runToken.current++
     approval.current = null
+    setSelectedId(null)
     setRunning(false)
     setStatus({})
     setSkippedEdges(new Set())
@@ -223,12 +224,11 @@ function Studio() {
       edges.map((e) => {
         const s = status[e.source]
         const t = status[e.target]
-        const color = KIND_META[(nodes.find((n) => n.id === e.source)?.data.kind ?? 'agent') as NodeKind].color
         let state: 'idle' | 'active' | 'done' | 'skipped' = 'idle'
         if (skippedEdges.has(e.id)) state = 'skipped'
         else if (s === 'done' && (t === 'running' || t === 'queued')) state = t === 'running' ? 'active' : 'done'
         else if (s === 'done' && (t === 'done' || t === 'waiting' || t === 'rejected')) state = 'done'
-        return { ...e, data: { state, color } }
+        return { ...e, data: { state, color: state === 'done' ? '#8cc39b' : '#7cc4dd' } }
       }),
     [edges, status, skippedEdges, nodes],
   )
@@ -278,47 +278,41 @@ function Studio() {
   const doneCount = Object.values(status).filter((s) => s === 'done').length
 
   return (
-    <div className="overflow-hidden rounded-[20px] border border-line-strong bg-ink-900 shadow-[0_60px_120px_-40px_rgba(0,0,0,.9),0_0_0_1px_rgba(255,255,255,.02)]">
-      {/* ── Window chrome / toolbar ─────────────────── */}
-      <div className="flex flex-wrap items-center gap-3 border-b border-line bg-ink-850 px-3 py-2.5 sm:px-4">
-        <div className="hidden items-center gap-1.5 sm:flex" aria-hidden="true">
-          <span className="size-2.5 rounded-full bg-white/10" />
-          <span className="size-2.5 rounded-full bg-white/10" />
-          <span className="size-2.5 rounded-full bg-white/10" />
-        </div>
-        <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted">
-          <span className="text-fg-soft">Workflow Studio</span>
-          <ChevronRight size={12} />
-          <span className="text-fg">{wf.name}</span>
+    <div className="surface-light overflow-hidden rounded-[14px] bg-ink-850 shadow-[0_2px_4px_rgb(0_0_0/.06),0_40px_80px_-30px_rgb(10_20_30/.55)] ring-1 ring-black/5">
+      {/* ── Toolbar ─────────────────────────────── */}
+      <div className="flex flex-wrap items-center gap-3 border-b border-line px-3 py-2.5 sm:px-4">
+        <div className="flex min-w-0 items-center gap-1.5 text-[13px]">
+          <span className="hidden font-medium text-faint sm:inline">Workspace</span>
+          <ChevronRight size={13} className="hidden text-faint sm:inline" />
+          <span className="hidden font-medium text-faint sm:inline">Workflows</span>
+          <ChevronRight size={13} className="hidden text-faint sm:inline" />
+          <span className="truncate font-bold text-fg">{wf.name}</span>
+          <span className="ml-1 hidden rounded bg-ink-900 px-1.5 py-0.5 text-[11px] font-semibold text-muted md:inline">Draft</span>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <span className="hidden font-mono text-[10.5px] text-faint md:inline">Simulated run · runs in your browser</span>
+          <span className="hidden text-[12px] text-faint lg:inline">Simulated in your browser</span>
           <button
             type="button"
             onClick={reset}
             disabled={running}
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-line px-2.5 text-[12px] text-fg-soft transition-colors hover:text-fg disabled:opacity-40"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-semibold text-fg-soft shadow-[inset_0_0_0_1px_var(--color-line-strong)] transition-colors hover:text-fg disabled:opacity-40"
           >
             <RotateCcw size={13} /> Reset
           </button>
           {running ? (
-            <button type="button" onClick={stop} className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-danger/15 px-3 text-[12px] font-medium text-danger">
-              <Square size={12} /> Stop
+            <button type="button" onClick={stop} className="inline-flex h-8 items-center gap-1.5 rounded-md bg-danger px-3 text-[13px] font-semibold text-white">
+              <Square size={11} fill="currentColor" /> Stop
             </button>
           ) : (
-            <button
-              type="button"
-              onClick={run}
-              className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-cyan px-3 text-[12px] font-medium text-ink-950 transition-colors hover:bg-[#6fe2f0]"
-            >
+            <button type="button" onClick={run} className="inline-flex h-8 items-center gap-1.5 rounded-md bg-teal px-3 text-[13px] font-semibold text-white transition-[filter] hover:brightness-110">
               <Play size={12} fill="currentColor" /> Run workflow
             </button>
           )}
         </div>
       </div>
 
-      {/* workflow tabs */}
-      <div role="tablist" aria-label="Example workflows" className="flex gap-1 overflow-x-auto border-b border-line px-3 py-2 sm:px-4">
+      {/* template tabs */}
+      <div role="tablist" aria-label="Example workflows" className="flex gap-5 overflow-x-auto overflow-y-hidden border-b border-line bg-ink-900 px-4 [scrollbar-width:none]">
         {WORKFLOWS.map((w) => (
           <button
             key={w.id}
@@ -326,37 +320,36 @@ function Studio() {
             aria-selected={w.id === wfId}
             type="button"
             onClick={() => load(w.id)}
-            className={`shrink-0 rounded-lg px-3 py-1.5 text-[12.5px] transition-colors ${
-              w.id === wfId ? 'bg-white/[0.07] text-fg' : 'text-muted hover:text-fg-soft'
-            }`}
+            className={`relative shrink-0 py-2.5 text-[13px] font-semibold transition-colors ${w.id === wfId ? 'text-fg' : 'text-muted hover:text-fg-soft'}`}
           >
             {w.name}
+            <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-teal transition-opacity ${w.id === wfId ? 'opacity-100' : 'opacity-0'}`} />
           </button>
         ))}
       </div>
 
-      <div className="relative grid lg:grid-cols-[220px_1fr_280px]">
+      <div className="relative grid lg:h-[640px] lg:grid-cols-[224px_1fr_288px]">
         {/* ── Node library ─────────────────────────── */}
         <aside
-          className={`${libOpen ? 'block' : 'hidden'} absolute inset-y-0 left-0 z-20 w-[240px] border-r border-line bg-ink-850 lg:static lg:block lg:w-auto`}
+          className={`${libOpen ? 'block' : 'hidden'} absolute inset-y-0 left-0 z-20 w-[248px] border-r border-line bg-ink-900 shadow-[var(--shadow-md)] lg:static lg:block lg:w-auto lg:overflow-y-auto lg:shadow-none`}
           aria-label="Node library"
         >
           <div className="p-3">
-            <label className="flex items-center gap-2 rounded-lg border border-line bg-ink-900 px-2.5 py-1.5">
-              <Search size={13} className="text-faint" />
+            <label className="flex items-center gap-2 rounded-md bg-ink-850 px-2.5 py-2 shadow-[inset_0_0_0_1px_var(--color-line)] focus-within:shadow-[inset_0_0_0_1.5px_var(--color-cyan)]">
+              <Search size={14} className="text-faint" />
               <input
                 value={libQuery}
                 onChange={(e) => setLibQuery(e.target.value)}
                 placeholder="Search nodes"
                 aria-label="Search nodes"
-                className="w-full bg-transparent text-[12px] text-fg placeholder:text-faint focus:outline-none"
+                className="w-full bg-transparent text-[13px] text-fg placeholder:text-faint focus:outline-none"
               />
             </label>
           </div>
-          <div className="max-h-[520px] overflow-y-auto px-2 pb-3">
+          <div className="max-h-[540px] overflow-y-auto px-2 pb-3 lg:max-h-none">
             {groups.map((g) => (
-              <div key={g} className="mb-2">
-                <p className="px-2 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.16em] text-faint">{g}</p>
+              <div key={g} className="mb-3">
+                <p className="px-2 pb-1 text-[11.5px] font-bold text-faint">{g}</p>
                 {filtered
                   .filter((f) => f.group === g)
                   .map((item) => {
@@ -369,28 +362,34 @@ function Studio() {
                         draggable
                         onDragStart={(e) => onDragStart(e, item.i)}
                         onClick={() => addNode(item.kind, item.title, item.subtitle)}
-                        className="group flex w-full cursor-grab items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-white/[0.04] active:cursor-grabbing"
+                        className="group flex w-full cursor-grab items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-ink-850 hover:shadow-[var(--shadow-sm)] active:cursor-grabbing"
                         title="Drag onto the canvas or click to add"
                       >
-                        <span className="grid size-6 shrink-0 place-items-center rounded-md" style={{ background: `${c}1a`, color: c }}>
-                          <Icon size={12} />
+                        <span className="grid size-7 shrink-0 place-items-center rounded-md text-white" style={{ background: c }}>
+                          <Icon size={13} />
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-[12px] text-fg-soft group-hover:text-fg">{item.title}</span>
-                          <span className="block truncate text-[10.5px] text-faint">{item.subtitle}</span>
+                          <span className="block truncate text-[13px] font-semibold text-fg">{item.title}</span>
+                          <span className="block truncate text-[11.5px] text-muted">{item.subtitle}</span>
                         </span>
-                        <Plus size={12} className="text-faint opacity-0 group-hover:opacity-100" />
+                        <Plus size={14} className="text-faint opacity-0 transition-opacity group-hover:opacity-100" />
                       </button>
                     )
                   })}
               </div>
             ))}
-            {!filtered.length && <p className="px-2 text-[12px] text-faint">No nodes match “{libQuery}”.</p>}
+            {!filtered.length && <p className="px-2 text-[13px] text-muted">No nodes match “{libQuery}”.</p>}
           </div>
         </aside>
 
-        {/* ── Canvas ───────────────────────────────── */}
-        <div ref={wrapRef} className="studio-flow relative h-[400px] sm:h-[540px] lg:h-auto lg:min-h-[600px]" onDragOver={(e) => e.preventDefault()} onDrop={onDrop}>
+        {/* ── Canvas (refined dark working surface) ─────────── */}
+        <div
+          ref={wrapRef}
+          className="studio-flow relative h-[420px] bg-[#1d3044] sm:h-[560px] lg:h-full"
+          style={{ backgroundImage: 'radial-gradient(120% 90% at 50% 0%, #22384d 0%, #1b2d40 70%)' }}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={onDrop}
+        >
           <ReactFlow<StudioNodeType, FlowEdgeType>
             nodes={viewNodes}
             edges={viewEdges}
@@ -402,7 +401,7 @@ function Studio() {
             onNodeClick={(_, n) => setSelectedId(n.id)}
             onPaneClick={() => setSelectedId(null)}
             fitView
-            fitViewOptions={{ padding: 0.12, maxZoom: 1 }}
+            fitViewOptions={{ padding: 0.14, maxZoom: 1 }}
             minZoom={0.3}
             maxZoom={1.6}
             zoomOnScroll={false}
@@ -414,16 +413,17 @@ function Studio() {
             colorMode="dark"
             attributionPosition="bottom-center"
           >
-            <Background variant={BackgroundVariant.Dots} gap={22} size={1} color="#26324a" />
+            <Background variant={BackgroundVariant.Dots} gap={24} size={1.3} color="#3a536c" />
             <Controls showInteractive={false} position="bottom-left" />
             {wide && (
               <MiniMap
                 position="bottom-right"
                 pannable
                 zoomable
-                maskColor="rgba(4,6,11,.7)"
+                maskColor="rgba(16,28,40,.6)"
                 nodeColor={(n) => KIND_META[(n.data as StudioNodeData).kind].color}
                 nodeStrokeWidth={0}
+                nodeBorderRadius={3}
                 style={{ width: 150, height: 96 }}
               />
             )}
@@ -431,16 +431,15 @@ function Studio() {
           <button
             type="button"
             onClick={() => setLibOpen((o) => !o)}
-            className="absolute left-3 top-3 z-10 inline-flex h-8 items-center gap-1.5 rounded-lg border border-line bg-ink-850 px-2.5 text-[12px] text-fg-soft lg:hidden"
+            className="absolute left-3 top-3 z-10 inline-flex h-8 items-center gap-1.5 rounded-md bg-white px-2.5 text-[13px] font-semibold text-[#182b3d] shadow-md lg:hidden"
             aria-expanded={libOpen}
           >
-            {libOpen ? <X size={13} /> : <Plus size={13} />} Nodes
+            {libOpen ? <X size={14} /> : <Plus size={14} />} Nodes
           </button>
-          {/* run progress */}
           {(running || doneCount > 0) && (
-            <div className="pointer-events-none absolute right-3 top-3 z-10 rounded-lg border border-line bg-ink-850/90 px-3 py-2 font-mono text-[10.5px] text-fg-soft backdrop-blur">
+            <div className="pointer-events-none absolute right-3 top-3 z-10 rounded-md bg-[#0f1d2b]/85 px-3 py-2 text-[12px] font-semibold text-[#dfe8ef] backdrop-blur">
               <span className="flex items-center gap-2">
-                <CircleDot size={11} className={running ? 'text-cyan pulse-dot' : 'text-leaf'} />
+                <CircleDot size={12} className={running ? 'pulse-dot text-[#7cc4dd]' : 'text-[#8cc39b]'} />
                 {running ? 'Executing' : 'Last run'} · {doneCount}/{nodes.length} steps
               </span>
             </div>
@@ -448,79 +447,82 @@ function Studio() {
         </div>
 
         {/* ── Inspector ─────────────────────────────── */}
-        <aside className="border-t border-line bg-ink-850 lg:border-l lg:border-t-0" aria-label="Node inspector">
-          {waitingNode ? (
-            <div className="border-b border-line bg-amber/[0.06] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-amber">Approval required</p>
-              <p className="mt-2 text-[13px] text-fg">{waitingNode.data.title}</p>
-              <p className="mt-1 text-[12px] leading-relaxed text-muted">The run is paused. Review the context and decide whether it may continue.</p>
+        <aside className="flex flex-col border-t border-line bg-ink-850 lg:min-h-0 lg:overflow-y-auto lg:border-l lg:border-t-0" aria-label="Node inspector">
+          {waitingNode && (
+            <div className="border-b border-line bg-[#fbf3e4] p-4">
+              <p className="text-[12px] font-bold text-amber">Approval required</p>
+              <p className="mt-1 text-[14px] font-bold text-fg">{waitingNode.data.title}</p>
+              <p className="mt-1 text-[13px] leading-relaxed text-muted">The run is paused. Review the context and decide whether it may continue.</p>
               <div className="mt-3 flex gap-2">
-                <button type="button" onClick={() => approval.current?.(true)} className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-lg bg-leaf/90 text-[12px] font-medium text-ink-950">
-                  <Check size={13} /> Approve
+                <button type="button" onClick={() => approval.current?.(true)} className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-md bg-leaf text-[13px] font-semibold text-white hover:brightness-110">
+                  <Check size={14} /> Approve
                 </button>
-                <button type="button" onClick={() => approval.current?.(false)} className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-lg border border-danger/40 text-[12px] text-danger">
-                  <X size={13} /> Reject
+                <button type="button" onClick={() => approval.current?.(false)} className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-md bg-ink-850 text-[13px] font-semibold text-danger shadow-[inset_0_0_0_1px_rgb(192_74_74/.4)]">
+                  <X size={14} /> Reject
                 </button>
               </div>
             </div>
-          ) : null}
+          )}
           {selected ? (
             <div className="p-4">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: KIND_META[selected.data.kind].color }}>
-                  {KIND_META[selected.data.kind].label}
-                </span>
-                <span className="font-mono text-[10px] text-faint">id: {selected.id}</span>
+              <div className="flex items-center gap-2.5">
+                <SelectedIcon kind={selected.data.kind} />
+                <div className="min-w-0">
+                  <p className="text-[12px] font-bold" style={{ color: KIND_META[selected.data.kind].color }}>
+                    {KIND_META[selected.data.kind].label}
+                  </p>
+                  <p className="font-mono text-[11px] text-faint">node · {selected.id}</p>
+                </div>
               </div>
-              <label className="mt-3 block">
-                <span className="text-[11px] text-muted">Name</span>
+              <label className="mt-4 block">
+                <span className="text-[12px] font-semibold text-muted">Name</span>
                 <input
                   value={selected.data.title}
                   onChange={(e) => updateTitle(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-line bg-ink-900 px-2.5 py-1.5 text-[13px] text-fg focus:border-cyan/50 focus:outline-none"
+                  className="mt-1 w-full rounded-md bg-ink-900 px-2.5 py-2 text-[13.5px] font-semibold text-fg shadow-[inset_0_0_0_1px_var(--color-line)] focus:shadow-[inset_0_0_0_1.5px_var(--color-cyan)] focus:outline-none"
                 />
               </label>
-              <dl className="mt-4 space-y-2">
+              <p className="mt-4 text-[12px] font-semibold text-muted">Configuration</p>
+              <dl className="mt-1.5 divide-y divide-line rounded-md bg-ink-900">
                 {selected.data.config.map((c) => (
-                  <div key={c.label} className="flex items-start justify-between gap-3 rounded-lg border border-line bg-ink-900/60 px-2.5 py-1.5">
-                    <dt className="text-[11px] text-muted">{c.label}</dt>
-                    <dd className="text-right font-mono text-[11px] text-fg-soft">{c.value}</dd>
+                  <div key={c.label} className="flex items-start justify-between gap-3 px-2.5 py-2">
+                    <dt className="text-[12.5px] text-muted">{c.label}</dt>
+                    <dd className="text-right font-mono text-[11.5px] text-fg">{c.value}</dd>
                   </div>
                 ))}
               </dl>
-              <div className="mt-4">
-                <p className="text-[11px] text-muted">Last output</p>
-                <p className="mt-1 rounded-lg border border-line bg-ink-950 px-2.5 py-2 font-mono text-[11px] leading-relaxed text-fg-soft">
-                  {selected.data.status === 'done' ? selected.data.output : selected.data.status === 'skipped' ? 'Branch not taken in this run' : 'Run the workflow to see output'}
-                </p>
-              </div>
-              <button type="button" onClick={deleteSelected} disabled={running} className="mt-4 text-[11.5px] text-muted underline-offset-4 hover:text-danger hover:underline disabled:opacity-40">
+              <p className="mt-4 text-[12px] font-semibold text-muted">Last output</p>
+              <p className="mt-1.5 rounded-md bg-[#1d3044] px-2.5 py-2 font-mono text-[11.5px] leading-relaxed text-[#cfe0ea]">
+                {selected.data.status === 'done' ? selected.data.output : selected.data.status === 'skipped' ? 'Branch not taken in this run' : 'Run the workflow to see output'}
+              </p>
+              <button type="button" onClick={deleteSelected} disabled={running} className="mt-4 text-[12.5px] font-semibold text-muted hover:text-danger disabled:opacity-40">
                 Remove node
               </button>
             </div>
           ) : (
             !waitingNode && (
               <div className="p-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">Inspector</p>
-                <p className="mt-3 text-[13px] leading-relaxed text-fg-soft">{wf.description}</p>
-                <ul className="mt-4 space-y-1.5 text-[12px] text-muted">
-                  <li>• Select a node to inspect its configuration</li>
-                  <li>• {finePointer ? "Drag nodes from the library onto the canvas" : "Tap + Nodes to add steps to the canvas"}</li>
-                  <li>• Connect handles to create new edges</li>
-                  <li>• Press Run to simulate execution</li>
+                <p className="text-[12px] font-bold text-faint">About this workflow</p>
+                <p className="mt-2 text-[14px] leading-relaxed text-fg-soft">{wf.description}</p>
+                <ul className="mt-4 space-y-2 text-[13px] text-muted">
+                  <li className="flex gap-2"><span className="text-teal">→</span> Select a node to inspect it</li>
+                  <li className="flex gap-2"><span className="text-teal">→</span> {finePointer ? 'Drag nodes from the library onto the canvas' : 'Tap Nodes to add steps'}</li>
+                  <li className="flex gap-2"><span className="text-teal">→</span> Connect handles to create edges</li>
+                  <li className="flex gap-2"><span className="text-teal">→</span> Press Run to simulate execution</li>
                 </ul>
               </div>
             )
           )}
-          {/* execution log */}
-          <div className="border-t border-line">
-            <p className="px-4 pt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">Execution history</p>
-            <ol ref={logRef} className="max-h-[180px] space-y-1 overflow-y-auto px-4 pb-4 pt-2 font-mono text-[10.5px] leading-relaxed" aria-live="polite">
-              {log.length === 0 && <li className="text-faint">No runs yet.</li>}
+          {/* execution history */}
+          <div className="mt-auto border-t border-line">
+            <p className="px-4 pt-3 text-[12px] font-bold text-faint">Execution history</p>
+            <ol ref={logRef} className="max-h-[200px] space-y-1.5 overflow-y-auto px-4 pb-4 pt-2 text-[12px] leading-snug" aria-live="polite">
+              {log.length === 0 && <li className="text-muted">No runs yet — press Run workflow.</li>}
               {log.map((l, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="shrink-0 text-faint">{(l.t / 1000).toFixed(1).padStart(4, '0')}s</span>
-                  <span className={l.tone === 'ok' ? 'text-leaf' : l.tone === 'warn' ? 'text-amber' : l.tone === 'err' ? 'text-danger' : 'text-fg-soft'}>{l.text}</span>
+                <li key={i} className="flex gap-2.5">
+                  <span className="w-9 shrink-0 font-mono text-[11px] text-faint">{(l.t / 1000).toFixed(1)}s</span>
+                  <span className={`mt-[5px] size-1.5 shrink-0 rounded-full ${l.tone === 'ok' ? 'bg-leaf' : l.tone === 'warn' ? 'bg-amber' : l.tone === 'err' ? 'bg-danger' : 'bg-cyan'}`} />
+                  <span className={l.tone === 'err' ? 'text-danger' : 'text-fg-soft'}>{l.text}</span>
                 </li>
               ))}
             </ol>
@@ -528,6 +530,15 @@ function Studio() {
         </aside>
       </div>
     </div>
+  )
+}
+
+function SelectedIcon({ kind }: { kind: NodeKind }) {
+  const I = KIND_ICON[kind]
+  return (
+    <span className="grid size-8 place-items-center rounded-md text-white" style={{ background: KIND_META[kind].color }}>
+      <I size={15} />
+    </span>
   )
 }
 

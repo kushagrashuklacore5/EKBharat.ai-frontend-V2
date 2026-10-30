@@ -5,8 +5,8 @@ import { gsap, prefersReducedMotion } from '../../lib/gsap'
 
 const HeroCanvas = lazy(() => import('./HeroCanvas'))
 
-const STRIP = [
-  { label: 'Workflow Studio', to: '/workflow-studio', tag: 'Primary' },
+const CAPS = [
+  { label: 'Workflow Studio', to: '/workflow-studio' },
   { label: 'AI Agents', to: '/ai-agents' },
   { label: 'Model Orchestration', to: '/ai-orchestration' },
   { label: 'GPU Cloud', to: '/gpu-cloud' },
@@ -18,93 +18,82 @@ export function Hero() {
 
   useEffect(() => {
     const el = root.current
-    if (!el) return
-    if (prefersReducedMotion()) {
-      el.classList.add('reveal-done')
-      return
-    }
+    if (!el || prefersReducedMotion()) return
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
-      tl.from('[data-h="eyebrow"]', { y: 12, opacity: 0, duration: 1 }, 0.2)
-        .from('.line-mask > span', { yPercent: 110, duration: 1.3, stagger: 0.09 }, 0.3)
-        .from('[data-h="lead"]', { y: 16, opacity: 0, duration: 1.1 }, 0.8)
-        .from('[data-h="cta"] > *', { y: 14, opacity: 0, duration: 1, stagger: 0.08 }, 0.95)
-        .from('[data-h="strip"] > *', { y: 10, opacity: 0, duration: 0.9, stagger: 0.05 }, 1.15)
-        .from('[data-h="meta"]', { opacity: 0, duration: 1.2 }, 1.3)
+      tl.from('[data-h="eyebrow"]', { y: 10, opacity: 0, duration: 0.9 }, 0.1)
+        .from('.line-mask > span', { yPercent: 105, duration: 1.1, stagger: 0.08 }, 0.15)
+        .from('[data-h="lead"]', { y: 12, opacity: 0, duration: 0.9 }, 0.55)
+        .from('[data-h="cta"] > *', { y: 10, opacity: 0, duration: 0.8, stagger: 0.07 }, 0.7)
+        .from('[data-h="meta"], [data-h="caps"]', { opacity: 0, duration: 1 }, 0.95)
     }, el)
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={root} aria-labelledby="hero-title" className="noise relative isolate flex min-h-[100svh] flex-col overflow-hidden">
-      {/* Atmosphere */}
+    <section ref={root} aria-labelledby="hero-title" className="relative isolate overflow-hidden">
+      {/* soft, luminous atmosphere */}
       <div className="absolute inset-0 -z-10" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(80%_60%_at_72%_42%,rgba(46,92,170,.22),transparent_60%),radial-gradient(50%_40%_at_85%_80%,rgba(47,185,166,.10),transparent_70%),radial-gradient(40%_30%_at_12%_8%,rgba(224,154,82,.06),transparent_70%)]" />
-        <div className="grid-bg absolute inset-0 opacity-60 [mask-image:radial-gradient(70%_60%_at_60%_45%,black,transparent)]" />
-        <div className="jaali absolute inset-y-0 left-0 w-1/2 opacity-[0.035] [mask-image:linear-gradient(90deg,black,transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(70%_70%_at_75%_35%,#ffffff_0%,rgba(255,255,255,0)_60%),linear-gradient(180deg,#eef2f5_0%,#e9eef2_100%)]" />
+        <div className="absolute right-[-10%] top-[-20%] h-[70%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgba(47,127,168,.10),transparent)]" />
+        <div className="grid-bg absolute inset-0 [mask-image:radial-gradient(60%_60%_at_70%_45%,black,transparent)]" />
+        <div className="jaali absolute inset-y-0 left-0 hidden w-[40%] opacity-[0.035] md:block [mask-image:linear-gradient(90deg,black,transparent)]" />
       </div>
 
-      <div className="absolute inset-0 -z-10">
-        <Suspense fallback={null}>
-          <HeroCanvas />
-        </Suspense>
-      </div>
-      {/* Legibility veil behind the headline on small screens */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-ink-950/80 via-ink-950/30 to-transparent md:from-ink-950/70 md:via-transparent" aria-hidden="true" />
-
-      <div className="container-x relative flex flex-1 flex-col justify-center pb-16 pt-32 md:pt-36">
-        <div className="max-w-[50rem]">
+      <div className="container-x relative grid items-center pb-8 pt-28 lg:min-h-[calc(100svh-64px)] lg:grid-cols-[1fr_1fr] lg:pt-20">
+        <div className="relative z-10 max-w-[36rem]">
           <p data-h="eyebrow" className="eyebrow">
             The unified AI platform
           </p>
-          <h1 id="hero-title" className="display mt-7 text-[clamp(2.6rem,5.6vw,5.3rem)] text-fg">
+          <h1 id="hero-title" className="display mt-6 text-[clamp(2.6rem,4.7vw,4.6rem)] text-fg">
             <span className="line-mask">
-              <span>Everything you need</span>
+              <span>Everything you need to</span>
             </span>
             <span className="line-mask">
               <span>
-                to <span className="serif-accent text-gradient pr-2">build, deploy</span>
+                <span className="serif-accent text-gradient pr-1 text-[1.08em]">build, deploy</span>
               </span>
             </span>
             <span className="line-mask">
               <span>&amp; orchestrate AI.</span>
             </span>
           </h1>
-          <p data-h="lead" className="mt-8 max-w-xl text-[1.08rem] leading-relaxed text-fg-soft">
+          <p data-h="lead" className="mt-7 max-w-[34rem] text-[1.125rem] leading-[1.7] text-muted">
             From GPU computing and multi-model orchestration to intelligent workflows and enterprise AI systems — build your entire AI
             ecosystem with AI Bharat.
           </p>
-          <div data-h="cta" className="mt-10 flex flex-wrap items-center gap-3">
+          <div data-h="cta" className="mt-9 flex flex-wrap items-center gap-3">
             <Button to="/workflow-studio">Explore Workflow Studio</Button>
             <Button to="/build-with-us" variant="secondary">
               Build Your AI Solution
             </Button>
           </div>
+          <p data-h="meta" className="mt-6 text-[13.5px] font-medium text-faint">
+            Infrastructure <span className="text-saffron">·</span> Intelligence <span className="text-teal">·</span> Automation
+          </p>
         </div>
+
       </div>
 
-      {/* Capability strip */}
-      <div data-h="meta" className="container-x relative pb-8">
-        <div className="hairline mb-5 opacity-50" />
-        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
-            Infrastructure <span className="text-saffron/70">·</span> Intelligence <span className="text-teal/80">·</span> Automation
-          </p>
-          <nav aria-label="Platform capabilities" data-h="strip" className="flex flex-wrap gap-2">
-            {STRIP.map((s) => (
-              <Link
-                key={s.to}
-                to={s.to}
-                className="group inline-flex items-center gap-2 rounded-full border border-line bg-ink-900/40 px-3.5 py-1.5 text-[12.5px] text-fg-soft backdrop-blur-sm transition-colors hover:border-line-strong hover:text-fg"
-              >
-                {s.tag && <span className="size-1.5 rounded-full bg-cyan pulse-dot" />}
-                {s.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
+      {/* 3D object: full-bleed right column on desktop, its own band on mobile */}
+      <div className="relative h-[340px] sm:h-[460px] lg:absolute lg:bottom-16 lg:right-0 lg:top-0 lg:h-auto lg:w-[54%]">
+        <Suspense fallback={null}>
+          <HeroCanvas />
+        </Suspense>
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-ink-950" aria-hidden="true" />
+
+      {/* capability index */}
+      <div data-h="caps" className="container-x relative pb-10">
+        <nav aria-label="Platform capabilities" className="flex flex-wrap items-center gap-x-1 gap-y-2 border-t border-line pt-5 text-[14px]">
+          <span className="mr-3 font-semibold text-fg">The platform</span>
+          {CAPS.map((c, i) => (
+            <Link key={c.to} to={c.to} className="group inline-flex items-center gap-2 rounded-md px-2 py-1 font-medium text-muted transition-colors hover:text-fg">
+              <span className="font-mono text-[11px] text-faint group-hover:text-cyan">0{i + 1}</span>
+              {c.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </section>
   )
 }

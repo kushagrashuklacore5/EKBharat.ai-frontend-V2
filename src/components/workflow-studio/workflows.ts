@@ -21,16 +21,16 @@ export interface WorkflowDef {
 }
 
 export const KIND_META: Record<NodeKind, { label: string; color: string }> = {
-  trigger: { label: 'Trigger', color: '#e09a52' },
-  agent: { label: 'AI Agent', color: '#45d3e6' },
-  llm: { label: 'LLM', color: '#5b8cff' },
-  knowledge: { label: 'Knowledge', color: '#2fb9a6' },
-  condition: { label: 'Condition', color: '#e8c27a' },
-  database: { label: 'Database', color: '#7aae86' },
-  integration: { label: 'Integration', color: '#8fa3c7' },
-  human: { label: 'Human approval', color: '#ef9a7a' },
-  output: { label: 'Action', color: '#b7c6e3' },
-  parallel: { label: 'Parallel', color: '#a48bff' },
+  trigger: { label: 'Trigger', color: '#c4852f' },
+  agent: { label: 'AI Agent', color: '#2f7fa8' },
+  llm: { label: 'LLM', color: '#2c64a0' },
+  knowledge: { label: 'Knowledge', color: '#2e8d81' },
+  condition: { label: 'Condition', color: '#a8731c' },
+  database: { label: 'Database', color: '#4b8a5c' },
+  integration: { label: 'Integration', color: '#5d7083' },
+  human: { label: 'Human approval', color: '#c0664a' },
+  output: { label: 'Action', color: '#46607a' },
+  parallel: { label: 'Parallel', color: '#5867a8' },
 }
 
 export const NODE_LIBRARY: { kind: NodeKind; title: string; subtitle: string; group: string }[] = [

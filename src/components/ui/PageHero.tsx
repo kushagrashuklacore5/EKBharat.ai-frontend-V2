@@ -12,7 +12,7 @@ interface Props {
 }
 
 /** Typographic header used by every inner page. */
-export function PageHero({ eyebrow, title, lead, actions, aside, accent = '#45d3e6', docTitle }: Props) {
+export function PageHero({ eyebrow, title, lead, actions, aside, accent = '#2f7fa8', docTitle }: Props) {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   useEffect(() => {
@@ -52,14 +52,14 @@ export function PageHero({ eyebrow, title, lead, actions, aside, accent = '#45d3
 export function FeatureGrid({ items, cols = 3 }: { items: { t: string; d: string; tag?: string }[]; cols?: 2 | 3 | 4 }) {
   const c = cols === 4 ? 'lg:grid-cols-4' : cols === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
   return (
-    <div className={`grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 ${c}`}>
+    <div className={`grid gap-x-10 gap-y-10 sm:grid-cols-2 ${c}`}>
       {items.map((it, i) => (
-        <div key={it.t} data-reveal={String(i % 4)} className="bg-ink-950 p-7">
+        <div key={it.t} data-reveal={String(i % 4)} className="border-t-2 border-line-strong pt-5">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[11px] text-faint">{String(i + 1).padStart(2, '0')}</span>
-            {it.tag && <span className="rounded-full border border-line px-2 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-muted">{it.tag}</span>}
+            {it.tag && <span className="rounded-full border border-line px-2 py-0.5 label text-muted">{it.tag}</span>}
           </div>
-          <h3 className="mt-5 text-[17px] text-fg">{it.t}</h3>
+          <h3 className="mt-5 text-[17px] text-fg font-semibold">{it.t}</h3>
           <p className="mt-2 text-[14px] leading-relaxed text-muted">{it.d}</p>
         </div>
       ))}

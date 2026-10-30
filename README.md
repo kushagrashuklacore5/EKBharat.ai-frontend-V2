@@ -39,3 +39,11 @@ These are demonstrations, labelled as such on the page, and need real data befor
 | Workflow Studio demo & workflows | `src/components/workflow-studio/` |
 | Brief composer rules | `src/lib/brief.ts` |
 | Routes | `src/router.tsx` |
+
+## Design system (v2 — semi-light)
+
+- **Tokens** live in `src/styles/index.css`. The default theme is semi-light (blue-grey page, off-white/white surfaces, navy text). Add `surface-dark` to a section to re-scope the same tokens to deep navy; `surface-light` forces the light set (used by the Workflow Studio shell inside the navy band).
+- **Type:** Manrope (UI and headings), Instrument Serif (accent words only), IBM Plex Mono (technical data only).
+- **Radius scale:** 6px controls · 8px buttons · 10–12px cards · 14–16px large containers. Pills only for chips.
+- **Buttons:** `src/components/ui/Button.tsx` — primary, secondary, tertiary, destructive, icon; supports `loading`.
+- **Brand mark:** `src/components/ui/BrandMark.tsx` — the AI BHARAT typographic shadow (flat face, stepped extrusion, saffron edge, soft shadow). Use sparingly: brand statement and footer.

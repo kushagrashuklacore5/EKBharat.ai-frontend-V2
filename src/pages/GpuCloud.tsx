@@ -33,7 +33,7 @@ export default function GpuCloudPage() {
     <div ref={ref}>
       <PageHero
         docTitle="GPU Cloud"
-        accent="#8fa3c7"
+        accent="#5d7083"
         eyebrow="GPU Cloud · AI infrastructure"
         title={
           <>
@@ -51,7 +51,7 @@ export default function GpuCloudPage() {
         }
         aside={
           <div className="panel p-6">
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">How we provide compute</p>
+            <p className="label text-faint">How we provide compute</p>
             <p className="mt-3 text-[14.5px] leading-relaxed text-fg-soft">
               We are a partner-powered GPU service provider: capacity runs in our partners’ data centres, and AI Bharat handles sizing, provisioning, deployment
               and support. Availability and pricing are confirmed per request.
@@ -64,8 +64,8 @@ export default function GpuCloudPage() {
           <ol className="grid gap-3 md:grid-cols-4">
             {HOW.map(([t, d], i) => (
               <li key={t} data-reveal={String(i)} className="panel p-6">
-                <span className="font-mono text-[11px] text-fg-soft">Step 0{i + 1}</span>
-                <p className="mt-4 text-fg">{t}</p>
+                <span className="label text-cyan">Step 0{i + 1}</span>
+                <p className="mt-4 text-fg font-semibold">{t}</p>
                 <p className="mt-2 text-[13px] leading-relaxed text-muted">{d}</p>
               </li>
             ))}

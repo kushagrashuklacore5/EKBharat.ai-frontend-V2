@@ -37,7 +37,7 @@ export default function ContactPage() {
   }
 
   const input =
-    'mt-2 w-full rounded-xl border border-line bg-ink-950 px-4 py-3 text-[14.5px] text-fg transition-colors focus:border-cyan/50 focus:outline-none aria-[invalid=true]:border-danger/60'
+    'mt-2 w-full rounded-lg border border-line-strong bg-ink-800 px-4 py-3 text-[14.5px] text-fg transition-colors focus:border-cyan/50 focus:outline-none aria-[invalid=true]:border-danger/60'
 
   return (
     <div className="relative overflow-x-clip">
@@ -52,14 +52,14 @@ export default function ContactPage() {
           <div className="mt-12 space-y-3">
             <Link to="/build-with-us" className="panel group flex items-center justify-between p-5 transition-colors hover:border-line-strong">
               <span>
-                <span className="block text-fg">Have a specific project?</span>
+                <span className="block text-fg font-semibold">Have a specific project?</span>
                 <span className="block text-[13px] text-muted">Use the guided brief — it helps us respond with something concrete.</span>
               </span>
               <ArrowUpRight size={18} className="text-fg-soft transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
             {SITE.contactEmail && (
               <a href={`mailto:${SITE.contactEmail}`} className="panel flex items-center justify-between p-5 hover:border-line-strong">
-                <span className="text-fg">{SITE.contactEmail}</span>
+                <span className="text-fg font-semibold">{SITE.contactEmail}</span>
                 <ArrowUpRight size={18} />
               </a>
             )}
@@ -90,7 +90,7 @@ export default function ContactPage() {
                       /* ignore */
                     }
                   }}
-                  className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-fg px-5 text-sm font-medium text-ink-950"
+                  className="mt-6 inline-flex h-11 items-center gap-2 rounded-lg bg-fg px-5 text-sm font-medium text-ink-950"
                 >
                   {copied ? <Check size={15} /> : <Copy size={15} />} {copied ? 'Copied' : 'Copy message'}
                 </button>
@@ -135,7 +135,7 @@ export default function ContactPage() {
                 {err.message && <span role="alert" className="mt-1.5 block text-[12.5px] text-danger">{err.message}</span>}
               </label>
               {state === 'error' && <p className="text-[13px] text-danger">Sending failed. Please try again.</p>}
-              <button type="submit" disabled={state === 'sending'} className="inline-flex h-12 items-center gap-2 rounded-full bg-fg px-6 text-sm font-medium text-ink-950 hover:bg-white disabled:opacity-60">
+              <button type="submit" disabled={state === 'sending'} className="inline-flex h-12 items-center gap-2 rounded-lg bg-fg px-6 text-sm font-medium text-ink-950 hover:bg-white disabled:opacity-60">
                 {state === 'sending' ? 'Sending…' : 'Send message'} <ArrowUpRight size={15} />
               </button>
             </form>

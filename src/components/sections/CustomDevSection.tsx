@@ -4,7 +4,7 @@ import { SectionHeading } from '../ui/SectionHeading'
 import { Button } from '../ui/Button'
 import { USE_CASES } from '../../lib/content'
 
-const ART_COLORS = ['#45d3e6', '#2fb9a6', '#e09a52', '#5b8cff', '#a48bff', '#8fa3c7']
+const ART_COLORS = ['#2f7fa8', '#2e8d81', '#c4852f', '#2c64a0', '#5867a8', '#5d7083']
 
 export function CustomDevSection({ index = '07' }: { index?: string }) {
   const [open, setOpen] = useState(0)
@@ -49,8 +49,8 @@ export function CustomDevSection({ index = '07' }: { index?: string }) {
                 onFocus={() => setOpen(i)}
                 onClick={() => setOpen(i)}
                 aria-expanded={on}
-                className={`group relative overflow-hidden rounded-2xl border text-left transition-[flex-grow,border-color,background] duration-700 ease-[cubic-bezier(.16,1,.3,1)] lg:min-w-0 ${
-                  on ? 'border-line-strong bg-ink-850 lg:flex-[4]' : 'border-line bg-ink-900/60 lg:flex-[1]'
+                className={`group relative overflow-hidden rounded-xl border text-left transition-[flex-grow,border-color,background] duration-700 ease-[cubic-bezier(.16,1,.3,1)] lg:min-w-0 ${
+                  on ? 'border-transparent bg-ink-850 shadow-[var(--shadow-md)] lg:flex-[4]' : 'border-line bg-ink-900 hover:bg-ink-850 lg:flex-[1]'
                 }`}
               >
                 {/* art */}
@@ -60,12 +60,12 @@ export function CustomDevSection({ index = '07' }: { index?: string }) {
                   ))}
                 </svg>
                 <div className="relative flex h-full flex-col p-6">
-                  <span className="font-mono text-[11px]" style={{ color: c }}>
+                  <span className="font-mono text-[12px] font-medium" style={{ color: c }}>
                     0{i + 1}
                   </span>
                   <span
-                    className={`mt-3 text-lg leading-snug text-fg transition-all duration-500 lg:mt-auto ${
-                      on ? '' : 'lg:[writing-mode:vertical-rl] lg:rotate-180 lg:text-[15px] lg:text-fg-soft'
+                    className={`mt-3 text-xl font-semibold leading-snug tracking-tight text-fg transition-all duration-500 lg:mt-auto ${
+                      on ? '' : 'lg:[writing-mode:vertical-rl] lg:rotate-180 lg:text-[15px] lg:font-semibold lg:text-fg-soft'
                     }`}
                   >
                     {u.title}
@@ -75,7 +75,7 @@ export function CustomDevSection({ index = '07' }: { index?: string }) {
                       <span className="block max-w-md text-[14px] leading-relaxed text-fg-soft/85">{u.body}</span>
                       <span className="mt-4 flex flex-wrap gap-1.5">
                         {u.tags.map((t) => (
-                          <span key={t} className="rounded-md border border-line px-2 py-0.5 font-mono text-[10.5px] text-muted">
+                          <span key={t} className="rounded-md bg-ink-900 px-2 py-1 text-[12px] font-semibold text-fg-soft">
                             {t}
                           </span>
                         ))}

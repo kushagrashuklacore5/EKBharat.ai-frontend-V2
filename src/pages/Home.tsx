@@ -11,6 +11,7 @@ import { IndustriesSection } from '../components/sections/IndustriesSection'
 import { ProcessSection } from '../components/sections/ProcessSection'
 import { PillarsSection } from '../components/sections/PillarsSection'
 import { FinalCta } from '../components/sections/FinalCta'
+import { BrandStatement } from '../components/sections/BrandStatement'
 
 export default function Home() {
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <BrandStatement />
       <EcosystemSection index="01" />
       <StudioSection index="02" />
       <ArchitectureSection index="03" />

@@ -16,7 +16,7 @@ export const INDUSTRIES: Industry[] = [
     solution: 'Course-aware assistants grounded in syllabus material, automated feedback drafts and admissions workflows with human review.',
     examples: ['Syllabus-grounded study assistant', 'Admissions document checks', 'Feedback drafting for assignments'],
     glyph: 'grid',
-    color: '#e8c27a',
+    color: '#a8731c',
   },
   {
     id: 'healthcare',
@@ -25,7 +25,7 @@ export const INDUSTRIES: Industry[] = [
     solution: 'Document summarisation and intake automation on self-hosted models, with redaction and clinician approval built in.',
     examples: ['Discharge-note summaries', 'Appointment & enquiry triage', 'Insurance form extraction'],
     glyph: 'pulse',
-    color: '#2fb9a6',
+    color: '#2e8d81',
   },
   {
     id: 'finance',
@@ -34,7 +34,7 @@ export const INDUSTRIES: Industry[] = [
     solution: 'Extraction, reconciliation and exception routing workflows with audit trails for every automated decision.',
     examples: ['Invoice-to-PO matching', 'KYC document review', 'Report and variance commentary'],
     glyph: 'bars',
-    color: '#5b8cff',
+    color: '#2c64a0',
   },
   {
     id: 'ecommerce',
@@ -43,7 +43,7 @@ export const INDUSTRIES: Industry[] = [
     solution: 'Order-aware support agents, catalogue enrichment pipelines and returns workflows connected to your store and ERP.',
     examples: ['Order-status & returns assistant', 'Product description generation', 'Review and feedback analysis'],
     glyph: 'cart',
-    color: '#e09a52',
+    color: '#c4852f',
   },
   {
     id: 'manufacturing',
@@ -52,7 +52,7 @@ export const INDUSTRIES: Industry[] = [
     solution: 'Maintenance copilots grounded in equipment manuals, quality-report analysis and supplier document automation.',
     examples: ['Maintenance knowledge assistant', 'Quality incident summaries', 'Supplier document processing'],
     glyph: 'gear',
-    color: '#8fa3c7',
+    color: '#5d7083',
   },
   {
     id: 'enterprise-operations',
@@ -61,7 +61,7 @@ export const INDUSTRIES: Industry[] = [
     solution: 'Internal assistants over company policies, plus workflows that connect HR, IT service and finance systems.',
     examples: ['Policy & HR assistant', 'IT request triage', 'Procurement approval workflows'],
     glyph: 'org',
-    color: '#a48bff',
+    color: '#5867a8',
   },
   {
     id: 'customer-support',
@@ -70,7 +70,7 @@ export const INDUSTRIES: Industry[] = [
     solution: 'Grounded support agents that resolve routine requests, draft replies for complex ones and escalate with full context.',
     examples: ['Multilingual support assistant', 'Ticket classification & routing', 'Voice AI for first-line calls'],
     glyph: 'chat',
-    color: '#45d3e6',
+    color: '#2f7fa8',
   },
 ]
 

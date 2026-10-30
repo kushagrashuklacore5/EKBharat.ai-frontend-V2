@@ -32,10 +32,10 @@ export function GpuSection({ index = '06' }: { index?: string }) {
             <Button to="/gpu-cloud">Explore GPU Infrastructure</Button>
           </div>
         </div>
-        <ul className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-3 lg:grid-cols-6">
+        <ul className="mt-12 grid grid-cols-2 gap-x-10 gap-y-10 md:grid-cols-3 lg:grid-cols-6">
           {MODES.map(([t, d], i) => (
-            <li key={t} data-reveal={String(i)} className="bg-ink-950 p-5">
-              <p className="text-[14px] text-fg">{t}</p>
+            <li key={t} data-reveal={String(i)} className="border-t-2 border-line-strong pt-5">
+              <p className="text-[14px] text-fg font-semibold">{t}</p>
               <p className="mt-2 text-[12.5px] leading-relaxed text-muted">{d}</p>
             </li>
           ))}

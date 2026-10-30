@@ -34,7 +34,7 @@ export default function CustomAiDevelopmentPage() {
     <div ref={ref}>
       <PageHero
         docTitle="Custom AI Development"
-        accent="#e09a52"
+        accent="#c4852f"
         eyebrow="Custom AI development & enterprise solutions"
         title={
           <>
@@ -58,7 +58,7 @@ export default function CustomAiDevelopmentPage() {
             {MODELS.map(([t, d], i) => (
               <div key={t} data-reveal={String(i)} className={`panel p-8 ${i === 2 ? 'border-saffron/30' : ''}`}>
                 <span className="font-mono text-[11px] text-saffron">0{i + 1}</span>
-                <h3 className="mt-4 text-xl text-fg">{t}</h3>
+                <h3 className="mt-4 text-xl text-fg font-semibold">{t}</h3>
                 <p className="mt-3 text-[14.5px] leading-relaxed text-muted">{d}</p>
               </div>
             ))}
