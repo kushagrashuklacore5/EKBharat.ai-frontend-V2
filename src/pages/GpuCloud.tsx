@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { GpuHero3D } from '../components/visuals/GpuHero3D'
 import { PageHero, FeatureGrid } from '../components/ui/PageHero'
 import { Button } from '../components/ui/Button'
 import { Section } from '../components/ui/Section'
@@ -32,7 +33,7 @@ export default function GpuCloudPage() {
   return (
     <div ref={ref}>
       <PageHero
-        visual="gpu"
+        visual={<GpuHero3D />}
         docTitle="GPU Cloud"
         accent="#5d7083"
         eyebrow="GPU Cloud · AI infrastructure"
