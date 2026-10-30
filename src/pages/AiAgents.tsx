@@ -1,4 +1,6 @@
 import { useRef } from 'react'
+import { Scene3D } from '../components/visuals/Scene3D'
+import { AgentsVisual } from '../components/visuals/ProductVisuals'
 import { PageHero, FeatureGrid } from '../components/ui/PageHero'
 import { Button } from '../components/ui/Button'
 import { Section } from '../components/ui/Section'
@@ -35,7 +37,7 @@ export default function AiAgentsPage() {
   return (
     <div ref={ref}>
       <PageHero
-        visual="agents"
+        visual={<Scene3D kind="agents" label="3D multi-agent system: an orchestrator tower delegating tasks to research, analysis, verification, tools and report agents around a shared memory ring" fallback={<AgentsVisual />} />}
         docTitle="AI Agents & Multi-Agent Orchestration"
         accent="#2c64a0"
         eyebrow="AI agents · multi-agent orchestration"

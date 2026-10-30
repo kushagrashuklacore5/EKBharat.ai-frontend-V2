@@ -1,4 +1,6 @@
 import { lazy, useRef } from 'react'
+import { Scene3D } from '../components/visuals/Scene3D'
+import { WorkflowVisual } from '../components/visuals/ProductVisuals'
 import { PageHero, FeatureGrid } from '../components/ui/PageHero'
 import { Button } from '../components/ui/Button'
 import { LazyMount } from '../components/ui/LazyMount'
@@ -47,7 +49,7 @@ export default function WorkflowStudioPage() {
   return (
     <div ref={ref}>
       <PageHero
-        visual="workflow"
+        visual={<Scene3D kind="workflow" label="3D Workflow Studio canvas: trigger, agent, knowledge, database, LLM, condition, approval and action nodes connected by data paths, running in sequence" fallback={<WorkflowVisual />} />}
         docTitle="AI Workflow Studio"
         eyebrow="Flagship product · AI Workflow Studio"
         title={

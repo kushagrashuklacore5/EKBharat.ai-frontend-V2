@@ -38,7 +38,7 @@ export function Hero() {
         <div className="absolute -left-[15%] bottom-[-30%] h-[70%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgba(56,166,162,.16),transparent)]" />
         <div className="absolute right-[20%] top-[40%] h-[40%] w-[30%] rounded-full bg-[radial-gradient(closest-side,rgba(213,182,138,.18),transparent)]" />
         <div className="grid-bg absolute inset-0 opacity-60 [mask-image:radial-gradient(55%_55%_at_70%_45%,black,transparent)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#dce6eb]" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#d2dee4]" />
       </div>
 
       <div className="container-x relative grid items-center pb-6 pt-28 lg:min-h-[100svh] lg:grid-cols-[0.95fr_1.05fr] lg:pb-24 lg:pt-24">

@@ -37,7 +37,7 @@ export function PageHero({ eyebrow, title, lead, actions, aside, visual, accent 
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0" style={{ background: `radial-gradient(45% 55% at 85% 30%, ${accent}40, transparent 70%)` }} />
         <div className="grid-bg absolute inset-0 opacity-50 [mask-image:radial-gradient(60%_70%_at_75%_30%,black,transparent)]" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#dce6eb]" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#d2dee4]" />
       </div>
       <div className={`container-x relative grid items-center gap-12 ${right ? 'lg:grid-cols-[1fr_1.05fr] lg:gap-16' : 'lg:grid-cols-[1.4fr_1fr]'}`}>
         <div>

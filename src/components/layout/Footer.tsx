@@ -54,7 +54,7 @@ const SOCIAL_LABELS: Record<string, string> = { linkedin: 'LinkedIn', x: 'X', gi
 export function Footer() {
   const socials = Object.entries(SITE.social).filter(([, url]) => url)
   return (
-    <footer className="surface-dark relative overflow-hidden" style={{ background: 'radial-gradient(50% 30% at 80% 35%, rgba(56,166,162,.14), transparent 70%), linear-gradient(180deg, #e6edf0 0px, #9fbfcc 70px, #17475b 190px, #0f2a40 320px, #0b2034 100%)' }}>
+    <footer className="surface-dark relative overflow-hidden" style={{ background: 'radial-gradient(50% 30% at 80% 35%, rgba(56,166,162,.14), transparent 70%), linear-gradient(180deg, #dbe4e9 0px, #9fbfcc 70px, #17475b 190px, #0f2a40 320px, #0b2034 100%)' }}>
       <div className="container-x relative pb-10 pt-56">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_2fr]">
           <div>

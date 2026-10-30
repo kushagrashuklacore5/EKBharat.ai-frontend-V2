@@ -29,11 +29,11 @@ function LayeredSymbol({ sep }: { sep: number }) {
       <rect x="5" y="4" width="7" height="32" rx="2.2" fill="#102a40" />
       <g style={{ transform: s(1.6) }}>
         <path d="M13 4 H25 a6 6 0 0 1 0 12 H13 Z" fill="url(#br-g)" />
-        <circle cx="25.5" cy="10" r="2.1" fill="#f2f5f4" />
+        <circle cx="25.5" cy="10" r="2.1" fill="#ebeff0" />
       </g>
       <g style={{ transform: s(0.9) }}>
         <path d="M13 17.5 H22 a2.5 2.5 0 0 1 0 5 H13 Z" fill="#102a40" opacity=".85" />
-        <circle cx="22" cy="20" r="1.5" fill="#f2f5f4" />
+        <circle cx="22" cy="20" r="1.5" fill="#ebeff0" />
       </g>
       <g style={{ transform: s(2.3) }}>
         <path d="M13 24 H27.5 a6 6 0 0 1 0 12 H13 Z" fill="url(#br-g)" />
@@ -97,7 +97,7 @@ export function BrandReveal() {
       ref={sectionRef}
       aria-labelledby="brand-title"
       className={`relative ${reduced ? '' : 'h-[210vh] md:h-[260vh]'}`}
-      style={{ background: 'linear-gradient(180deg, #dce6eb 0%, #e6edf0 40%, #e6edf0 70%, #dce6eb 100%)' }}
+      style={{ background: 'linear-gradient(180deg, #d2dee4 0%, #dbe4e9 40%, #dbe4e9 70%, #d2dee4 100%)' }}
     >
       <h2 id="brand-title" className="sr-only">
         Bharat.Ai — build, connect, automate, orchestrate

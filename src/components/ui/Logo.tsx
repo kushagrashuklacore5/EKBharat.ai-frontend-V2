@@ -13,7 +13,7 @@ export function LogoMark({ size = 30, tone = 'light' }: { size?: number; tone?: 
   const id = useId().replace(/:/g, '')
   const mono = tone === 'mono'
   const spine = mono ? 'currentColor' : tone === 'dark' ? '#eaf1f4' : '#102a40'
-  const node = mono ? 'currentColor' : tone === 'dark' ? '#0b2034' : '#f2f5f4'
+  const node = mono ? 'currentColor' : tone === 'dark' ? '#0b2034' : '#ebeff0'
   const accent = mono ? 'currentColor' : '#d5b68a'
   const fill = mono ? 'currentColor' : `url(#lg-${id})`
   return (
@@ -35,7 +35,7 @@ export function LogoMark({ size = 30, tone = 'light' }: { size?: number; tone?: 
       {/* nodes + link */}
       <path d="M25.5 10 L22 20 L27.5 30" fill="none" stroke={node} strokeWidth="1.2" strokeLinecap="round" opacity=".9" />
       <circle cx="25.5" cy="10" r="2.1" fill={node} />
-      <circle cx="22" cy="20" r="1.5" fill={tone === 'dark' ? '#0b2034' : '#f2f5f4'} />
+      <circle cx="22" cy="20" r="1.5" fill={tone === 'dark' ? '#0b2034' : '#ebeff0'} />
       <circle cx="27.5" cy="30" r="2.4" fill={accent} />
     </svg>
   )
