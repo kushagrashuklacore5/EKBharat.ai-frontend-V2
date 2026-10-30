@@ -1,4 +1,6 @@
 import { useRef } from 'react'
+import { Scene3D } from '../components/visuals/Scene3D'
+import { AssemblyVisual } from '../components/visuals/ProductVisuals'
 import { PageHero, FeatureGrid } from '../components/ui/PageHero'
 import { Button } from '../components/ui/Button'
 import { Section } from '../components/ui/Section'
@@ -33,7 +35,7 @@ export default function CustomAiDevelopmentPage() {
   return (
     <div ref={ref}>
       <PageHero
-        visual="custom"
+        visual={<Scene3D kind="build" label="3D build site: a gantry crane assembles an AI solution layer by layer on a blueprint — data, integrations, backend, AI core and interface" fallback={<AssemblyVisual />} />}
         docTitle="Custom AI Development"
         accent="#c4852f"
         eyebrow="Custom AI development & enterprise solutions"

@@ -5,9 +5,12 @@ import type { SceneApi } from './stage3d'
 
 type Loader = () => Promise<(canvas: HTMLCanvasElement, opts: { reducedMotion: boolean }) => SceneApi>
 
-const LOADERS: Record<'workflow' | 'agents', Loader> = {
+const LOADERS: Record<'workflow' | 'agents' | 'router' | 'build' | 'district', Loader> = {
   workflow: () => import('./workflowScene').then((m) => m.createWorkflowScene),
   agents: () => import('./agentsScene').then((m) => m.createAgentsScene),
+  router: () => import('./routerScene').then((m) => m.createRouterScene),
+  build: () => import('./buildScene').then((m) => m.createBuildScene),
+  district: () => import('./districtScene').then((m) => m.createDistrictScene),
 }
 
 /**

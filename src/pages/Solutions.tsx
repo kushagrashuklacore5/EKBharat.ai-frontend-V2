@@ -1,4 +1,6 @@
 import { useRef } from 'react'
+import { Scene3D } from '../components/visuals/Scene3D'
+import { EnterpriseVisual } from '../components/visuals/ProductVisuals'
 import { PageHero } from '../components/ui/PageHero'
 import { Button } from '../components/ui/Button'
 import { Section } from '../components/ui/Section'
@@ -13,7 +15,7 @@ export default function SolutionsPage() {
   return (
     <div ref={ref}>
       <PageHero
-        visual="enterprise"
+        visual={<Scene3D kind="district" label="3D enterprise AI district: an AI core spire connected to hospital, bank, school, warehouse, factory, support centre and office buildings under a governance dome" fallback={<EnterpriseVisual />} />}
         docTitle="Industry Solutions"
         accent="#2e8d81"
         eyebrow="Industry solutions"

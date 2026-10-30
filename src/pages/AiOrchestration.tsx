@@ -1,4 +1,6 @@
 import { useRef } from 'react'
+import { Scene3D } from '../components/visuals/Scene3D'
+import { RouterVisual } from '../components/visuals/ProductVisuals'
 import { PageHero, FeatureGrid } from '../components/ui/PageHero'
 import { Button } from '../components/ui/Button'
 import { Section } from '../components/ui/Section'
@@ -33,7 +35,7 @@ export default function AiOrchestrationPage() {
   return (
     <div ref={ref}>
       <PageHero
-        visual="router"
+        visual={<Scene3D kind="router" label="3D model gateway: an application sends requests through a crystal router that selects between reasoning, fast, code and self-hosted models, with fallback and schema validation" fallback={<RouterVisual />} />}
         docTitle="Multi-Model Orchestration"
         accent="#5867a8"
         eyebrow="AI orchestration · multi-model"
