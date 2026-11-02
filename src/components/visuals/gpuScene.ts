@@ -490,7 +490,7 @@ function pcbTexture() {
     for (let i = 0; i < 8; i++) g.strokeRect(1330 + (i % 6) * 88, i < 6 ? 180 : 600, 60, 60)
     g.fillStyle = 'rgba(230,240,244,.35)'
     g.font = '600 26px monospace'
-    g.fillText('BHARAT.AI  ACCEL-X', 90, 780)
+    g.fillText('EK भारत.AI  ACCEL-X', 90, 780)
     g.fillText('U1', 900, 240)
   })
 }

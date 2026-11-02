@@ -26,7 +26,7 @@ export function GpuSection({ index = '06' }: { index?: string }) {
                 High-performance compute, <span className="serif-accent text-gradient">without the hardware.</span>
               </>
             }
-            lead="Access high-performance computing resources on flexible usage-based pricing without purchasing and maintaining your own GPU hardware. Capacity is provisioned through our infrastructure partners and managed by Bharat.Ai."
+            lead="Access high-performance computing resources on flexible usage-based pricing without purchasing and maintaining your own GPU hardware. Capacity is provisioned through our infrastructure partners and managed by Ek भारत.AI."
           />
           <div data-reveal="3" className="lg:justify-self-end">
             <Button to="/gpu-cloud">Explore GPU Infrastructure</Button>

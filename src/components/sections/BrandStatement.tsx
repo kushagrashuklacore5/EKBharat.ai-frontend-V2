@@ -8,13 +8,13 @@ const VERBS = [
   ['Orchestrate', 'Agents, models and compute, coordinated and governed.'],
 ]
 
-/** Brand statement — the home of the BHARAT.AI typographic shadow. */
+/** Brand statement — the home of the EK भारत.AI typographic shadow. */
 export function BrandStatement() {
   return (
     <Section labelledBy="brand-title" className="bg-ink-900 py-24 md:py-32">
       <div className="container-x">
         <h2 id="brand-title" className="sr-only">
-          Bharat.Ai
+          Ek भारत.AI
         </h2>
         <div data-reveal>
           <BrandMark depth={16} />

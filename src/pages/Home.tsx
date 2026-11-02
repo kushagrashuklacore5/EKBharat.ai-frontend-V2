@@ -15,7 +15,7 @@ import { BrandReveal } from '../components/sections/BrandReveal'
 
 export default function Home() {
   useEffect(() => {
-    document.title = 'Bharat.Ai — Build, Connect, Automate, Orchestrate'
+    document.title = 'Ek भारत.AI — Build, Connect, Automate, Orchestrate'
   }, [])
   return (
     <>

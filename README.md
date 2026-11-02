@@ -1,4 +1,4 @@
-# Bharat.Ai — website frontend
+# Ek भारत.AI — website frontend
 
 Vite + React 19 + TypeScript + Tailwind CSS v4, React Router 7, GSAP ScrollTrigger, Three.js (hero only) and @xyflow/react (Workflow Studio demo).
 
@@ -22,7 +22,7 @@ The site is a client-side SPA, so the host must rewrite unknown paths to `index.
 
 These are demonstrations, labelled as such on the page, and need real data before commercial use:
 
-- GPU catalogue tiers, VRAM, availability and ₹ prices — `src/components/gpu/GpuCatalogue.tsx`
+- GPU tier names, VRAM and availability (hourly USD prices are real; Flagship is quoted on request) — `src/components/gpu/GpuCatalogue.tsx`
 - Model routing decisions and provider names ("Hosted provider A/B/C") — `src/components/orchestration/ModelRouter.tsx`
 - Workflow Studio runs are simulated in the browser — `src/components/workflow-studio/`
 - The developer code sample — `src/pages/Developers.tsx`
@@ -46,6 +46,6 @@ These are demonstrations, labelled as such on the page, and need real data befor
 - **Type:** Manrope (UI and headings), Instrument Serif (accent words only), IBM Plex Mono (technical data only).
 - **Radius scale:** 6px controls · 8px buttons · 10–12px cards · 14–16px large containers. Pills only for chips.
 - **Buttons:** `src/components/ui/Button.tsx` — primary, secondary, tertiary, destructive, icon; supports `loading`.
-- **Brand:** `src/components/ui/Logo.tsx` (Bharat.Ai symbol — a "B" built from three compute strata with network nodes; `tone` light | dark | mono, `compact`) and `BrandMark.tsx` (extruded wordmark; `extrude` prop lets scroll drive the depth).
+- **Brand:** `src/components/ui/Logo.tsx` (Ek भारत.AI symbol — a "B" built from three compute strata with network nodes; `tone` light | dark | mono, `compact`) and `BrandMark.tsx` (extruded wordmark; `extrude` prop lets scroll drive the depth).
 - **Product visuals:** `src/components/visuals/` — isometric SVG scenes per product (workflow, agents, router, gpu, custom, enterprise), reused in the home product explorer and inner-page headers.
 - **Palette:** mid-tone misty blue-grey page (`#dce6eb`), petrol/teal/ice accents, champagne highlights; `deep-blend` sections fade in and out of navy.

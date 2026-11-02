@@ -17,7 +17,7 @@ export function ArchitectureSection({ index = '02' }: { index?: string }) {
                 Six layers. <span className="serif-accent text-fg-soft">One</span> intelligent system.
               </>
             }
-            lead="Every Bharat.Ai workflow, agent and application runs through the same stack — from GPU compute at the foundation to agent orchestration at the top. Explore each layer to see what it does and why it matters."
+            lead="Every Ek भारत.AI workflow, agent and application runs through the same stack — from GPU compute at the foundation to agent orchestration at the top. Explore each layer to see what it does and why it matters."
           />
           <p data-reveal="3" className="max-w-[15rem] font-mono text-[11px] leading-relaxed text-faint md:text-right">
             Read top-down for how work is coordinated; bottom-up for how it is powered.

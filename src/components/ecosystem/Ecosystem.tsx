@@ -112,7 +112,7 @@ export function EcosystemSection({ index = '01' }: { index?: string }) {
               Six capabilities, <span className="serif-accent text-fg-soft">designed</span> to work as one.
             </>
           }
-          lead="Use one capability or all of them. Each part of Bharat.Ai plugs into the others — so a prototype built in the Studio can grow into a governed, production system without changing platforms."
+          lead="Use one capability or all of them. Each part of Ek भारत.AI plugs into the others — so a prototype built in the Studio can grow into a governed, production system without changing platforms."
         />
 
         <div className="mt-16 grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
@@ -150,7 +150,7 @@ export function EcosystemSection({ index = '01' }: { index?: string }) {
             <div className="absolute left-1/2 top-1/2 grid size-[26%] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-line-strong bg-ink-900/90 text-center">
               <div>
                 <p className="label text-faint sm:text-[10px]">Unified</p>
-                <p className="mt-1 text-[12px] font-medium text-fg sm:text-sm">Bharat.Ai</p>
+                <p className="mt-1 text-[12px] font-medium text-fg sm:text-sm">Ek भारत.AI</p>
                 <p className="font-mono text-[9px] text-muted sm:text-[10px]">platform</p>
               </div>
             </div>

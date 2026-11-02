@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { MARK_SRC } from '../ui/Logo'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
@@ -10,12 +11,12 @@ export interface HeroSceneOptions {
 }
 
 /**
- * The Bharat.Ai computational stack. Bottom → top:
+ * The Ek भारत.AI computational stack. Bottom → top:
  *   0 GPU Cloud     — petrol metal slab with champagne seam
  *   1 Knowledge     — clear glass
  *   2 Models        — ceramic with model tiles
  *   3 AI Agents     — teal glass with agent nodes
- *   4 Workflows     — navy core plate carrying the Bharat.Ai mark
+ *   4 Workflows     — navy core plate carrying the Ek भारत.AI mark
  * on a ceramic pedestal (anchor 5 · Custom AI — built across the stack).
  * Layers separate with scroll; a hovered label lifts and lights its layer.
  */
@@ -252,41 +253,27 @@ export function createHeroScene(canvas: HTMLCanvasElement, opts: HeroSceneOption
   }
 }
 
-/** The Bharat.Ai symbol painted onto the core plate. */
+/** The Ek भारत.AI symbol painted onto the core plate. */
 function markTexture() {
+  // the official mark, centred on a transparent square so it sits on the navy plate
   const c = document.createElement('canvas')
   c.width = c.height = 512
-  const g = c.getContext('2d')!
-  const s = 9
-  g.translate(256 - 19 * s, 256 - 20 * s)
-  g.scale(s, s)
-  const grad = g.createLinearGradient(0, 0, 40, 40)
-  grad.addColorStop(0, '#9ad5e5')
-  grad.addColorStop(1, '#5cc3be')
-  const rr = (x: number, y: number, w: number, h: number, r: number | number[]) => {
-    g.beginPath()
-    g.roundRect(x, y, w, h, r)
-    g.fill()
-  }
-  g.fillStyle = '#eaf1f4'
-  rr(5, 4, 7, 32, 2.2)
-  g.fillStyle = grad
-  rr(13, 4, 18, 12, [0, 6, 6, 0])
-  g.fillStyle = 'rgba(234,241,244,.85)'
-  rr(13, 17.5, 11.5, 5, [0, 2.5, 2.5, 0])
-  g.fillStyle = grad
-  rr(13, 24, 20.5, 12, [0, 6, 6, 0])
-  g.fillStyle = '#d5b68a'
-  g.beginPath()
-  g.arc(27.5, 30, 2.4, 0, Math.PI * 2)
-  g.fill()
-  g.fillStyle = '#0f2a40'
-  g.beginPath()
-  g.arc(25.5, 10, 2.1, 0, Math.PI * 2)
-  g.fill()
   const tex = new THREE.CanvasTexture(c)
   tex.colorSpace = THREE.SRGBColorSpace
   tex.anisotropy = 8
+  const img = new Image()
+  img.onload = () => {
+    const g = c.getContext('2d')!
+    const sz = 330
+    const w = (sz * img.width) / img.height
+    g.fillStyle = 'rgba(235,243,253,0.96)'
+    g.beginPath()
+    g.roundRect(256 - 200, 256 - 200, 400, 400, 60)
+    g.fill()
+    g.drawImage(img, 256 - w / 2, 256 - sz / 2, w, sz)
+    tex.needsUpdate = true
+  }
+  img.src = MARK_SRC
   return tex
 }
 

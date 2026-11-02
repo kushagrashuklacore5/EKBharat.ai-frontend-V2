@@ -101,7 +101,7 @@ export function Footer() {
         <p className="mt-6 text-[13px] font-medium tracking-[0.02em] text-muted">Build · Connect · Automate · Orchestrate</p>
 
         <div className="mt-8 flex flex-col gap-3 border-t border-line pt-6 text-[12.5px] text-faint sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Bharat.Ai. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Ek भारत.AI. All rights reserved.</p>
           <p className="text-muted">Owned by {SITE.owner}</p>
         </div>
       </div>

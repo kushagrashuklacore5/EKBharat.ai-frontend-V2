@@ -47,7 +47,7 @@ export const USERS = ['Under 50', '50–500', '500–5,000', '5,000+', 'Customer
 export const BUDGETS = ['Under ₹5 lakh', '₹5–15 lakh', '₹15–50 lakh', '₹50 lakh+', 'Not decided yet']
 export const TIMELINES = ['As soon as possible', 'Within 3 months', '3–6 months', 'Exploring for now']
 export const DEPLOYMENTS = [
-  { id: 'managed', label: 'Managed by Bharat.Ai', d: 'We host and operate it' },
+  { id: 'managed', label: 'Managed by Ek भारत.AI', d: 'We host and operate it' },
   { id: 'cloud', label: 'Our cloud account', d: 'Deployed in your cloud' },
   { id: 'onprem', label: 'On-premises / private', d: 'Your own infrastructure' },
   { id: 'unsure', label: 'Not sure', d: 'Recommend one' },

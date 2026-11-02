@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react'
 import { DemoBadge } from '../ui/DemoBadge'
 
 /**
- * ILLUSTRATIVE DATA ONLY. These are not real GPU models, inventory or prices.
- * Replace with partner-sourced catalogue data before using commercially.
+ * Hourly prices are the published per-GPU rates (USD). Tier names, VRAM and
+ * availability are indicative — confirmed with partners per request.
  */
 interface Tier {
   id: string
@@ -11,18 +11,18 @@ interface Tier {
   vram: number
   bestFor: string
   availability: 'On demand' | 'Limited' | 'Reserved'
-  hourly: number // INR, illustrative
+  hourly: number | null // USD per GPU per hour; null = quoted on request
   deployment: string[]
 }
 
 const TIERS: Tier[] = [
-  { id: 'g1', name: 'Inference · Entry', vram: 16, bestFor: 'Small models, embeddings, prototyping', availability: 'On demand', hourly: 60, deployment: ['Hourly', 'Monthly'] },
-  { id: 'g2', name: 'Inference · Standard', vram: 24, bestFor: 'Production inference for 7–13B models', availability: 'On demand', hourly: 110, deployment: ['Hourly', 'Monthly', 'Dedicated'] },
-  { id: 'g3', name: 'Training · Performance', vram: 48, bestFor: 'Fine-tuning, larger-context inference', availability: 'Limited', hourly: 240, deployment: ['Hourly', 'Monthly', 'Dedicated'] },
-  { id: 'g4', name: 'Training · Flagship', vram: 80, bestFor: 'Large-model training & high-throughput serving', availability: 'Reserved', hourly: 420, deployment: ['Monthly', 'Dedicated'] },
+  { id: 'g1', name: 'Inference · Entry', vram: 16, bestFor: 'Small models, embeddings, prototyping', availability: 'On demand', hourly: 4, deployment: ['Hourly', 'Monthly'] },
+  { id: 'g2', name: 'Inference · Standard', vram: 24, bestFor: 'Production inference for 7–13B models', availability: 'On demand', hourly: 4.5, deployment: ['Hourly', 'Monthly', 'Dedicated'] },
+  { id: 'g3', name: 'Training · Performance', vram: 48, bestFor: 'Fine-tuning, larger-context inference', availability: 'Limited', hourly: 5, deployment: ['Hourly', 'Monthly', 'Dedicated'] },
+  { id: 'g4', name: 'Training · Flagship', vram: 80, bestFor: 'Large-model training & high-throughput serving', availability: 'Reserved', hourly: null, deployment: ['Monthly', 'Dedicated'] },
 ]
 
-const fmt = (n: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n)
+const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
 
 export function GpuCatalogue() {
   const [sel, setSel] = useState('g2')
@@ -36,28 +36,29 @@ export function GpuCatalogue() {
   const effMode = mode === 'Hourly' && !hourlyOk ? 'Monthly' : mode === 'Monthly' && !monthlyOk ? 'Hourly' : mode
 
   const est = useMemo(() => {
+    if (tier.hourly === null) return null
     if (effMode === 'Hourly') return tier.hourly * count * hours * days
-    // illustrative monthly commitment: 730h at a 30% discount
-    return tier.hourly * count * 730 * 0.7
+    // full month (730 h) at the hourly rate
+    return tier.hourly * count * 730
   }, [tier, count, hours, days, effMode])
 
   return (
     <div className="panel overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
         <p className="label text-fg-soft">Compute catalogue</p>
-        <DemoBadge label="Demonstration data — not live inventory or pricing" />
+        <DemoBadge label="USD per GPU-hour · availability confirmed per request" />
       </div>
       <div className="grid lg:grid-cols-[1.6fr_1fr]">
         {/* table */}
         <div className="overflow-x-auto border-b border-line lg:border-b-0 lg:border-r">
           <table className="w-full min-w-[560px] text-left text-[13px]">
-            <caption className="sr-only">Illustrative GPU configurations</caption>
+            <caption className="sr-only">GPU configurations and hourly pricing</caption>
             <thead>
               <tr className="label text-faint">
                 <th className="px-5 py-3 font-normal sm:px-6">Configuration</th>
                 <th className="px-3 py-3 font-normal">VRAM</th>
                 <th className="px-3 py-3 font-normal">Availability</th>
-                <th className="whitespace-nowrap px-3 py-3 font-normal">₹ / hr*</th>
+                <th className="whitespace-nowrap px-3 py-3 font-normal">$ / GPU-hr*</th>
                 <th className="px-3 py-3 font-normal">Deployment</th>
               </tr>
             </thead>
@@ -91,7 +92,7 @@ export function GpuCatalogue() {
                         {t.availability}
                       </span>
                     </td>
-                    <td className="px-3 py-4 font-mono text-fg">{fmt(t.hourly)}</td>
+                    <td className="whitespace-nowrap px-3 py-4 font-mono text-fg">{t.hourly === null ? <span className="font-sans text-[12px] text-muted">On request</span> : fmt(t.hourly)}</td>
                     <td className="px-3 py-4">
                       <span className="flex flex-wrap gap-1">
                         {t.deployment.map((d) => (
@@ -107,7 +108,7 @@ export function GpuCatalogue() {
             </tbody>
           </table>
           <p className="px-5 pb-4 pt-2 text-[11px] text-faint sm:px-6">
-            * Example figures to demonstrate the estimator. Actual configurations and rates depend on partner availability and are quoted on request.
+            * Prices in USD per GPU per hour, excluding applicable taxes. Configurations and availability are confirmed with our infrastructure partners at the time of request.
           </p>
         </div>
 
@@ -141,12 +142,14 @@ export function GpuCatalogue() {
             </>
           )}
           <div className="mt-6 rounded-xl border border-line bg-ink-950 p-5">
-            <p className="text-[12px] text-muted">Estimated monthly cost (illustrative)</p>
-            <p className="mt-1 font-mono text-3xl tracking-tight text-fg">{fmt(est)}</p>
+            <p className="text-[12px] text-muted">Estimated monthly cost</p>
+            <p className="mt-1 font-mono text-3xl tracking-tight text-fg">{est === null ? <span className="font-sans text-2xl">Quote on request</span> : fmt(est)}</p>
             <p className="mt-2 text-[11.5px] leading-relaxed text-faint">
-              {effMode === 'Hourly'
-                ? `${count} × ${hours}h × ${days} days, billed only for usage.`
-                : `${count} GPU${count > 1 ? 's' : ''} reserved for the full month at an example commitment discount.`}
+              {est === null
+                ? 'Flagship capacity is reserved per project — contact us for pricing.'
+                : effMode === 'Hourly'
+                  ? `${count} GPU × ${hours}h × ${days} days at ${fmt(tier.hourly!)}/GPU-hr, billed only for usage.`
+                  : `${count} GPU${count > 1 ? 's' : ''} for the full month (730 h) at ${fmt(tier.hourly!)}/GPU-hr. Ask us about monthly plan pricing.`}
             </p>
           </div>
         </div>

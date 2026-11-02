@@ -272,7 +272,7 @@ function blueprintTexture() {
     g.fillText('2500', 610, 716)
     g.fillText('SOLUTION ARCHITECTURE · REV 3', 60, 70)
     g.fillStyle = 'rgba(213,182,138,0.85)'
-    g.fillText('BHARAT.AI', 60, 830)
+    g.fillText('EK भारत.AI', 60, 830)
     g.strokeStyle = 'rgba(154,213,229,0.4)'
     g.beginPath()
     g.arc(1110, 700, 90, 0, Math.PI * 2)

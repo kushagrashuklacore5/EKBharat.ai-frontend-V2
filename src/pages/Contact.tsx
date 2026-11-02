@@ -12,10 +12,10 @@ export default function ContactPage() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    document.title = 'Contact — Bharat.Ai'
+    document.title = 'Contact — Ek भारत.AI'
   }, [])
 
-  const text = `To: Bharat.Ai\nFrom: ${f.name} <${f.email}>\nTopic: ${f.topic}\n\n${f.message}`
+  const text = `To: Ek भारत.AI\nFrom: ${f.name} <${f.email}>\nTopic: ${f.topic}\n\n${f.message}`
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -64,7 +64,7 @@ export default function ContactPage() {
               </a>
             )}
           </div>
-          <p className="mt-12 text-[12px] text-faint">Bharat.Ai is owned by {SITE.owner}</p>
+          <p className="mt-12 text-[12px] text-faint">Ek भारत.AI is owned by {SITE.owner}</p>
         </div>
 
         <div className="panel p-6 sm:p-9">
@@ -77,7 +77,7 @@ export default function ContactPage() {
               <p className="mt-3 leading-relaxed text-fg-soft">
                 {state === 'sent'
                   ? 'We’ll reply to your email.'
-                  : 'Online sending isn’t connected in this version of the site, so the message has not been sent. You can copy it and share it with the Bharat.Ai team.'}
+                  : 'Online sending isn’t connected in this version of the site, so the message has not been sent. You can copy it and share it with the Ek भारत.AI team.'}
               </p>
               {state === 'local' && (
                 <button

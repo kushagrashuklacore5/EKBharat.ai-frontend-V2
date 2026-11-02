@@ -6,7 +6,7 @@
    ink-950 page · ink-900 secondary surface · ink-850 elevated · ink-800 well
    fg text · fg-soft body · muted secondary · faint tertiary                    */
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", "Mukta", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
 
@@ -401,3 +401,8 @@ strong, b { font-weight: 700; }
 .v-float { animation: v-float 5s ease-in-out infinite; transform-box: view-box; }
 @keyframes v-assemble { 0% { transform: translateY(-14px); opacity: .0; } 18% { opacity: 1; } 40%, 100% { transform: translateY(0); opacity: 1; } }
 .v-assemble { animation: v-assemble 6s cubic-bezier(.16,1,.3,1) infinite alternate; transform-box: view-box; }
+
+/* Ashoka Chakra — slow, smooth clockwise rotation (stopped for reduced motion) */
+@keyframes chakra-spin { to { transform: rotate(360deg); } }
+.chakra-spin { transform-box: fill-box; transform-origin: center; animation: chakra-spin 36s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .chakra-spin { animation: none; } }

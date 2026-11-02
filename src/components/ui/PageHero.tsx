@@ -19,7 +19,7 @@ export function PageHero({ eyebrow, title, lead, actions, aside, visual, accent 
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   useEffect(() => {
-    document.title = `${docTitle} — Bharat.Ai`
+    document.title = `${docTitle} — Ek भारत.AI`
   }, [docTitle])
   const Visual = typeof visual === 'string' ? PRODUCT_VISUALS[visual as VisualKind] : null
   const right = Visual ? (

@@ -106,7 +106,7 @@ export function PillarsSection({ index = '10' }: { index?: string }) {
           id="why-title"
           index={index}
           align="center"
-          eyebrow="Why Bharat.Ai"
+          eyebrow="Why Ek भारत.AI"
           title={
             <>
               Built on three <span className="serif-accent text-gradient">principles.</span>

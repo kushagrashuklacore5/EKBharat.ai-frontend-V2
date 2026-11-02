@@ -31,7 +31,7 @@ export function FinalCta({
           {body}
         </p>
         <div data-reveal="3" className="mt-10 flex flex-wrap justify-center gap-3">
-          <Button to="/build-with-us">Start Building with Bharat.Ai</Button>
+          <Button to="/build-with-us">Start Building with Ek भारत.AI</Button>
           <Button to="/contact" variant="secondary">
             Discuss Your Project
           </Button>

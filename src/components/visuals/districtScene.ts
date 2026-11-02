@@ -72,7 +72,7 @@ export function createDistrictScene(canvas: HTMLCanvasElement, opts: { reducedMo
   const orbShell = at(track(new THREE.SphereGeometry(0.34, 32, 32)), phys({ color: '#cdeef5', transmission: 0.8, thickness: 0.5, roughness: 0.04, transparent: true, opacity: 0.6 }), 0, y + 0.32, 0)
   G.spire.add(orbShell)
   const spireTop = y + 0.32
-  const spireLabel = new THREE.Sprite(track(new THREE.SpriteMaterial({ map: track(labelTex('Bharat.Ai core', 'Models · agents · workflows', '#5cc3be')), transparent: true, depthWrite: false })))
+  const spireLabel = new THREE.Sprite(track(new THREE.SpriteMaterial({ map: track(labelTex('Ek भारत.AI core', 'Models · agents · workflows', '#5cc3be')), transparent: true, depthWrite: false })))
   spireLabel.scale.set(2.2, 0.69, 1)
   spireLabel.center.set(0.5, 0)
   spireLabel.position.y = spireTop + 1.05
