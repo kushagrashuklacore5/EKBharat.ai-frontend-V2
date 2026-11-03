@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { JetSky, type JetProgress } from './JetSky'
+import { JetSky, PRELUDE_END, type JetProgress } from './JetSky'
 import { hasWebGL } from '../hero/heroScene'
 import { BrandMark } from '../ui/BrandMark'
-import { MARK_SRC } from '../ui/Logo'
 import { ScrollTrigger } from '../../lib/gsap'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 
@@ -17,26 +16,10 @@ const clamp = (v: number) => Math.min(1, Math.max(0, v))
 const range = (p: number, a: number, b: number) => clamp((p - a) / (b - a))
 const ease = (x: number) => 1 - Math.pow(1 - x, 3)
 
-/** The Ek भारत.AI symbol with its strata as separately movable layers. */
-/** The official mark; it rises and sharpens into place as the reveal progresses. */
-function LayeredSymbol({ sep }: { sep: number }) {
-  return (
-    <img
-      src={MARK_SRC}
-      alt=""
-      aria-hidden="true"
-      draggable={false}
-      className="h-full w-full object-contain"
-      style={{ transform: `translateY(${-sep * 6}px) rotate(${-sep * 3}deg)`, filter: `drop-shadow(0 ${8 + sep * 10}px ${14 + sep * 10}px rgba(15,39,71,${0.18 + sep * 0.12}))` }}
-    />
-  )
-}
-
 /**
  * Scroll-driven brand reveal. A tall section with a sticky stage; scroll
  * progress (not hijacked scrolling) choreographs the sequence:
- *  0.00–0.22  compact symbol fades in and grows
- *  0.18–0.55  symbol strata separate · wordmark wipes in beside it
+ *  0.02–0.40  wordmark wipes in
  *  0.45–0.78  extrusion builds behind the letterforms · strata settle
  *  0.75–1.00  the mark eases up and the brand statement resolves
  */
@@ -44,7 +27,7 @@ export function BrandReveal() {
   const reduced = useReducedMotion()
   const sectionRef = useRef<HTMLElement>(null)
   const [p, setP] = useState(reduced ? 1 : 0)
-  // fighter jet draws the ribbon: desktop with WebGL and full motion only
+  // tech prelude + jet-drawn ribbon: desktop with WebGL and full motion only
   const [jet, setJet] = useState(false)
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 900px)')
@@ -80,15 +63,16 @@ export function BrandReveal() {
       cancelAnimationFrame(raf)
       st.kill()
     }
-  }, [reduced])
+    // re-create when the jet mode changes the section height
+  }, [reduced, jet])
 
-  const lp = p
+  // with the tech prelude, the logo sequence runs on the remaining scroll
+  const lp = jet ? range(p, PRELUDE_END, 1) : p
   const jetProgress = useRef<JetProgress>({ p: 0, lp: 0 })
   jetProgress.current = { p, lp }
 
   const grow = ease(range(lp, 0, 0.22))
-  const sep = Math.sin(Math.PI * range(lp, 0.2, 0.75)) // separate, then settle
-  const wipe = ease(range(lp, 0.22, 0.52))
+  const wipe = ease(range(lp, 0.02, 0.4))
   const extrude = ease(range(lp, 0.45, 0.78))
   const settle = ease(range(lp, 0.75, 1))
   // last scroll stage: the logo's tricolour ribbon sweeps across the wordmark
@@ -101,7 +85,7 @@ export function BrandReveal() {
     <section
       ref={sectionRef}
       aria-labelledby="brand-title"
-      className={`relative ${reduced ? '' : jet ? 'h-[320vh]' : 'h-[210vh] md:h-[260vh]'}`}
+      className={`relative ${reduced ? '' : jet ? 'h-[520vh]' : 'h-[210vh] md:h-[260vh]'}`}
       style={{ background: 'linear-gradient(180deg, #d2dee4 0%, #dbe4e9 40%, #dbe4e9 70%, #d2dee4 100%)' }}
     >
       <h2 id="brand-title" className="sr-only">
@@ -120,14 +104,8 @@ export function BrandReveal() {
           style={{ transform: `translateY(${-settle * 9}vh) scale(${1 - settle * 0.12})`, transition: reduced ? undefined : 'none' }}
         >
           <div className="flex items-center justify-center gap-[2.5vw]">
-            <div
-              className="aspect-square w-[clamp(64px,13vw,170px)] shrink-0"
-              style={{ opacity: range(lp, 0, 0.08), transform: `translateX(${(1 - wipe) * 18}vw) scale(${0.45 + grow * 0.55})` }}
-            >
-              <LayeredSymbol sep={sep} />
-            </div>
             <div className="min-w-0 flex-1" style={{ clipPath: `inset(-20% ${(1 - wipe) * 100}% -40% 0)`, maxWidth: 980 }}>
-              <BrandMark extrude={extrude} ribbon={ribbonIn} chakra={chakraIn} depth={16} animate={false} />
+              <BrandMark extrude={extrude} ribbonTone="faded" ribbon={ribbonIn} chakra={chakraIn} depth={16} animate={false} />
             </div>
           </div>
           <p className="mt-6 text-center text-[13px] font-semibold text-muted" style={{ opacity: range(lp, 0.4, 0.6) * (1 - statement) }}>

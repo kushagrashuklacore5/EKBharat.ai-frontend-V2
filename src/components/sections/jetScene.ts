@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { createTechScene } from './techScene'
 
 /**
  * Fighter jet that draws the logo's tricolour ribbon in the final scroll phase.
@@ -9,6 +10,8 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
  */
 
 export interface JetFrame {
+  /** tech prelude progress 0..1 (null = not shown) */
+  tech: number | null
   /** jet screen position/tangent in canvas px (null = hidden) */
   ribbon: { x: number; y: number; tx: number; ty: number; trail: [number, number][]; fade: number } | null
 }
@@ -28,7 +31,9 @@ export function createJetScene(canvas: HTMLCanvasElement) {
 
   const scene = new THREE.Scene()
   const pmrem = T(new THREE.PMREMGenerator(renderer))
-  scene.environment = T(pmrem.fromScene(new RoomEnvironment(), 0.03).texture)
+  const env = T(pmrem.fromScene(new RoomEnvironment(), 0.03).texture)
+  scene.environment = env
+  const tech = createTechScene(env, T)
   const key = new THREE.DirectionalLight('#fff4e6', 2.2)
   key.position.set(-30, 50, 40)
   scene.add(key)
@@ -99,6 +104,7 @@ export function createJetScene(canvas: HTMLCanvasElement) {
 
   function render(f: JetFrame, _dt: number, time: number) {
     renderer.clear()
+    if (f.tech !== null) tech.render(renderer, f.tech, time, W / H)
     const r = f.ribbon
     if (!r) return
     const depth = 40
@@ -130,7 +136,7 @@ export function createJetScene(canvas: HTMLCanvasElement) {
         rtPos.set([tmp.x + Math.sin(i * 1.7 + time) * 0.05, tmp.y, tmp.z], k * 3)
         const age = i / PER
         rtSize[k] = 0.5 + age * 1.6
-        rtAlpha[k] = (1 - age) * 0.75 * r.fade
+        rtAlpha[k] = (1 - age) * 0.45 * r.fade // light, to match the faded ribbon
       }
     }
     rtGeo.attributes.position.needsUpdate = true

@@ -11,8 +11,12 @@ export interface JetProgress {
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
 const range = (p: number, a: number, b: number) => clamp((p - a) / (b - a))
 
+/** share of the section's scroll given to the wafer → GPU → circuits prelude */
+export const PRELUDE_END = 0.42
+
 /**
- * Full-stage canvas for the fighter jet that draws the logo ribbon. Three.js is code-split and
+ * Full-stage canvas for the tech prelude (wafer → GPU → circuits) and the
+ * fighter jet that draws the logo ribbon. Three.js is code-split and
  * only loaded when this mounts; rendering runs only while the section is on
  * screen and something is actually visible.
  */
@@ -93,9 +97,13 @@ export function JetSky({ progress, sectionRef }: { progress: MutableRefObject<Je
       const dt = Math.min((now - last) / 1000, 0.05)
       last = now
       time += dt
-      const ribbon = ribbonFrame(progress.current.lp)
-      if (api && ribbon) {
-        api.render({ ribbon }, dt, time)
+      const { p, lp } = progress.current
+      const ribbon = ribbonFrame(lp)
+      const tech = p < PRELUDE_END ? range(p, 0, PRELUDE_END) : null
+      // the prelude fades in at the top and dissolves just before the logo grows
+      canvas.style.opacity = tech === null ? '1' : String(range(tech, 0, 0.05) * (1 - range(tech, 0.86, 0.99)))
+      if (api && (ribbon || tech !== null)) {
+        api.render({ tech, ribbon }, dt, time)
         cleared = false
       } else if (api && !cleared) {
         api.clear()

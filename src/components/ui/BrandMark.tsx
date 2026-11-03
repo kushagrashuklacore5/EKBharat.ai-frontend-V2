@@ -16,7 +16,7 @@ interface Props {
   /** 0..1 — fades/scales in the rotating Ashoka Chakra behind भारत (animation only) */
   chakra?: number
   /** 'soft' = light, refined tricolour (large wordmark); 'full' = full-strength colours */
-  ribbonTone?: 'soft' | 'full'
+  ribbonTone?: 'soft' | 'full' | 'faded'
 }
 
 export const BRAND_NAME = 'Ek भारत.AI'
@@ -25,9 +25,9 @@ const FONT = { fontFamily: 'Manrope, Mukta, sans-serif', fontWeight: 800, fontSi
 
 /** Ribbon stripes, top → bottom. */
 const BANDS = [
-  { full: '#f39a1e', soft: '#f2b46a', softOpacity: 0.7 },
-  { full: '#ffffff', soft: '#ffffff', softOpacity: 0.9 },
-  { full: '#1f8a3c', soft: '#5aa56e', softOpacity: 0.7 },
+  { full: '#f39a1e', soft: '#f2b46a', softOpacity: 0.7, faded: '#f7cf9f', fadedOpacity: 0.5 },
+  { full: '#ffffff', soft: '#ffffff', softOpacity: 0.9, faded: '#ffffff', fadedOpacity: 0.7 },
+  { full: '#1f8a3c', soft: '#5aa56e', softOpacity: 0.7, faded: '#9fceab', fadedOpacity: 0.45 },
 ]
 /**
  * Ribbon centreline as one cubic Bézier in wordmark units:
@@ -256,7 +256,12 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
   const bands = (
     <>
       {bandPaths.map((d, i) => (
-        <path key={i} d={d} fill={soft ? BANDS[i].soft : BANDS[i].full} fillOpacity={soft ? BANDS[i].softOpacity : 1} />
+        <path
+          key={i}
+          d={d}
+          fill={ribbonTone === 'faded' ? BANDS[i].faded : soft ? BANDS[i].soft : BANDS[i].full}
+          fillOpacity={ribbonTone === 'faded' ? BANDS[i].fadedOpacity : soft ? BANDS[i].softOpacity : 1}
+        />
       ))}
     </>
   )

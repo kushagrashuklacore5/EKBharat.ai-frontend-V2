@@ -10,9 +10,8 @@ export function LogoMark({ size = 30, className = '' }: { size?: number; classNa
 }
 
 /**
- * Logo lockup, built like the approved artwork: symbol · divider · "Ek भारत.AI"
- * wordmark with the tricolour ribbon (exact logo colours). On dark surfaces it
- * sits on a light tile so the navy lettering stays legible.
+ * Logo: the "Ek भारत.AI" wordmark. On dark surfaces it sits on a light tile so
+ * the navy lettering stays legible.
  */
 export function Logo({ className = '', tone = 'light', compact = false }: { className?: string; tone?: 'light' | 'dark'; compact?: boolean }) {
   return (
@@ -21,13 +20,7 @@ export function Logo({ className = '', tone = 'light', compact = false }: { clas
       aria-label={`${BRAND_NAME} — home`}
       className={`inline-flex items-center gap-2.5 ${tone === 'dark' ? 'rounded-xl bg-[#ebf3fd] px-3.5 py-2' : ''} ${className}`}
     >
-      <LogoMark size={34} />
-      {!compact && (
-        <>
-          <span className="h-7 w-px bg-[#0f2747]/35" aria-hidden="true" />
-          <BrandMark depth={0} animate={false} ribbon={1} ribbonTone="soft" className="!h-[44px] !w-auto -my-1" />
-        </>
-      )}
+      <BrandMark depth={0} animate={false} className={`${compact ? '!h-[32px]' : '!h-[44px]'} !w-auto -my-1`} />
     </Link>
   )
 }
