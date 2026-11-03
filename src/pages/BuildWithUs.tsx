@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router'
 import { ArrowLeft, ArrowRight, Check, Copy, Download, FileText, Sparkles } from 'lucide-react'
 import { BUDGETS, DEPLOYMENTS, EMPTY_BRIEF, INTEGRATIONS, SOLUTION_TYPES, TIMELINES, USERS, briefToText, composeBrief, type BriefForm } from '../lib/brief'
 import { SITE } from '../lib/config'
+import { Jaali } from '../components/ui/Jaali'
 
 const STEPS = ['About you', 'The problem', 'Scope', 'Review']
 const DRAFT_KEY = 'aib-brief-draft'
@@ -134,7 +135,9 @@ export default function BuildWithUsPage() {
   return (
     <div className="relative overflow-x-clip">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[700px] bg-[radial-gradient(50%_60%_at_80%_10%,rgba(224,154,82,.08),transparent_70%)]" aria-hidden="true" />
+      <Jaali fade="right" opacity={0.05} size={44} className="h-[760px]" />
       <div className="container-x relative pb-28 pt-36 md:pt-44">
+        <div aria-hidden="true" className="tri-hairline mb-7 w-24" />
         <p className="eyebrow">Build with us</p>
         <h1 className="display mt-6 max-w-4xl text-[clamp(2.4rem,5.4vw,4.6rem)]">
           Describe your problem. <span className="serif-accent text-gradient">We’ll shape the solution.</span>

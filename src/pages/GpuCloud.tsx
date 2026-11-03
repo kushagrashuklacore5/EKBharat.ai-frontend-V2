@@ -5,6 +5,8 @@ import { Button } from '../components/ui/Button'
 import { Section } from '../components/ui/Section'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { GpuCatalogue } from '../components/gpu/GpuCatalogue'
+import { GpuExplorer } from '../components/gpu/GpuExplorer'
+import { PhotoReveal } from '../components/ui/PhotoReveal'
 import { FinalCta } from '../components/sections/FinalCta'
 import { useReveal } from '../hooks/useReveal'
 
@@ -33,6 +35,7 @@ export default function GpuCloudPage() {
   return (
     <div ref={ref}>
       <PageHero
+        level="L4 · Compute"
         visual={<GpuHero3D />}
         docTitle="GPU Cloud"
         accent="#5d7083"
@@ -72,6 +75,34 @@ export default function GpuCloudPage() {
               </li>
             ))}
           </ol>
+        </div>
+      </Section>
+      <Section id="gpu-explorer" className="pb-24">
+        <div className="container-x">
+          <SectionHeading
+            eyebrow="Inside the accelerator"
+            title={
+              <>
+                What a data-centre GPU <span className="serif-accent text-fg-soft">is made of.</span>
+              </>
+            }
+            lead="Scroll or use the slider to separate the card into its layers — from the backplate and multi-layer board to the GPU die, memory, cold plate, heat pipes and heatsink. Choose a layer to look closer."
+          />
+          <div data-reveal="2" className="mt-12">
+            <GpuExplorer />
+          </div>
+          <PhotoReveal
+            img="dc-cabling"
+            alt="Rows of compute racks with network cabling in a supercomputing data centre"
+            aspect="aspect-[16/7] sm:aspect-[24/6]"
+            className="mt-12"
+            sizes="100vw"
+            position="center 35%"
+            mono
+          />
+          <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-muted">
+            GPU capacity is provisioned through our infrastructure partners. The data-centre photograph is a representative image of a third-party facility.
+          </p>
         </div>
       </Section>
       <Section id="catalogue" className="pb-24">

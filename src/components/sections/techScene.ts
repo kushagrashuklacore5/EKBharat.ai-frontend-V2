@@ -1,32 +1,46 @@
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
+import { buildGpuAssembly, canvasTex, mulberry, route, traceGeometry, traceMaterial, type Keep, type TracePath } from './gpuAssembly'
 
 /**
  * Tech prelude for the brand reveal: one continuous camera move from a
- * silicon wafer, to a GPU package (with an exploded view of die, HBM and
- * interposer), to the board's circuit traces carrying data to other compute
- * nodes. Everything is a pure function of `t` (0..1 scroll progress) plus a
- * slow clock for the data pulses, so reverse scrolling plays it backwards.
+ * silicon wafer, to a data-centre GPU card shown as an engineering exploded
+ * view (backplate → PCB → power stage → GPU package → memory → thermal
+ * interface → cold plate → heat pipes → heatsink), to the board's traces
+ * carrying data to other compute nodes. Everything is a function of `t`
+ * (0..1 scroll progress) plus a slow clock, so reverse scrolling plays it
+ * backwards. A light cursor parallax sits on top of the camera move.
  */
 
 const GPU = new THREE.Vector3(14, 0, -6)
-const PETROL = new THREE.Color('#2b5f78')
-const TEAL = new THREE.Color('#2fb8c0')
-const SAFFRON = new THREE.Color('#ff9a3c')
-
-type Keep = <X extends { dispose(): void }>(x: X) => X
+const CARD_Y = 2.4
+const CARD_SCALE = 0.5
 
 export function createTechScene(env: THREE.Texture, T: Keep) {
+  // lighter build for weaker machines: fewer parts, smaller textures, no shadow maps
+  const low = (navigator.hardwareConcurrency || 8) <= 4 || ((navigator as Navigator & { deviceMemory?: number }).deviceMemory || 8) <= 4
+
   const scene = new THREE.Scene()
   scene.environment = env
   const key = new THREE.DirectionalLight('#fff3e2', 2.6)
-  key.position.set(-8, 14, 10)
-  scene.add(key)
-  const rim = new THREE.DirectionalLight('#7fd6dc', 1.6) // controlled teal reflection
-  rim.position.set(10, 4, -14)
+  key.position.set(GPU.x - 10, 18, GPU.z + 12)
+  key.target.position.copy(GPU)
+  scene.add(key, key.target)
+  if (!low) {
+    key.castShadow = true
+    key.shadow.mapSize.set(2048, 2048)
+    key.shadow.camera.left = key.shadow.camera.bottom = -11
+    key.shadow.camera.right = key.shadow.camera.top = 11
+    key.shadow.camera.near = 2
+    key.shadow.camera.far = 60
+    key.shadow.bias = -0.0004
+    key.shadow.normalBias = 0.02
+  }
+  const rim = new THREE.DirectionalLight('#7fd6dc', 1.8) // controlled teal reflection
+  rim.position.set(GPU.x + 12, 6, GPU.z - 16)
   scene.add(rim)
-  const warm = new THREE.PointLight('#ffb168', 18, 30) // subtle saffron highlight
-  warm.position.set(GPU.x - 6, 3, GPU.z + 5)
+  const warm = new THREE.PointLight('#ffb168', 22, 34) // restrained saffron highlight
+  warm.position.set(GPU.x - 8, 5, GPU.z + 6)
   scene.add(warm)
   scene.add(new THREE.HemisphereLight('#eef4f8', '#7d8a94', 0.8))
 
@@ -50,59 +64,23 @@ export function createTechScene(env: THREE.Texture, T: Keep) {
   wTop.rotation.x = -Math.PI / 2
   wTop.position.y = 0.061
   const wEdge = new THREE.Mesh(T(new THREE.CylinderGeometry(6, 6, 0.12, 128, 1, true)), phys({ color: '#b9c2ca', metalness: 1, roughness: 0.28 }))
-  wEdge.position.y = 0
   wafer.add(wTop, wEdge, blob(15, 0.35))
   scene.add(wafer)
 
-  // ───────────── GPU package ─────────────
-  const pkg = new THREE.Group()
-  pkg.position.copy(GPU)
-  const pcbMat = phys({ map: T(boardTexture()), metalness: 0.35, roughness: 0.55, clearcoat: 0.5, clearcoatRoughness: 0.35 })
-  const substrate = new THREE.Mesh(rbox(5.2, 0.2, 5.2, 0.06), pcbMat)
-  substrate.position.y = 0.1
-  const interposer = new THREE.Mesh(rbox(3.5, 0.08, 2.7, 0.02), phys({ color: '#7f8b96', metalness: 0.85, roughness: 0.3, iridescence: 0.3 }))
-  const die = new THREE.Mesh(rbox(1.9, 0.1, 1.6, 0.015), [
-    phys({ color: '#3a4652', metalness: 0.9, roughness: 0.3 }),
-    phys({ color: '#3a4652', metalness: 0.9, roughness: 0.3 }),
-    phys({ map: T(dieTexture()), metalness: 0.92, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.05, iridescence: 0.4 }),
-    phys({ color: '#3a4652', metalness: 0.9, roughness: 0.3 }),
-    phys({ color: '#3a4652', metalness: 0.9, roughness: 0.3 }),
-    phys({ color: '#3a4652', metalness: 0.9, roughness: 0.3 }),
-  ])
-  // HBM stacks: four layers each, so the exploded view can fan them apart
-  const hbmMat = phys({ color: '#20272e', metalness: 0.55, roughness: 0.35, clearcoat: 0.6 })
-  const hbmTopMat = phys({ map: T(hbmTexture()), metalness: 0.5, roughness: 0.3, clearcoat: 0.8 })
-  const hbmLayers: { m: THREE.Mesh; i: number }[] = []
-  const hbm = new THREE.Group()
-  ;[-1, 1].forEach((side) => {
-    for (let j = 0; j < 3; j++) {
-      for (let i = 0; i < 4; i++) {
-        const m = new THREE.Mesh(rbox(0.5, 0.045, 0.72, 0.008), i === 3 ? [hbmMat, hbmMat, hbmTopMat, hbmMat, hbmMat, hbmMat] : hbmMat)
-        m.position.set(side * 1.42, i * 0.05, (j - 1) * 0.82)
-        hbm.add(m)
-        hbmLayers.push({ m, i })
-      }
-    }
-  })
-  // decoupling capacitors around the package (one instanced draw)
-  const capGeo = rbox(0.12, 0.07, 0.22, 0.01)
-  const caps = new THREE.InstancedMesh(capGeo, phys({ color: '#b08a55', metalness: 0.8, roughness: 0.35 }), 64)
-  const dummy = new THREE.Object3D()
-  for (let i = 0; i < 64; i++) {
-    const side = i % 4
-    const k = Math.floor(i / 4) / 15 - 0.5
-    const r = 2.2
-    dummy.position.set(side < 2 ? (side ? r : -r) : k * 4, 0.235, side < 2 ? k * 4 : side === 2 ? r : -r)
-    dummy.rotation.y = side < 2 ? 0 : Math.PI / 2
-    dummy.updateMatrix()
-    caps.setMatrixAt(i, dummy.matrix)
-  }
-  // brushed-aluminium heat spreader that lifts away
-  const lid = new THREE.Mesh(rbox(4.0, 0.14, 3.2, 0.05), phys({ map: T(brushedTexture()), color: '#d4dade', metalness: 1, roughness: 0.32, clearcoat: 0.3 }))
-  pkg.add(substrate, interposer, die, hbm, caps, lid, blob(9, 0.4))
-  scene.add(pkg)
+  // ───────────── the GPU card, suspended over the board ─────────────
+  const gpu = buildGpuAssembly(T, low)
+  const pivot = new THREE.Group() // rotates about the card centre
+  pivot.position.set(GPU.x, CARD_Y, GPU.z)
+  gpu.group.scale.setScalar(CARD_SCALE)
+  pivot.add(gpu.group)
+  scene.add(pivot)
+  const cardShadow = blob(17, 0.42)
+  cardShadow.scale.set(1.25, 0.75, 1)
+  cardShadow.position.set(GPU.x, -0.01, GPU.z)
+  scene.add(cardShadow)
 
   // smaller compute nodes the traces connect to
+  const pcbMat = phys({ map: T(boardTexture()), metalness: 0.35, roughness: 0.55, clearcoat: 0.5, clearcoatRoughness: 0.35 })
   const nodeGeo = rbox(1.6, 0.14, 1.6, 0.04)
   const nodeDie = rbox(0.8, 0.08, 0.8, 0.01)
   const nodeDieMat = phys({ color: '#4a5866', metalness: 0.95, roughness: 0.18, iridescence: 0.5 })
@@ -124,134 +102,58 @@ export function createTechScene(env: THREE.Texture, T: Keep) {
     scene.add(n)
   })
 
-  // ───────────── circuit traces with data pulses ─────────────
+  // ───────────── board traces with data pulses ─────────────
   const rnd = mulberry(31)
-  const paths: THREE.Vector3[][] = []
-  // Manhattan/45° routing between two points on the board
-  const route = (a: THREE.Vector3, b: THREE.Vector3, bias: number) => {
-    const dx = b.x - a.x
-    const dz = b.z - a.z
-    const diag = Math.min(Math.abs(dx), Math.abs(dz)) * bias
-    const pts = [a.clone()]
-    const m1 = a.clone().add(new THREE.Vector3(Math.abs(dx) > Math.abs(dz) ? (Math.abs(dx) - diag) * Math.sign(dx) * 0.5 : 0, 0, Math.abs(dz) >= Math.abs(dx) ? (Math.abs(dz) - diag) * Math.sign(dz) * 0.5 : 0))
-    pts.push(m1)
-    pts.push(m1.clone().add(new THREE.Vector3(diag * Math.sign(dx), 0, diag * Math.sign(dz))))
-    pts.push(b.clone())
-    return pts
-  }
-  // a bus of parallel traces from the package to each node, and from the wafer
+  const paths: TracePath[] = []
   const bus = (from: THREE.Vector3, to: THREE.Vector3, count: number, spacing: number) => {
     const dir = to.clone().sub(from).setY(0).normalize()
     const nrm = new THREE.Vector3(-dir.z, 0, dir.x)
     for (let i = 0; i < count; i++) {
       const o = (i - (count - 1) / 2) * spacing
-      paths.push(route(from.clone().addScaledVector(nrm, o), to.clone().addScaledVector(nrm, o * 0.6), 0.85))
+      paths.push({ pts: route(from.clone().addScaledVector(nrm, o), to.clone().addScaledVector(nrm, o * 0.6), 0.85), hot: rnd() > 0.78 ? 1 : 0 })
     }
   }
   NODES.forEach((n) => {
     const d = n.clone().sub(GPU).setY(0).normalize()
-    bus(GPU.clone().addScaledVector(d, 2.7), n.clone().addScaledVector(d, -0.9), 5, 0.16)
+    bus(GPU.clone().addScaledVector(d, 3.2), n.clone().addScaledVector(d, -0.9), 5, 0.16)
   })
-  bus(new THREE.Vector3(5.6, 0, -1.6), GPU.clone().add(new THREE.Vector3(-2.7, 0, 0.6)), 6, 0.16)
-  // fine fan-out traces leaving the package edge
+  bus(new THREE.Vector3(5.6, 0, -1.6), GPU.clone().add(new THREE.Vector3(-6.8, 0, 0.6)), 6, 0.16)
+  // fine fan-out traces leaving the card's footprint
   for (let i = 0; i < 46; i++) {
     const side = i % 4
-    const k = (rnd() - 0.5) * 4.2
-    const s = side === 0 ? new THREE.Vector3(2.65, 0, k) : side === 1 ? new THREE.Vector3(-2.65, 0, k) : side === 2 ? new THREE.Vector3(k, 0, 2.65) : new THREE.Vector3(k, 0, -2.65)
+    const k = (rnd() - 0.5) * 5
+    const s = side === 0 ? new THREE.Vector3(6.6, 0, k * 0.6) : side === 1 ? new THREE.Vector3(-6.6, 0, k * 0.6) : side === 2 ? new THREE.Vector3(k * 2, 0, 2.9) : new THREE.Vector3(k * 2, 0, -2.9)
     const out = side === 0 ? new THREE.Vector3(1, 0, 0) : side === 1 ? new THREE.Vector3(-1, 0, 0) : side === 2 ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(0, 0, -1)
     const a = s.add(GPU)
-    const l1 = 1 + rnd() * 3
-    const p1 = a.clone().addScaledVector(out, l1)
+    const p1 = a.clone().addScaledVector(out, 1 + rnd() * 3)
     const turn = new THREE.Vector3(out.z, 0, -out.x).multiplyScalar(rnd() > 0.5 ? 1 : -1)
     const l2 = 1 + rnd() * 3
     const p2 = p1.clone().addScaledVector(out, l2 * 0.7).addScaledVector(turn, l2 * 0.7)
-    const p3 = p2.clone().addScaledVector(out, 2 + rnd() * 9)
-    paths.push([a, p1, p2, p3])
+    paths.push({ pts: [a, p1, p2, p2.clone().addScaledVector(out, 2 + rnd() * 9)], hot: rnd() > 0.78 ? 1 : 0 })
   }
-
-  // build every trace as a flat ribbon with distance-along-path attributes
-  const pos: number[] = []
-  const sAttr: number[] = []
-  const lenAttr: number[] = []
-  const seedAttr: number[] = []
-  const idx: number[] = []
-  const W = 0.045
-  paths.forEach((pts) => {
-    const seed = rnd()
-    let total = 0
-    for (let i = 1; i < pts.length; i++) total += pts[i].distanceTo(pts[i - 1])
-    let s = 0
-    for (let i = 1; i < pts.length; i++) {
-      const a = pts[i - 1]
-      const b = pts[i]
-      const d = b.clone().sub(a)
-      const l = d.length()
-      if (l < 1e-4) continue
-      d.normalize()
-      const n = new THREE.Vector3(-d.z, 0, d.x).multiplyScalar(W / 2)
-      const base = pos.length / 3
-      ;[a.clone().add(n), a.clone().sub(n), b.clone().add(n), b.clone().sub(n)].forEach((v, j) => {
-        pos.push(v.x, 0.012, v.z)
-        sAttr.push(j < 2 ? s : s + l)
-        lenAttr.push(total)
-        seedAttr.push(seed)
-      })
-      idx.push(base, base + 1, base + 2, base + 1, base + 3, base + 2)
-      s += l
-    }
-  })
-  const traceGeo = T(new THREE.BufferGeometry())
-  traceGeo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
-  traceGeo.setAttribute('aS', new THREE.Float32BufferAttribute(sAttr, 1))
-  traceGeo.setAttribute('aLen', new THREE.Float32BufferAttribute(lenAttr, 1))
-  traceGeo.setAttribute('aSeed', new THREE.Float32BufferAttribute(seedAttr, 1))
-  traceGeo.setIndex(idx)
-  const traceMat = T(
-    new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      side: THREE.DoubleSide,
-      uniforms: { uReveal: { value: 0 }, uFlow: { value: 0 }, uPulse: { value: 0 }, uBase: { value: PETROL }, uTeal: { value: TEAL }, uSaff: { value: SAFFRON } },
-      vertexShader: /* glsl */ `
-        attribute float aS; attribute float aLen; attribute float aSeed;
-        varying float vS; varying float vLen; varying float vSeed; varying float vFade;
-        void main(){ vS = aS; vLen = aLen; vSeed = aSeed;
-          vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          vFade = 1.0 - smoothstep(30.0, 62.0, -mv.z);
-          gl_Position = projectionMatrix * mv; }`,
-      fragmentShader: /* glsl */ `
-        uniform float uReveal; uniform float uFlow; uniform float uPulse; uniform vec3 uBase; uniform vec3 uTeal; uniform vec3 uSaff;
-        varying float vS; varying float vLen; varying float vSeed; varying float vFade;
-        void main(){
-          float drawn = 1.0 - smoothstep(-0.4, 0.0, vS - uReveal * (vLen + 0.5));
-          if (drawn < 0.01) discard;
-          // data packets travelling outward along each trace
-          float ph = fract(vS * 0.09 - uFlow * (0.6 + vSeed * 0.6) - vSeed * 7.0);
-          float pkt = smoothstep(0.0, 0.025, ph) * (1.0 - smoothstep(0.025, 0.11, ph)) * uPulse;
-          vec3 hot = vSeed > 0.78 ? uSaff : uTeal;
-          vec3 col = mix(uBase, hot, pkt);
-          gl_FragColor = vec4(col, (0.42 + pkt * 0.58) * drawn * vFade);
-          #include <colorspace_fragment>
-        }`,
-    }),
-  )
-  const traces = new THREE.Mesh(traceGeo, traceMat)
+  const traceMat = T(traceMaterial())
+  const traces = new THREE.Mesh(T(traceGeometry(paths, 0.045, 0.012, rnd)), traceMat)
   traces.frustumCulled = false
   traces.renderOrder = -1
   scene.add(traces)
 
   // ───────────── one continuous camera journey ─────────────
+  // keyframes are evenly spaced in t (parametric), camera and target paired
+  const V = (p: number[]) => new THREE.Vector3(p[0], p[1], p[2])
   const camPath = new THREE.CatmullRomCurve3(
     [
-      [-11, 7.5, 13],
+      [-11, 7.5, 13], // wafer, wide
       [-6, 4.2, 7.5],
-      [-2, 2.6, 3.6],
-      [5, 5, 6],
-      [8.6, 6.8, 4.6],
-      [10.8, 6.2, 1.8],
-      [15, 13, 4],
-      [GPU.x + 1, 27, GPU.z + 8],
-    ].map((p) => new THREE.Vector3(...(p as [number, number, number]))),
+      [-2, 2.6, 3.6], // gliding over the dies
+      [2.5, 6.5, 10],
+      [5.5, 7, 9.5], // the assembled card, three-quarter view
+      [1.5, 10.5, 11.5], // layers separate
+      [4, 9, 9.5], // orbit around the exploded stack
+      [10.2, 5, -0.4], // in close, between the layers, at the die
+      [7.5, 8.5, 6], // reassembling
+      [14.5, 15, 5],
+      [GPU.x + 1, 27, GPU.z + 8], // top-down over the board traces
+    ].map(V),
     false,
     'centripetal',
   )
@@ -260,34 +162,59 @@ export function createTechScene(env: THREE.Texture, T: Keep) {
       [0, 0, 0],
       [0.3, 0, -0.4],
       [1.5, 0, -1.6],
-      [9, 0, -4.5],
-      [GPU.x, 0.9, GPU.z],
-      [GPU.x, 0.9, GPU.z],
-      [GPU.x, 0, GPU.z - 2],
+      [10, 2, -5],
+      [GPU.x, CARD_Y + 0.4, GPU.z],
+      [GPU.x, CARD_Y + 2.6, GPU.z],
+      [GPU.x, CARD_Y + 2.6, GPU.z],
+      [GPU.x - 1, CARD_Y + 1.9, GPU.z],
+      [GPU.x, CARD_Y + 1.2, GPU.z],
+      [GPU.x, 1, GPU.z - 2],
       [GPU.x, 0, GPU.z - 3],
-    ].map((p) => new THREE.Vector3(...(p as [number, number, number]))),
+    ].map(V),
     false,
     'centripetal',
   )
 
+  // cursor parallax (eased), layered on top of the scripted camera
+  const mouse = new THREE.Vector2()
+  const par = new THREE.Vector2()
+  const onPointer = (ev: PointerEvent) => mouse.set((ev.clientX / window.innerWidth) * 2 - 1, (ev.clientY / window.innerHeight) * 2 - 1)
+  window.addEventListener('pointermove', onPointer, { passive: true })
+
+  const look = new THREE.Vector3()
+  const side = new THREE.Vector3()
+  const dieW = new THREE.Vector3()
+  const closeAt = new THREE.Vector3()
+  const CLOSE_OFFSET = new THREE.Vector3(-1.4, 1.25, 2.1)
+  let shadowsOn = false
   function render(renderer: THREE.WebGLRenderer, t: number, time: number, aspect: number) {
+    if (!low && !shadowsOn) {
+      renderer.shadowMap.enabled = true
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap
+      shadowsOn = true
+    }
+    wafer.rotation.y = -0.35 + t * 0.9
+    // exploded view: separates, holds while the camera travels through it, reassembles
+    const e = smooth01(range(t, 0.4, 0.56)) * (1 - smooth01(range(t, 0.74, 0.86)))
+    gpu.update(e, time, range(t, 0.44, 0.58))
+    pivot.rotation.y = -0.3 + range(t, 0.3, 0.9) * 0.7 + Math.sin(time * 0.2) * 0.03
+    pivot.updateMatrixWorld(true)
+
     cam.aspect = aspect
     cam.updateProjectionMatrix()
-    // parametric (not arc-length) so camera and target keyframes stay paired
     camPath.getPoint(t, cam.position)
-    cam.lookAt(lookPath.getPoint(t))
-
-    wafer.rotation.y = -0.35 + t * 0.9
-    // exploded view of the GPU package, reassembling as the camera rises
-    const e = smooth01(range(t, 0.44, 0.6)) * (1 - smooth01(range(t, 0.7, 0.8)))
-    lid.position.y = 0.42 + e * 2.4
-    lid.rotation.z = e * 0.12
-    ;(lid.material as THREE.MeshPhysicalMaterial).opacity = 1 - e * 0.55
-    ;(lid.material as THREE.MeshPhysicalMaterial).transparent = e > 0.001
-    interposer.position.y = 0.24 + e * 0.35
-    die.position.y = 0.33 + e * 1.15
-    hbm.position.y = 0.3 + e * 0.75
-    hbmLayers.forEach(({ m, i }) => (m.position.y = i * (0.05 + e * 0.16)))
+    lookPath.getPoint(t, look)
+    // close-up: dip into the gap above the die and look down onto its surface
+    const close = smooth01(range(t, 0.6, 0.67)) * (1 - smooth01(range(t, 0.73, 0.79)))
+    if (close > 0) {
+      gpu.dieWorld(dieW)
+      look.lerp(dieW, close)
+      cam.position.lerp(closeAt.copy(dieW).add(CLOSE_OFFSET), close)
+    }
+    par.lerp(mouse, 0.06)
+    side.subVectors(look, cam.position).cross(cam.up).normalize()
+    cam.position.addScaledVector(side, par.x * 0.6).addScaledVector(cam.up, -par.y * 0.4)
+    cam.lookAt(look)
 
     traceMat.uniforms.uReveal.value = smooth01(range(t, 0.2, 0.8))
     traceMat.uniforms.uFlow.value = time * 0.25 + t * 6 // pulses respond to scroll as well as time
@@ -295,21 +222,15 @@ export function createTechScene(env: THREE.Texture, T: Keep) {
     renderer.render(scene, cam)
   }
 
-  return { render }
+  return {
+    render,
+    dispose() {
+      window.removeEventListener('pointermove', onPointer)
+    },
+  }
 }
 
 /* ───────────── procedural textures ───────────── */
-
-function canvasTex(w: number, h: number, draw: (g: CanvasRenderingContext2D) => void) {
-  const c = document.createElement('canvas')
-  c.width = w
-  c.height = h
-  draw(c.getContext('2d')!)
-  const t = new THREE.CanvasTexture(c)
-  t.colorSpace = THREE.SRGBColorSpace
-  t.anisotropy = 8
-  return t
-}
 
 /** wafer top: die grid with thin-film tint, edge exclusion ring and notch */
 function waferTexture() {
@@ -355,41 +276,6 @@ function waferTexture() {
   })
 }
 
-/** GPU die: compute clusters around a central cache, I/O along the edges */
-function dieTexture() {
-  return canvasTex(1024, 1024, (g) => {
-    g.fillStyle = '#1e2a35'
-    g.fillRect(0, 0, 1024, 1024)
-    const r = mulberry(8)
-    const cols = 8
-    const rows = 6
-    const pad = 60
-    const cw = (1024 - pad * 2) / cols
-    const ch = (1024 - pad * 2 - 90) / rows
-    for (let j = 0; j < rows; j++) {
-      for (let i = 0; i < cols; i++) {
-        const x = pad + i * cw
-        const y = pad + j * ch + (j >= rows / 2 ? 90 : 0)
-        g.fillStyle = `hsl(${195 + r() * 20}, 30%, ${22 + r() * 6}%)`
-        g.fillRect(x + 4, y + 4, cw - 8, ch - 8)
-        g.fillStyle = 'rgba(120,210,220,0.22)'
-        for (let k = 0; k < 6; k++) g.fillRect(x + 10 + k * ((cw - 20) / 6), y + 12, (cw - 20) / 6 - 4, ch * 0.45)
-        g.fillStyle = 'rgba(255,180,110,0.25)'
-        g.fillRect(x + 10, y + ch * 0.62, cw - 20, 6)
-      }
-    }
-    // L2 cache band
-    g.fillStyle = '#3c5566'
-    g.fillRect(pad, 512 - 40, 1024 - pad * 2, 80)
-    g.fillStyle = 'rgba(220,235,240,0.25)'
-    for (let x = pad + 6; x < 1024 - pad; x += 12) g.fillRect(x, 512 - 34, 6, 68)
-    // I/O ring
-    g.strokeStyle = 'rgba(214,180,120,0.55)'
-    g.lineWidth = 6
-    g.strokeRect(24, 24, 976, 976)
-  })
-}
-
 /** package substrate: graphite navy laminate, copper traces, gold pads */
 function boardTexture() {
   return canvasTex(1024, 1024, (g) => {
@@ -419,30 +305,6 @@ function boardTexture() {
   })
 }
 
-function hbmTexture() {
-  return canvasTex(256, 256, (g) => {
-    g.fillStyle = '#1b2228'
-    g.fillRect(0, 0, 256, 256)
-    g.strokeStyle = 'rgba(160,190,200,0.25)'
-    g.lineWidth = 3
-    g.strokeRect(18, 18, 220, 220)
-    g.fillStyle = 'rgba(160,190,200,0.3)'
-    for (let y = 60; y < 200; y += 22) g.fillRect(40, y, 176, 6)
-  })
-}
-
-function brushedTexture() {
-  return canvasTex(512, 512, (g) => {
-    g.fillStyle = '#c8ced3'
-    g.fillRect(0, 0, 512, 512)
-    const r = mulberry(17)
-    for (let i = 0; i < 1600; i++) {
-      g.fillStyle = `rgba(${r() > 0.5 ? 255 : 90},${r() > 0.5 ? 255 : 100},${r() > 0.5 ? 255 : 110},${r() * 0.06})`
-      g.fillRect(0, r() * 512, 512, 1)
-    }
-  })
-}
-
 function blobTexture() {
   return canvasTex(128, 128, (g) => {
     const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64)
@@ -454,14 +316,5 @@ function blobTexture() {
   })
 }
 
-function mulberry(a: number) {
-  return () => {
-    a |= 0
-    a = (a + 0x6d2b79f5) | 0
-    let t = Math.imul(a ^ (a >>> 15), 1 | a)
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
 const range = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)))
 const smooth01 = (t: number) => t * t * (3 - 2 * t)

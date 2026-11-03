@@ -153,6 +153,7 @@ export function createJetScene(canvas: HTMLCanvasElement) {
     },
     dispose() {
       ro.disconnect()
+      tech.dispose()
       trash.forEach((x) => x.dispose())
       renderer.dispose()
     },

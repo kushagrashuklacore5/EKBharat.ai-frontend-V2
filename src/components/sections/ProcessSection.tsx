@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
 import { ScrollTrigger } from '../../lib/gsap'
@@ -70,7 +70,11 @@ export function ProcessSection({ index = '09' }: { index?: string }) {
                 >
                   {s.n}
                 </span>
-                <article className={`panel p-6 transition-all duration-700 sm:p-8 ${i === active ? 'border-line-strong' : 'opacity-60'}`}>
+                {/* each step sits one terrace lower, like a stepwell descending into delivery */}
+                <article
+                  className={`panel p-6 transition-all duration-700 sm:ml-[var(--step)] sm:p-8 ${i === active ? 'stepwell sandstone-lip border-line-strong' : 'opacity-60'}`}
+                  style={{ '--step': `${i * 16}px` } as CSSProperties}
+                >
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
                     <h3 className="text-2xl tracking-tight text-fg font-semibold">{s.t}</h3>
                     <span className="label text-faint">Output · {s.out}</span>

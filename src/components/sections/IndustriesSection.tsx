@@ -4,6 +4,7 @@ import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
 import { INDUSTRIES } from '../../lib/content'
 import { IndustryGlyph } from './IndustryGlyph'
+import { PhotoReveal } from '../ui/PhotoReveal'
 
 export function IndustryCard({ ind, i }: { ind: (typeof INDUSTRIES)[number]; i: number }) {
   return (
@@ -54,7 +55,12 @@ export function IndustriesSection({ index = '08' }: { index?: string }) {
           }
           lead="The same platform, shaped around the problems each industry actually has. Hover a card to see how we approach it."
         />
-        <div className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {/* where the work happens — representative, credited photographs */}
+        <div className="mt-14 grid gap-6 md:grid-cols-[1.35fr_1fr]">
+          <PhotoReveal img="port-logistics" alt="Gantry cranes loading a container ship at Jawaharlal Nehru Port" aspect="aspect-[16/7]" sizes="(min-width: 768px) 58vw, 100vw" />
+          <PhotoReveal img="college-lab" alt="Students working at computers in a college lab" aspect="aspect-[16/7] md:aspect-[17/10]" sizes="(min-width: 768px) 42vw, 100vw" position="center 40%" />
+        </div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {INDUSTRIES.map((ind, i) => (
             <IndustryCard key={ind.id} ind={ind} i={i} />
           ))}

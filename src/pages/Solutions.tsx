@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button'
 import { Section } from '../components/ui/Section'
 import { FinalCta } from '../components/sections/FinalCta'
 import { IndustryGlyph } from '../components/sections/IndustryGlyph'
+import { PhotoReveal } from '../components/ui/PhotoReveal'
 import { INDUSTRIES } from '../lib/content'
 import { useReveal } from '../hooks/useReveal'
 
@@ -15,6 +16,7 @@ export default function SolutionsPage() {
   return (
     <div ref={ref}>
       <PageHero
+        level="All levels"
         visual={<Scene3D kind="district" label="3D enterprise AI district: an AI core spire connected to hospital, bank, school, warehouse, factory, support centre and office buildings under a governance dome" fallback={<EnterpriseVisual />} />}
         docTitle="Industry Solutions"
         accent="#2e8d81"
@@ -34,6 +36,12 @@ export default function SolutionsPage() {
           </a>
         ))}
       </nav>
+      <Section className="pb-10">
+        <div className="container-x grid gap-6 md:grid-cols-[1.35fr_1fr]">
+          <PhotoReveal img="port-logistics" alt="Gantry cranes loading a container ship at Jawaharlal Nehru Port" aspect="aspect-[16/7]" sizes="(min-width: 768px) 58vw, 100vw" />
+          <PhotoReveal img="college-lab" alt="Students working at computers in a college lab" aspect="aspect-[16/7] md:aspect-[17/10]" sizes="(min-width: 768px) 42vw, 100vw" position="center 40%" />
+        </div>
+      </Section>
       <Section className="pb-24">
         <div className="container-x space-y-3">
           {INDUSTRIES.map((ind, k) => (

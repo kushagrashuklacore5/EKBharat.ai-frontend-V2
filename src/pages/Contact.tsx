@@ -44,6 +44,7 @@ export default function ContactPage() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[600px] bg-[radial-gradient(50%_60%_at_20%_10%,rgba(69,211,230,.08),transparent_70%)]" aria-hidden="true" />
       <div className="container-x relative grid gap-14 pb-28 pt-36 md:pt-44 lg:grid-cols-[1fr_1.1fr]">
         <div>
+          <div aria-hidden="true" className="tri-hairline mb-7 w-24" />
           <p className="eyebrow">Contact</p>
           <h1 className="display mt-6 text-[clamp(2.4rem,5.4vw,4.6rem)]">
             Let’s talk about <span className="serif-accent text-gradient">what you’re building.</span>

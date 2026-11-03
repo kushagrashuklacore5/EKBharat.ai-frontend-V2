@@ -413,7 +413,10 @@ function Studio() {
             colorMode="dark"
             attributionPosition="bottom-center"
           >
-            <Background variant={BackgroundVariant.Dots} gap={24} size={1.3} color="#3a536c" />
+            {/* Silicon Jaali node grid: an engineered lattice with via-like nodes at every crossing */}
+            <Background id="jaali-lines" variant={BackgroundVariant.Lines} gap={40} lineWidth={0.6} color="rgba(120,160,185,.10)" />
+            <Background id="jaali-vias" variant={BackgroundVariant.Dots} gap={40} size={2.2} color="#3a536c" />
+            <Background id="jaali-fine" variant={BackgroundVariant.Dots} gap={20} size={0.9} color="rgba(58,83,108,.55)" />
             <Controls showInteractive={false} position="bottom-left" />
             {wide && (
               <MiniMap

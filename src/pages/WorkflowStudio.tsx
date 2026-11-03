@@ -49,6 +49,7 @@ export default function WorkflowStudioPage() {
   return (
     <div ref={ref}>
       <PageHero
+        level="L1 · Workflows"
         visual={<Scene3D kind="workflow" label="3D Workflow Studio canvas: trigger, agent, knowledge, database, LLM, condition, approval and action nodes connected by data paths, running in sequence" fallback={<WorkflowVisual />} />}
         docTitle="AI Workflow Studio"
         eyebrow="Flagship product · AI Workflow Studio"

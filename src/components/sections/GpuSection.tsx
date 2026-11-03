@@ -2,6 +2,7 @@ import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Button } from '../ui/Button'
 import { GpuCatalogue } from '../gpu/GpuCatalogue'
+import { PhotoReveal } from '../ui/PhotoReveal'
 
 const MODES = [
   ['Pay-as-you-go', 'Hourly compute for experiments, batch jobs and spiky workloads.'],
@@ -40,6 +41,15 @@ export function GpuSection({ index = '06' }: { index?: string }) {
             </li>
           ))}
         </ul>
+        <PhotoReveal
+          img="dc-cabling"
+          alt="Rows of compute racks with network cabling in a supercomputing data centre"
+          aspect="aspect-[16/7] sm:aspect-[24/5]"
+          className="mt-12"
+          sizes="100vw"
+          position="center 35%"
+          mono
+        />
         <div data-reveal="2" className="mt-8">
           <GpuCatalogue />
         </div>

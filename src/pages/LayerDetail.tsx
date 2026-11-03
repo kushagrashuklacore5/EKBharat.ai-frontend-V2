@@ -6,6 +6,7 @@ import { LayerSlab } from '../components/architecture/LayerSlab'
 import { useReveal } from '../hooks/useReveal'
 import { Button } from '../components/ui/Button'
 import NotFound from './NotFound'
+import { Jaali } from '../components/ui/Jaali'
 
 export default function LayerDetail() {
   const { layerId } = useParams()
@@ -38,6 +39,7 @@ export default function LayerDetail() {
         style={{ background: `radial-gradient(60% 50% at 75% 30%, ${layer.accent}1f, transparent 70%)` }}
         aria-hidden="true"
       />
+      <Jaali fade="right" opacity={0.05} size={44} className="h-[900px]" />
       {/* ── Header ───────────────────────────── */}
       <section className="container-x relative grid min-h-[88vh] items-center gap-10 pb-16 pt-32 lg:grid-cols-[1.1fr_1fr]">
         <div>

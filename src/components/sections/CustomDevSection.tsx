@@ -1,10 +1,18 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Button } from '../ui/Button'
 import { USE_CASES } from '../../lib/content'
 
-const ART_COLORS = ['#2f7fa8', '#2e8d81', '#c4852f', '#2c64a0', '#5867a8', '#5d7083']
+const JOURNEY: [string, string][] = [
+  ['Idea', 'The process, the decision or the product you want to improve.'],
+  ['Data', 'What exists, where it lives and what it can safely be used for.'],
+  ['Model', 'Choose, adapt or fine-tune the models that fit the task.'],
+  ['Engineering', 'Integrations, agents, workflows, guardrails and tests.'],
+  ['Production', 'Deployed, monitored and maintained — with people in control.'],
+]
+
+const ART_COLORS =['#2f7fa8', '#2e8d81', '#c4852f', '#2c64a0', '#5867a8', '#5d7083']
 
 export function CustomDevSection({ index = '07' }: { index?: string }) {
   const [open, setOpen] = useState(0)
@@ -35,6 +43,19 @@ export function CustomDevSection({ index = '07' }: { index?: string }) {
             </div>
           </div>
         </div>
+
+        {/* the build journey, drawn as terraces stepping down into production */}
+        <ol aria-label="How a custom AI system is built" className="mt-14 grid gap-2 sm:grid-cols-5 sm:items-start">
+          {JOURNEY.map(([t, d], i) => (
+            <li key={t} data-reveal={String(i)} className="sm:[margin-top:var(--drop)]" style={{ '--drop': `${i * 18}px` } as CSSProperties}>
+              <div className="stepwell sandstone-lip h-full rounded-[10px] bg-ink-850/70 px-5 pb-5 pt-4">
+                <span className="font-mono text-[11px] font-semibold tracking-[0.14em] text-sandstone">0{i + 1}</span>
+                <p className="mt-2 text-[15px] font-semibold text-fg">{t}</p>
+                <p className="mt-1 text-[12.5px] leading-relaxed text-muted">{d}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
 
         {/* expanding panels */}
         <div data-reveal="2" className="mt-14 flex flex-col gap-2 lg:h-[420px] lg:flex-row">

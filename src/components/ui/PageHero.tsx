@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { useReveal } from '../../hooks/useReveal'
 import { PRODUCT_VISUALS, type VisualKind } from '../visuals/ProductVisuals'
+import { Jaali } from './Jaali'
 
 interface Props {
   eyebrow: string
@@ -12,10 +13,12 @@ interface Props {
   visual?: VisualKind | ReactNode
   accent?: string
   docTitle: string
+  /** where this page sits in the platform stack, e.g. 'L4 · Compute' */
+  level?: string
 }
 
 /** Header used by every inner page: copy on the left, a purpose-built visual on the right. */
-export function PageHero({ eyebrow, title, lead, actions, aside, visual, accent = '#9ad5e5', docTitle }: Props) {
+export function PageHero({ eyebrow, title, lead, actions, aside, visual, accent = '#9ad5e5', docTitle, level }: Props) {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   useEffect(() => {
@@ -23,8 +26,8 @@ export function PageHero({ eyebrow, title, lead, actions, aside, visual, accent 
   }, [docTitle])
   const Visual = typeof visual === 'string' ? PRODUCT_VISUALS[visual as VisualKind] : null
   const right = Visual ? (
-    <div className="deep-card surface-dark relative overflow-hidden rounded-[20px] px-4 py-8 sm:px-8">
-      <div className="pointer-events-none absolute inset-0 grid-bg opacity-40" aria-hidden="true" />
+    <div className="deep-card surface-dark stepwell relative overflow-hidden rounded-[20px] px-4 py-8 sm:px-8">
+      <Jaali fade="radial" opacity={0.06} size={40} ink="#bfe3ea" />
       <div className="relative">
         <Visual />
       </div>
@@ -39,10 +42,13 @@ export function PageHero({ eyebrow, title, lead, actions, aside, visual, accent 
         <div className="grid-bg absolute inset-0 opacity-50 [mask-image:radial-gradient(60%_70%_at_75%_30%,black,transparent)]" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#d2dee4]" />
       </div>
+      <Jaali fade="left" opacity={0.05} size={44} />
       <div className={`container-x relative grid items-center gap-12 ${right ? 'lg:grid-cols-[1fr_1.05fr] lg:gap-16' : 'lg:grid-cols-[1.4fr_1fr]'}`}>
         <div>
+          <div data-reveal aria-hidden="true" className="tri-hairline mb-7 w-24" />
           <p data-reveal className="eyebrow">
             {eyebrow}
+            {level && <span className="ml-3 font-mono text-[11px] tracking-[0.1em] text-sandstone">{level}</span>}
           </p>
           <h1 data-reveal="1" className="display mt-6 text-[clamp(2.5rem,4.6vw,4.4rem)] text-fg">
             {title}

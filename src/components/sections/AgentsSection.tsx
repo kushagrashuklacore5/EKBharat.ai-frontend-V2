@@ -2,6 +2,7 @@ import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Button } from '../ui/Button'
 import { AgentMesh } from '../agents/AgentMesh'
+import { MultilingualAgent } from '../agents/MultilingualAgent'
 
 export function AgentsSection({ index = '04' }: { index?: string }) {
   return (
@@ -27,6 +28,9 @@ export function AgentsSection({ index = '04' }: { index?: string }) {
         </div>
         <div data-reveal="2" className="mt-14">
           <AgentMesh />
+        </div>
+        <div data-reveal="2" className="mt-8">
+          <MultilingualAgent />
         </div>
       </div>
     </Section>

@@ -85,7 +85,7 @@ export function BrandReveal() {
     <section
       ref={sectionRef}
       aria-labelledby="brand-title"
-      className={`relative ${reduced ? '' : jet ? 'h-[520vh]' : 'h-[210vh] md:h-[260vh]'}`}
+      className={`relative ${reduced ? '' : jet ? 'h-[450vh]' : 'h-[210vh] md:h-[260vh]'}`}
       style={{ background: 'linear-gradient(180deg, #d2dee4 0%, #dbe4e9 40%, #dbe4e9 70%, #d2dee4 100%)' }}
     >
       <h2 id="brand-title" className="sr-only">

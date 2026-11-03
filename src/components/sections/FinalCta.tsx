@@ -1,5 +1,6 @@
 import { Section } from '../ui/Section'
 import { Button } from '../ui/Button'
+import { Jaali } from '../ui/Jaali'
 
 interface Props {
   title?: string
@@ -14,13 +15,34 @@ export function FinalCta({
     <Section labelledBy="cta-title" className="overflow-hidden bg-ink-900 py-28 md:py-36">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-[radial-gradient(40%_50%_at_50%_55%,rgba(69,211,230,.12),transparent_70%)]" />
-        <svg className="absolute left-1/2 top-1/2 h-[140%] -translate-x-1/2 -translate-y-1/2 opacity-40" viewBox="-200 -200 400 400">
-          {[80, 120, 160, 195].map((r, i) => (
-            <circle key={r} r={r} fill="none" stroke={i === 1 ? '#c4852f' : '#94aad2'} strokeOpacity={i === 1 ? 0.25 : 0.12} strokeDasharray={i % 2 ? '2 6' : undefined} />
+        {/* a stepwell seen from above: terraces stepping down to the centre */}
+        <svg className="absolute left-1/2 top-1/2 h-[150%] -translate-x-1/2 -translate-y-1/2 opacity-50" viewBox="-200 -200 400 400">
+          {[196, 168, 140, 112, 84, 56].map((s, i) => (
+            <rect
+              key={s}
+              x={-s}
+              y={-s}
+              width={s * 2}
+              height={s * 2}
+              rx={3}
+              fill={i % 2 ? 'rgb(23 46 66 / 0.025)' : 'none'}
+              stroke={i === 2 ? '#a8835a' : '#7f9bb0'}
+              strokeOpacity={i === 2 ? 0.35 : 0.16 + i * 0.03}
+            />
+          ))}
+          {/* stair flights on the four sides */}
+          {[0, 90, 180, 270].map((r) => (
+            <g key={r} transform={`rotate(${r})`} stroke="#7f9bb0" strokeOpacity="0.18">
+              {Array.from({ length: 9 }, (_, k) => (
+                <line key={k} x1={-14} x2={14} y1={-60 - k * 15} y2={-60 - k * 15} />
+              ))}
+            </g>
           ))}
         </svg>
+        <Jaali fade="radial" opacity={0.05} size={40} />
       </div>
       <div className="container-x relative text-center">
+        <div aria-hidden="true" data-reveal className="tri-hairline mx-auto mb-8 w-32" />
         <p data-reveal className="eyebrow justify-center">
           Start building
         </p>

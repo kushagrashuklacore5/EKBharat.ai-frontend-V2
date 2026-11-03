@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { ArrowRight } from 'lucide-react'
 import { Section } from '../ui/Section'
 import { PRODUCT_VISUALS, type VisualKind } from '../visuals/ProductVisuals'
+import { Jaali } from '../ui/Jaali'
 
 interface Product {
   id: string
@@ -13,6 +14,9 @@ interface Product {
   points: string[]
   to: string
   cta: string
+  /** platform level, read like a stepwell from the surface down */
+  level: string
+  depth: number
 }
 
 export const PRODUCTS: Product[] = [
@@ -25,6 +29,8 @@ export const PRODUCTS: Product[] = [
     points: ['Agent, LLM, RAG and database nodes', 'Branches, loops and parallel paths', 'Execution history and managed deployment'],
     to: '/workflow-studio',
     cta: 'Explore Workflow Studio',
+    level: 'L1 · Workflows',
+    depth: 0,
   },
   {
     id: 'p-agents',
@@ -35,6 +41,8 @@ export const PRODUCTS: Product[] = [
     points: ['Task delegation and shared context', 'Tool calling with memory', 'Human approval where it matters'],
     to: '/ai-agents',
     cta: 'How our agents work',
+    level: 'L2 · Agents',
+    depth: 1,
   },
   {
     id: 'p-router',
@@ -45,6 +53,8 @@ export const PRODUCTS: Product[] = [
     points: ['Provider abstraction behind one API', 'Policy-based routing', 'Fallbacks and structured outputs'],
     to: '/ai-orchestration',
     cta: 'See model routing',
+    level: 'L3 · Models',
+    depth: 2,
   },
   {
     id: 'p-gpu',
@@ -55,6 +65,8 @@ export const PRODUCTS: Product[] = [
     points: ['Pay-as-you-go, monthly or dedicated', 'Model hosting and serving', 'Sized and managed by our team'],
     to: '/gpu-cloud',
     cta: 'Explore GPU infrastructure',
+    level: 'L4 · Compute',
+    depth: 3,
   },
   {
     id: 'p-custom',
@@ -65,6 +77,8 @@ export const PRODUCTS: Product[] = [
     points: ['Assistants, RAG, voice and document AI', 'Integrations with your systems', 'Managed after launch'],
     to: '/custom-ai-development',
     cta: 'Start a project',
+    level: 'All levels · built for you',
+    depth: 0,
   },
   {
     id: 'p-enterprise',
@@ -75,6 +89,8 @@ export const PRODUCTS: Product[] = [
     points: ['Industry-specific solutions', 'Permission-aware knowledge', 'Audit trails and controls'],
     to: '/solutions',
     cta: 'View solutions',
+    level: 'All levels · by industry',
+    depth: 0,
   },
 ]
 
@@ -118,11 +134,12 @@ export function ProductExplorer() {
                   type="button"
                   onClick={() => go(i)}
                   aria-current={active === i ? 'true' : undefined}
+                  style={{ marginLeft: p.depth * 12 }}
                   className={`group flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-left transition-colors duration-500 ${
                     active === i ? 'bg-ink-850 shadow-[var(--shadow-sm)]' : 'hover:bg-ink-850/50'
                   }`}
                 >
-                  <span className={`font-mono text-[12px] transition-colors ${active === i ? 'text-teal' : 'text-faint'}`}>0{i + 1}</span>
+                  <span className={`w-6 font-mono text-[11px] transition-colors ${active === i ? 'text-sandstone' : 'text-faint'}`}>{p.level.startsWith('L') ? p.level.slice(0, 2) : '··'}</span>
                   <span className={`text-[15px] font-semibold transition-colors ${active === i ? 'text-fg' : 'text-muted group-hover:text-fg-soft'}`}>{p.name}</span>
                   <span className={`ml-auto h-0.5 rounded-full bg-teal transition-all duration-700 ${active === i ? 'w-8 opacity-100' : 'w-0 opacity-0'}`} />
                 </button>
@@ -149,10 +166,11 @@ export function ProductExplorer() {
                   on ? '' : 'lg:scale-[.975] lg:brightness-[.82] lg:saturate-[.55]'
                 }`}
               >
+                <Jaali fade={flip ? 'left' : 'right'} opacity={0.05} size={42} ink="#bfe3ea" />
                 <div className={`grid h-full items-center gap-2 p-7 lg:min-h-[560px] sm:p-10 xl:grid-cols-[0.95fr_1.25fr] ${flip ? 'xl:[&>*:first-child]:order-2' : ''}`}>
                   <div className="relative z-10">
-                    <p className="font-mono text-[12px] text-cyan">
-                      0{i + 1} <span className="ml-2 font-sans font-semibold text-muted">{p.kicker}</span>
+                    <p className="font-mono text-[12px] text-sandstone">
+                      {p.level} <span className="ml-2 font-sans font-semibold text-muted">{p.kicker}</span>
                     </p>
                     <h3 className="display mt-4 text-[clamp(2rem,3.2vw,2.9rem)] !font-normal text-fg">{p.name}</h3>
                     <p className="mt-4 max-w-md text-[15.5px] leading-relaxed text-fg-soft">{p.line}</p>

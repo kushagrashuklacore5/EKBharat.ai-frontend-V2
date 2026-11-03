@@ -46,10 +46,79 @@ function decide(task: Task, policy: Policy): { primary: Pool; fallback: Pool; wh
 const POOL_ORDER: Pool[] = ['frontier', 'compact', 'code', 'open']
 const PY = [70, 160, 250, 340]
 
+/**
+ * Radial view of the same routing decision. Geometry borrows the 24 evenly
+ * spaced spokes of a chakra as an engineering grid: the policy engine is the
+ * hub, each model pool sits on a spoke, and the chosen route lights up.
+ */
+const SPOKE: Record<Pool, number> = { frontier: -60, compact: -20, code: 20, open: 60 }
+function RadialRoute({ served, failed, color, policy }: { served: Pool; failed: Pool | null; color: string; policy: string }) {
+  const cx = 300
+  const cy = 300
+  const pt = (deg: number, r: number) => [cx + Math.cos((deg * Math.PI) / 180) * r, cy + Math.sin((deg * Math.PI) / 180) * r] as const
+  return (
+    <svg viewBox="0 0 760 600" className="w-full" role="img" aria-label={`Request routed to ${POOLS[served].name}`}>
+      {/* 24-spoke grid */}
+      {Array.from({ length: 24 }, (_, i) => {
+        const [x1, y1] = pt(i * 15, 66)
+        const [x2, y2] = pt(i * 15, 250)
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(24,43,61,.07)" />
+      })}
+      <circle cx={cx} cy={cy} r={250} fill="none" stroke="rgba(24,43,61,.10)" strokeDasharray="2 6" />
+      <circle cx={cx} cy={cy} r={160} fill="none" stroke="rgba(24,43,61,.07)" />
+      {/* incoming request on the left spoke */}
+      <path d={`M150 ${cy} H${cx - 62}`} stroke={color} strokeWidth="1.6" />
+      <g>
+        <rect x={10} y={cy - 30} width={140} height={60} rx={12} fill="var(--color-ink-850)" stroke="rgba(24,43,61,.25)" />
+        <text x={24} y={cy - 4} fill="var(--color-fg)" fontFamily="Manrope" fontWeight="700" fontSize="13.5">Your application</text>
+        <text x={24} y={cy + 13} fill="var(--color-muted)" fontFamily="Manrope" fontWeight="500" fontSize="10.5">one API call · gateway</text>
+      </g>
+      {/* routes to each pool */}
+      {POOL_ORDER.map((p) => {
+        const a = SPOKE[p]
+        const [hx, hy] = pt(a, 62)
+        const [ex, ey] = pt(a, 232)
+        const on = p === served
+        const bad = p === failed
+        return (
+          <g key={p}>
+            <line x1={hx} y1={hy} x2={ex} y2={ey} stroke={on ? POOLS[p].color : bad ? '#c04a4a' : 'rgba(24,43,61,.16)'} strokeWidth={on ? 2 : 1} strokeDasharray={bad ? '4 4' : undefined} style={{ transition: 'stroke .4s' }} />
+            {on && (
+              <circle r="4.5" fill="#fff" style={{ filter: `drop-shadow(0 2px 3px ${POOLS[p].color})` }}>
+                <animateMotion dur="1.3s" repeatCount="indefinite" path={`M150 ${cy} L${cx - 62} ${cy} L${hx} ${hy} L${ex} ${ey}`} />
+              </circle>
+            )}
+            <g opacity={on ? 1 : bad ? 0.85 : 0.72} style={{ transition: 'opacity .4s' }}>
+              <rect x={ex} y={ey - 28} width={196} height={56} rx={12} fill="var(--color-ink-850)" stroke={on ? POOLS[p].color : bad ? '#c04a4a' : 'rgba(24,43,61,.2)'} />
+              <text x={ex + 14} y={ey - 6} fill="var(--color-fg)" fontFamily="Manrope" fontWeight="700" fontSize="13">{POOLS[p].name}</text>
+              <text x={ex + 14} y={ey + 11} fill={bad ? '#c04a4a' : 'var(--color-muted)'} fontFamily="Manrope" fontWeight="500" fontSize="10.5">
+                {bad ? 'unavailable → fallback' : POOLS[p].via}
+              </text>
+            </g>
+          </g>
+        )
+      })}
+      {/* hub: the policy engine */}
+      <circle cx={cx} cy={cy} r={62} fill="var(--color-ink-850)" stroke={color} strokeWidth="1.5" style={{ transition: 'stroke .4s' }} />
+      {Array.from({ length: 24 }, (_, i) => {
+        const [x1, y1] = pt(i * 15 + 7.5, 52)
+        const [x2, y2] = pt(i * 15 + 7.5, 60)
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeOpacity=".35" />
+      })}
+      <text x={cx} y={cy - 4} textAnchor="middle" fill="var(--color-fg)" fontFamily="Manrope" fontWeight="700" fontSize="12.5">Policy engine</text>
+      <text x={cx} y={cy + 13} textAnchor="middle" fill="var(--color-muted)" fontFamily="Manrope" fontWeight="500" fontSize="10.5">{policy}</text>
+      <text x={20} y={585} fill="var(--color-faint)" fontFamily="Manrope" fontWeight="500" fontSize="10.5">
+        Outputs are validated against a schema before they are returned.
+      </text>
+    </svg>
+  )
+}
+
 export function ModelRouter() {
   const [task, setTask] = useState<Task>('reason')
   const [policy, setPolicy] = useState<Policy>('balanced')
   const [outage, setOutage] = useState(false)
+  const [view, setView] = useState<'radial' | 'pipeline'>('radial')
   const d = useMemo(() => decide(task, policy), [task, policy])
   const served: Pool = outage ? d.fallback : d.primary
   const color = POOLS[served].color
@@ -103,6 +172,22 @@ export function ModelRouter() {
       <div className="grid lg:grid-cols-[1.7fr_1fr]">
         {/* route diagram */}
         <div className="relative border-b border-line p-4 lg:border-b-0 lg:border-r">
+          <div className="mb-2 flex justify-end gap-1" role="group" aria-label="Diagram view">
+            {(['radial', 'pipeline'] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={view === v}
+                onClick={() => setView(v)}
+                className={`rounded-md px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.1em] transition-colors ${view === v ? 'bg-ink-800 text-fg' : 'text-faint hover:text-fg-soft'}`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+          {view === 'radial' ? (
+            <RadialRoute served={served} failed={outage && d.primary !== d.fallback ? d.primary : null} color={color} policy={POLICIES.find((p) => p.id === policy)!.label.toLowerCase()} />
+          ) : (
           <svg viewBox="0 0 900 410" className="w-full" role="img" aria-label={`Request routed to ${POOLS[served].name}`}>
             {/* app → gateway → policy */}
             <Box x={20} y={175} w={130} label="Your application" sub="one API call" />
@@ -170,6 +255,7 @@ export function ModelRouter() {
               bars: quality · speed · cost-efficiency (relative, illustrative)
             </text>
           </svg>
+          )}
         </div>
 
         {/* decision explanation */}

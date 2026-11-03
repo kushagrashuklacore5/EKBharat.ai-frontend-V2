@@ -32,6 +32,7 @@
   --color-amber: #9a6f22;
   --color-danger: #b84848;
   --color-navy: #102a40;
+  --color-sandstone: #a8835a;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
@@ -73,6 +74,7 @@
   --color-leaf: #8cc39b;
   --color-amber: #e2c48f;
   --color-danger: #ef8c8c;
+  --color-sandstone: #d9bd92;
   --grid-line: rgb(255 255 255 / 0.04);
   --motif: rgb(255 255 255 / 1);
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.2);
@@ -105,6 +107,7 @@
   --color-leaf: #3f7d58;
   --color-amber: #9a6f22;
   --color-danger: #b84848;
+  --color-sandstone: #a8835a;
   --grid-line: rgb(23 46 66 / 0.05);
   --shadow-sm: 0 1px 2px rgb(24 43 61 / 0.05), 0 2px 6px -2px rgb(24 43 61 / 0.06);
   --shadow-md: 0 1px 2px rgb(24 43 61 / 0.04), 0 12px 32px -14px rgb(24 43 61 / 0.18);
@@ -406,3 +409,69 @@ strong, b { font-weight: 700; }
 @keyframes chakra-spin { to { transform: rotate(360deg); } }
 .chakra-spin { transform-box: fill-box; transform-origin: center; animation: chakra-spin 36s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .chakra-spin { animation: none; } }
+
+/* ═════════════════════ Indian design language ═════════════════════
+   Stepwell Stack (structure) + Silicon Jaali (texture).
+   Tricolour is an accent only: hairlines and data paths, never fills.      */
+
+/* Silicon Jaali: an engineered lattice — orthogonal grid, 45° diamonds and
+   via-like nodes at the crossings. Drawn as a mask so it takes any colour. */
+:root {
+  --jaali-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23000' stroke-width='0.9'%3E%3Cpath d='M0 20 20 0 40 20 20 40Z'/%3E%3Cpath d='M0 .45H40M.45 0V40'/%3E%3Cpath d='M20 12.5 27.5 20 20 27.5 12.5 20Z'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Ccircle cx='0' cy='0' r='2.1'/%3E%3Ccircle cx='40' cy='0' r='2.1'/%3E%3Ccircle cx='0' cy='40' r='2.1'/%3E%3Ccircle cx='40' cy='40' r='2.1'/%3E%3Ccircle cx='20' cy='20' r='1.3'/%3E%3C/g%3E%3C/svg%3E");
+  --jaali-ink: var(--color-fg);
+}
+.jaali {
+  background-color: var(--jaali-ink);
+  -webkit-mask-image: var(--jaali-svg);
+  mask-image: var(--jaali-svg);
+  -webkit-mask-size: var(--jaali-size, 40px) var(--jaali-size, 40px);
+  mask-size: var(--jaali-size, 40px) var(--jaali-size, 40px);
+}
+
+/* Tricolour hairline: the only place the full tricolour appears as a band */
+.tri-hairline {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e8913a 12%, #e8913a 36%, #f4f1e8 36%, #f4f1e8 64%, #2f8f53 64%, #2f8f53 88%, transparent);
+  opacity: 0.85;
+}
+
+/* Stepwell recess: concentric terraces stepping down into a panel */
+.stepwell {
+  box-shadow:
+    inset 0 0 0 1px var(--color-line-strong),
+    inset 0 0 0 7px color-mix(in oklab, var(--color-ink-850) 55%, transparent),
+    inset 0 0 0 8px var(--color-line),
+    inset 0 0 0 15px color-mix(in oklab, var(--color-ink-800) 45%, transparent),
+    inset 0 0 0 16px var(--color-line),
+    inset 0 18px 30px -18px rgb(11 32 52 / 0.25);
+}
+/* sandstone lip on the top edge of a terrace */
+.sandstone-lip {
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-sandstone) 70%, transparent);
+}
+
+/* photo treatments: jaali reveal, monochrome wash */
+.photo-reveal { clip-path: inset(0 0 0 0 round 14px); transition: clip-path 1.4s var(--ease-out-expo), filter 1.4s var(--ease-out-expo); }
+.photo-reveal[data-in='false'] { clip-path: inset(12% 6% 12% 6% round 14px); filter: saturate(0.4) brightness(1.05); }
+.photo-reveal .jaali-veil { transition: opacity 1.6s var(--ease-out-expo), transform 1.6s var(--ease-out-expo); }
+.photo-reveal[data-in='true'] .jaali-veil { opacity: 0.0; transform: scale(1.06); }
+.mono-photo { filter: grayscale(1) contrast(1.05) brightness(1.08); }
+
+/* tricolour data paths */
+@keyframes tri-flow { to { stroke-dashoffset: -240; } }
+.tri-flow { stroke-dasharray: 2 238; animation: tri-flow 6s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .tri-flow { animation: none; stroke-dasharray: none; opacity: 0.35; }
+  .photo-reveal, .photo-reveal .jaali-veil { transition: none; }
+  .photo-reveal[data-in='false'] { clip-path: inset(0 0 0 0 round 14px); filter: none; }
+}
+
+/* photo seen through the jaali: visible in the lattice openings only */
+.jaali-window {
+  -webkit-mask-image: linear-gradient(#000, #000), var(--jaali-svg);
+  mask-image: linear-gradient(#000, #000), var(--jaali-svg);
+  -webkit-mask-size: 100% 100%, 26px 26px;
+  mask-size: 100% 100%, 26px 26px;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}

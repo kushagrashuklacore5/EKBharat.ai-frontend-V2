@@ -52,6 +52,32 @@ const cfg = (...pairs: [string, string][]) => pairs.map(([label, value]) => ({ l
 
 export const WORKFLOWS: WorkflowDef[] = [
   {
+    id: 'gst',
+    name: 'GST Invoice → Tally',
+    description:
+      'Demonstration workflow (not a customer deployment): read a GST invoice, extract and validate its tax details, reconcile it, route exceptions to finance and post an approved purchase voucher to Tally.',
+    nodes: [
+      { id: 't', x: 0, y: 0, data: { kind: 'trigger', title: 'GST invoice received', subtitle: 'Email · PDF or scan', config: cfg(['Mailbox', 'accounts-payable'], ['Types', 'PDF, JPG, PNG']), output: 'INV-2611-0418.pdf received from a supplier (sample)' } },
+      { id: 'x', x: 250, y: 0, data: { kind: 'agent', title: 'Data Extraction', subtitle: 'OCR + LLM · structured', config: cfg(['Fields', 'GSTIN, invoice no., HSN/SAC, taxable value, CGST/SGST/IGST'], ['Languages', 'English, Hindi']), output: 'Taxable ₹1,00,000 · IGST 18% ₹18,000 · total ₹1,18,000 · 4 HSN lines' } },
+      { id: 'v', x: 500, y: 0, data: { kind: 'integration', title: 'GSTIN check', subtitle: 'HTTP · verification service', config: cfg(['Check', 'GSTIN format + status'], ['Timeout', '10s']), output: 'Supplier GSTIN format valid · status active (sample)' } },
+      { id: 'r', x: 750, y: 0, data: { kind: 'database', title: 'Reconcile', subtitle: 'PO + purchase register', config: cfg(['Match', 'PO number, HSN, amounts'], ['Tolerance', '±1%']), output: 'PO matched · HSN mismatch on line 3' } },
+      { id: 'c', x: 0, y: 250, data: { kind: 'condition', title: 'Clean match?', subtitle: 'Amounts, HSN and tax rate', config: cfg(['Rule', 'variance ≤ 1% AND hsn_match']), output: 'Exception on line 3 → finance review', takes: 'h' } },
+      { id: 'h', x: 270, y: 180, data: { kind: 'human', title: 'Finance approval', subtitle: 'Accounts lead', config: cfg(['Assignee', 'Accounts lead'], ['Timeout', '8h → escalate']), output: 'Approved with corrected HSN code' } },
+      { id: 'y', x: 540, y: 250, data: { kind: 'integration', title: 'Tally entry', subtitle: 'Purchase voucher', config: cfg(['Voucher', 'Purchase'], ['Ledger', 'mapped by supplier']), output: 'Purchase voucher posted to Tally (demo)' } },
+      { id: 'o', x: 790, y: 250, data: { kind: 'output', title: 'Notify AP team', subtitle: 'Email · team chat', config: cfg(['Channel', '#accounts-payable']), output: 'Summary sent with audit trail' } },
+    ],
+    edges: [
+      { id: 'e1', source: 't', target: 'x' },
+      { id: 'e2', source: 'x', target: 'v' },
+      { id: 'e3', source: 'v', target: 'r' },
+      { id: 'e4', source: 'r', target: 'c' },
+      { id: 'e5', source: 'c', target: 'h', label: 'exception' },
+      { id: 'e6', source: 'c', target: 'y', label: 'clean' },
+      { id: 'e7', source: 'h', target: 'y' },
+      { id: 'e8', source: 'y', target: 'o' },
+    ],
+  },
+  {
     id: 'support',
     name: 'AI Customer Support',
     description: 'Classify an incoming message, ground the answer in your help centre, and route sensitive replies for approval.',

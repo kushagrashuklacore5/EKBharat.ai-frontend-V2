@@ -1,5 +1,6 @@
 import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
+import { Jaali } from '../ui/Jaali'
 
 // isometric diamond for a plate centred at (cx, cy) with half-width w
 const plate = (cx: number, cy: number, w: number) => `M${cx} ${cy - w * 0.5} L${cx + w} ${cy} L${cx} ${cy + w * 0.5} L${cx - w} ${cy} Z`
@@ -81,6 +82,7 @@ const PILLARS = [
     body: 'Control over your data, models, infrastructure and workflows where deployment arrangements permit.',
     points: ['Self-hosted and open-weight model options', 'Choice of deployment environment', 'Your data used only for your workloads'],
     color: '#c4852f',
+    frame: 'stepwell sandstone-lip md:mt-0',
   },
   {
     k: 'Composable',
@@ -88,6 +90,7 @@ const PILLARS = [
     body: 'Integrate with existing technology stacks, APIs, models and business applications.',
     points: ['Connectors, webhooks & custom nodes', 'Bring your own models and providers', 'Adopt one capability or the full stack'],
     color: '#2f7fa8',
+    frame: 'md:mt-12',
   },
   {
     k: 'Secure',
@@ -95,6 +98,7 @@ const PILLARS = [
     body: 'Enterprise-oriented access control, isolation, governance and protection.',
     points: ['Role-based access & approvals', 'Credential isolation & redaction', 'Run histories and audit logging'],
     color: '#2e8d81',
+    frame: 'outline outline-1 outline-offset-[7px] outline-line-strong md:mt-24',
   },
 ]
 
@@ -117,7 +121,9 @@ export function PillarsSection({ index = '10' }: { index?: string }) {
           {PILLARS.map((p, i) => {
             const Art = p.art
             return (
-              <article key={p.k} data-reveal={String(i)} className="pillar group relative flex flex-col rounded-[14px] bg-ink-850 p-8 shadow-[var(--shadow-md)] sm:p-10">
+              <article key={p.k} data-reveal={String(i)} className={`pillar group relative flex flex-col overflow-hidden rounded-[14px] bg-ink-850 p-8 shadow-[var(--shadow-md)] sm:p-10 ${p.frame}`}>
+                {/* each principle has its own surface: stepwell recess · jaali lattice · guard frame */}
+                {i === 1 && <Jaali fade="top" opacity={0.09} size={30} ink="#bfe3ea" />}
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-700 group-hover:opacity-100" style={{ background: `linear-gradient(90deg, transparent, ${p.color}, transparent)` }} />
                 <div className="mx-auto w-full max-w-[280px] py-4">
                   <Art />

@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button'
 import { Section } from '../components/ui/Section'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { AgentMesh } from '../components/agents/AgentMesh'
+import { MultilingualAgent } from '../components/agents/MultilingualAgent'
 import { FinalCta } from '../components/sections/FinalCta'
 import { useReveal } from '../hooks/useReveal'
 
@@ -37,6 +38,7 @@ export default function AiAgentsPage() {
   return (
     <div ref={ref}>
       <PageHero
+        level="L2 · Agents"
         visual={<Scene3D kind="agents" label="3D multi-agent system: an orchestrator tower delegating tasks to research, analysis, verification, tools and report agents around a shared memory ring" fallback={<AgentsVisual />} />}
         docTitle="AI Agents & Multi-Agent Orchestration"
         accent="#2c64a0"
@@ -59,6 +61,9 @@ export default function AiAgentsPage() {
       <Section className="pb-24">
         <div className="container-x">
           <AgentMesh />
+          <div data-reveal className="mt-8">
+            <MultilingualAgent />
+          </div>
         </div>
       </Section>
       <Section className="py-24">

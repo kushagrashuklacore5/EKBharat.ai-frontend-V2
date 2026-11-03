@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { Logo } from '../ui/Logo'
 import { BrandMark } from '../ui/BrandMark'
+import { Jaali } from '../ui/Jaali'
 import { SITE } from '../../lib/config'
 
 const COLS: { title: string; links: [string, string][] }[] = [
@@ -45,6 +46,7 @@ const COLS: { title: string; links: [string, string][] }[] = [
       ['Contact', '/contact'],
       ['Privacy', '/legal#privacy'],
       ['Terms', '/legal#terms'],
+      ['Image credits', '/legal#image-credits'],
     ],
   },
 ]
@@ -55,6 +57,8 @@ export function Footer() {
   const socials = Object.entries(SITE.social).filter(([, url]) => url)
   return (
     <footer className="surface-dark relative overflow-hidden" style={{ background: 'radial-gradient(50% 30% at 80% 35%, rgba(56,166,162,.14), transparent 70%), linear-gradient(180deg, #dbe4e9 0px, #9fbfcc 70px, #17475b 190px, #0f2a40 320px, #0b2034 100%)' }}>
+      {/* dark Silicon Jaali circuit texture, strongest behind the signature */}
+      <Jaali fade="bottom" opacity={0.07} size={46} ink="#bfe3ea" className="top-[200px]" />
       <div className="container-x relative pb-10 pt-56">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_2fr]">
           <div>
@@ -95,10 +99,14 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-20 opacity-90">
+        <div aria-hidden="true" className="tri-hairline mt-20 w-48" />
+        <div className="mt-8 opacity-90">
           <BrandMark tone="dark" depth={12} />
         </div>
-        <p className="mt-6 text-[13px] font-medium tracking-[0.02em] text-muted">Build · Connect · Automate · Orchestrate</p>
+        <div className="mt-6 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+          <p className="text-[13px] font-medium tracking-[0.02em] text-muted">Build · Connect · Automate · Orchestrate</p>
+          <p className="font-serif text-[15px] italic text-sandstone">Indian roots. Global technology standards.</p>
+        </div>
 
         <div className="mt-8 flex flex-col gap-3 border-t border-line pt-6 text-[12.5px] text-faint sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Ek भारत.AI. All rights reserved.</p>

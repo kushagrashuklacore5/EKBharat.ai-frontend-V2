@@ -35,6 +35,7 @@ export default function CustomAiDevelopmentPage() {
   return (
     <div ref={ref}>
       <PageHero
+        level="All levels"
         visual={<Scene3D kind="build" label="3D build site: a gantry crane assembles an AI solution layer by layer on a blueprint — data, integrations, backend, AI core and interface" fallback={<AssemblyVisual />} />}
         docTitle="Custom AI Development"
         accent="#c4852f"
