@@ -40,10 +40,11 @@ export function Hero() {
         <div className="absolute -left-[15%] bottom-[-30%] h-[70%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgba(56,166,162,.16),transparent)]" />
         <div className="absolute right-[20%] top-[40%] h-[40%] w-[30%] rounded-full bg-[radial-gradient(closest-side,rgba(213,182,138,.18),transparent)]" />
         <div className="grid-bg absolute inset-0 opacity-60 [mask-image:radial-gradient(55%_55%_at_70%_45%,black,transparent)]" />
-        {/* compute infrastructure, seen faintly through a jaali screen (decorative, CC0 — see image credits) */}
+        {/* GPU compute hardware, seen faintly through a jaali screen (decorative — credited below and in image credits) */}
         <div className="absolute inset-y-0 right-0 hidden w-[64%] md:block [mask-image:radial-gradient(62%_70%_at_62%_45%,#000_25%,transparent_78%)]">
-          <img src="/images/rack-closeup-960.webp" alt="" decoding="async" fetchPriority="low" className="jaali-window mono-photo h-full w-full object-cover opacity-[0.085] blur-[0.6px]" />
+          <img src="/images/gpu-dgx-b200-960.webp" alt="" decoding="async" fetchPriority="low" className="jaali-window mono-photo h-full w-full object-cover opacity-[0.085] blur-[0.6px]" />
         </div>
+        <p className="absolute bottom-3 right-4 hidden text-[10px] text-faint/80 md:block">Background: NVIDIA HGX B200 board · Pokiiri, CC BY-SA 4.0</p>
         <Jaali fade="right" opacity={0.06} size={44} />
         <TriPaths className="absolute inset-x-0 bottom-[6%] hidden h-[48%] w-full opacity-60 md:block" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#d2dee4]" />

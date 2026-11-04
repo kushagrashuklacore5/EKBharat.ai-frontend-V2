@@ -99,6 +99,9 @@ export function Footer() {
           </div>
         </div>
 
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 bottom-24 hidden size-[34rem] opacity-[0.07] mix-blend-luminosity lg:block [mask-image:radial-gradient(closest-side,#000_55%,transparent)]">
+          <img src="/images/wafer-12in-960.webp" alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+        </div>
         <div aria-hidden="true" className="tri-hairline mt-20 w-48" />
         <div className="mt-8 opacity-90">
           <BrandMark tone="dark" depth={12} />
@@ -110,7 +113,10 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col gap-3 border-t border-line pt-6 text-[12.5px] text-faint sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Ek भारत.AI. All rights reserved.</p>
-          <p className="text-muted">Owned by {SITE.owner}</p>
+          <p className="text-muted">
+            Owned by {SITE.owner}
+            <span className="hidden lg:inline"> · Wafer photo: Peellden, CC BY-SA 3.0</span>
+          </p>
         </div>
       </div>
     </footer>

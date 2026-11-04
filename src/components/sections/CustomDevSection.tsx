@@ -3,6 +3,7 @@ import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Button } from '../ui/Button'
 import { USE_CASES } from '../../lib/content'
+import { IMAGES } from '../../lib/imageCredits'
 
 const JOURNEY: [string, string][] = [
   ['Idea', 'The process, the decision or the product you want to improve.'],
@@ -44,8 +45,12 @@ export function CustomDevSection({ index = '07' }: { index?: string }) {
           </div>
         </div>
 
-        {/* the build journey, drawn as terraces stepping down into production */}
-        <ol aria-label="How a custom AI system is built" className="mt-14 grid gap-2 sm:grid-cols-5 sm:items-start">
+        {/* the build journey, drawn as terraces stepping down into production, over a faded engineering photograph */}
+        <div className="relative mt-14">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -inset-y-10 overflow-hidden rounded-[14px] sm:-inset-x-6 [mask-image:radial-gradient(58%_62%_at_66%_50%,#000_18%,transparent_72%)]">
+          <img src="/images/robotics-bitm-960.webp" alt="" loading="lazy" decoding="async" className="mono-photo h-full w-full object-cover opacity-[0.18]" />
+        </div>
+        <ol aria-label="How a custom AI system is built" className="relative grid gap-2 sm:grid-cols-5 sm:items-start">
           {JOURNEY.map(([t, d], i) => (
             <li key={t} data-reveal={String(i)} className="sm:[margin-top:var(--drop)]" style={{ '--drop': `${i * 18}px` } as CSSProperties}>
               <div className="stepwell sandstone-lip h-full rounded-[10px] bg-ink-850/70 px-5 pb-5 pt-4">
@@ -56,6 +61,10 @@ export function CustomDevSection({ index = '07' }: { index?: string }) {
             </li>
           ))}
         </ol>
+        <p className="relative mt-4 text-right text-[11px] text-faint">
+          Background: {IMAGES['robotics-bitm'].caption} · {IMAGES['robotics-bitm'].author}, {IMAGES['robotics-bitm'].licence} (representative image)
+        </p>
+        </div>
 
         {/* expanding panels */}
         <div data-reveal="2" className="mt-14 flex flex-col gap-2 lg:h-[420px] lg:flex-row">

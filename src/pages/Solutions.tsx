@@ -9,6 +9,18 @@ import { IndustryGlyph } from '../components/sections/IndustryGlyph'
 import { PhotoReveal } from '../components/ui/PhotoReveal'
 import { INDUSTRIES } from '../lib/content'
 import { useReveal } from '../hooks/useReveal'
+import type { ImageKey } from '../lib/imageCredits'
+
+/** small supporting photographs for the industries where an authentic, licensed image exists */
+const CARD_PHOTOS: Record<string, { img: ImageKey; alt: string; position?: string } | undefined> = {
+  education: { img: 'coding-bangalore', alt: 'School students writing code at computers in a Bengaluru lab' },
+  finance: { img: 'upi-bhopal', alt: 'A BHIM / UPI QR code stand for digital payments', position: 'center 60%' },
+  'enterprise-operations': { img: 'noc-architel', alt: 'Staff at workstations in a network operations centre' },
+  'customer-support': { img: 'bpo-dantewada', alt: 'Rows of customer-support agents with headsets at computers' },
+  manufacturing: { img: 'mg-plant', alt: 'Cars on the production line at a vehicle plant in Gujarat' },
+  healthcare: { img: 'mri-jaipur', alt: 'A technician preparing a patient for an MRI scan in a Jaipur hospital' },
+  ecommerce: { img: 'retail-bhopal', alt: 'Clothing racks and shelves on a department store floor in Bhopal' },
+}
 
 export default function SolutionsPage() {
   const ref = useRef<HTMLDivElement>(null)
@@ -36,12 +48,6 @@ export default function SolutionsPage() {
           </a>
         ))}
       </nav>
-      <Section className="pb-10">
-        <div className="container-x grid gap-6 md:grid-cols-[1.35fr_1fr]">
-          <PhotoReveal img="port-logistics" alt="Gantry cranes loading a container ship at Jawaharlal Nehru Port" aspect="aspect-[16/7]" sizes="(min-width: 768px) 58vw, 100vw" />
-          <PhotoReveal img="college-lab" alt="Students working at computers in a college lab" aspect="aspect-[16/7] md:aspect-[17/10]" sizes="(min-width: 768px) 42vw, 100vw" position="center 40%" />
-        </div>
-      </Section>
       <Section className="pb-24">
         <div className="container-x space-y-3">
           {INDUSTRIES.map((ind, k) => (
@@ -51,6 +57,16 @@ export default function SolutionsPage() {
                   <IndustryGlyph glyph={ind.glyph} color={ind.color} />
                   <p className="mt-6 font-mono text-[11px] text-faint">{String(k + 1).padStart(2, '0')}</p>
                   <h2 className="mt-1 text-3xl tracking-tight text-fg">{ind.name}</h2>
+                  {CARD_PHOTOS[ind.id] && (
+                    <PhotoReveal
+                      img={CARD_PHOTOS[ind.id]!.img}
+                      alt={CARD_PHOTOS[ind.id]!.alt}
+                      position={CARD_PHOTOS[ind.id]!.position}
+                      aspect="aspect-[4/3]"
+                      className="mt-6 max-w-[22rem]"
+                      sizes="(min-width: 1024px) 22rem, 100vw"
+                    />
+                  )}
                 </div>
                 <div className="space-y-6">
                   <div>

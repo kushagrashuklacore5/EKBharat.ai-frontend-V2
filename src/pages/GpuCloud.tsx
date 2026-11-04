@@ -9,6 +9,7 @@ import { GpuExplorer } from '../components/gpu/GpuExplorer'
 import { PhotoReveal } from '../components/ui/PhotoReveal'
 import { FinalCta } from '../components/sections/FinalCta'
 import { useReveal } from '../hooks/useReveal'
+import { CinematicPhoto } from '../components/ui/CinematicPhoto'
 
 const OFFERS = [
   { t: 'GPU as a Service', d: 'Access GPU compute on demand without buying or maintaining hardware.' },
@@ -77,6 +78,23 @@ export default function GpuCloudPage() {
           </ol>
         </div>
       </Section>
+      <Section className="pb-24">
+        <div className="container-x grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
+          <PhotoReveal img="wafer-researcher" alt="A researcher in a clean-room suit holding a silicon wafer" aspect="aspect-[3/2]" sizes="(min-width: 1024px) 50vw, 100vw" position="center 30%" />
+          <div>
+            <p data-reveal className="eyebrow">
+              From silicon up
+            </p>
+            <h2 data-reveal="1" className="display mt-5 text-[clamp(1.8rem,3.2vw,2.6rem)] text-fg">
+              Every GPU hour starts on a wafer.
+            </h2>
+            <p data-reveal="2" className="mt-5 leading-relaxed text-muted">
+              Accelerators are cut from silicon wafers, packaged with high-bandwidth memory, mounted on dense multi-layer boards and cooled by
+              precision-engineered heatsinks. Understanding that stack helps us size, place and run your workloads on the right hardware.
+            </p>
+          </div>
+        </div>
+      </Section>
       <Section id="gpu-explorer" className="pb-24">
         <div className="container-x">
           <SectionHeading
@@ -91,18 +109,15 @@ export default function GpuCloudPage() {
           <div data-reveal="2" className="mt-12">
             <GpuExplorer />
           </div>
-          <PhotoReveal
-            img="dc-cabling"
-            alt="Rows of compute racks with network cabling in a supercomputing data centre"
-            aspect="aspect-[16/7] sm:aspect-[24/6]"
-            className="mt-12"
-            sizes="100vw"
-            position="center 35%"
-            mono
+          <CinematicPhoto
+            img="grid-fermilab"
+            alt="A long aisle between rows of blue-lit server racks in a grid computing centre"
+            className="mt-16"
+            position="center 45%"
+            eyebrow="At data-centre scale"
+            title={<>Thousands of accelerators, working as one machine.</>}
+            body="Large AI workloads run on clusters like this — GPUs linked by high-speed networks, with power and cooling engineered around them. Our GPU Cloud gives you access to this class of capacity through infrastructure partners, without owning any of it."
           />
-          <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-muted">
-            GPU capacity is provisioned through our infrastructure partners. The data-centre photograph is a representative image of a third-party facility.
-          </p>
         </div>
       </Section>
       <Section id="catalogue" className="pb-24">

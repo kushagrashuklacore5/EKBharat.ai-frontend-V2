@@ -3,6 +3,7 @@ import { SectionHeading } from '../ui/SectionHeading'
 import { Button } from '../ui/Button'
 import { AgentMesh } from '../agents/AgentMesh'
 import { MultilingualAgent } from '../agents/MultilingualAgent'
+import { PhotoReveal } from '../ui/PhotoReveal'
 
 export function AgentsSection({ index = '04' }: { index?: string }) {
   return (
@@ -28,6 +29,21 @@ export function AgentsSection({ index = '04' }: { index?: string }) {
         </div>
         <div data-reveal="2" className="mt-14">
           <AgentMesh />
+        </div>
+        <div className="mt-16 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+          <PhotoReveal img="odia-workshop" alt="Engineering students working on laptops during an Odia-language content workshop" aspect="aspect-[4/3]" sizes="(min-width: 1024px) 40vw, 100vw" soft />
+          <div>
+            <p data-reveal className="eyebrow">
+              Built for India’s languages
+            </p>
+            <h3 data-reveal="1" className="display mt-4 text-[clamp(1.6rem,2.8vw,2.3rem)] text-fg">
+              Your customers don’t all write in English.
+            </h3>
+            <p data-reveal="2" className="mt-4 max-w-xl leading-relaxed text-muted">
+              India works in dozens of languages and scripts. Agents can detect the language of a request and answer in it, using the same tools, data and
+              approval rules — so a support process doesn’t need a separate system for every language.
+            </p>
+          </div>
         </div>
         <div data-reveal="2" className="mt-8">
           <MultilingualAgent />

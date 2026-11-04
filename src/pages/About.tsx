@@ -94,6 +94,7 @@ export default function AboutPage() {
               EK · ONE
             </p>
             <div aria-hidden="true" className="tri-hairline mt-8 w-40" />
+            <PhotoReveal img="infosys-mysore" alt="Colonnaded buildings and gardens on a technology campus in Mysuru" aspect="aspect-[4/3]" className="mt-10 max-w-[24rem]" sizes="24rem" />
           </div>
           <div className="space-y-8">
             {EK.map(([t, d], i) => (

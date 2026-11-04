@@ -2,6 +2,7 @@ import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
 import { LayeredArchitecture } from './LayeredArchitecture'
 import { Jaali } from '../ui/Jaali'
+import { PhotoReveal } from '../ui/PhotoReveal'
 
 export function ArchitectureSection({ index = '02' }: { index?: string }) {
   return (
@@ -21,9 +22,12 @@ export function ArchitectureSection({ index = '02' }: { index?: string }) {
             }
             lead="Every Ek भारत.AI workflow, agent and application runs through the same stack — from GPU compute at the foundation to agent orchestration at the top. Explore each layer to see what it does and why it matters."
           />
-          <p data-reveal="3" className="max-w-[15rem] font-mono text-[11px] leading-relaxed text-faint md:text-right">
-            Built like a stepwell: read top-down for how work is coordinated, bottom-up for how it is powered.
-          </p>
+          <div data-reveal="3" className="w-full max-w-[22rem] shrink-0">
+            <PhotoReveal img="grid-lhc" alt="Rows of computing racks in a large research computing hall" aspect="aspect-[4/3]" sizes="22rem" position="70% center" />
+            <p className="mt-3 font-mono text-[11px] leading-relaxed text-faint">
+              Built like a stepwell: read top-down for how work is coordinated, bottom-up for how it is powered.
+            </p>
+          </div>
         </div>
         <div className="mt-14 md:mt-6">
           <LayeredArchitecture />

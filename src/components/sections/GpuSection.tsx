@@ -42,12 +42,12 @@ export function GpuSection({ index = '06' }: { index?: string }) {
           ))}
         </ul>
         <PhotoReveal
-          img="dc-cabling"
-          alt="Rows of compute racks with network cabling in a supercomputing data centre"
+          img="gpu-csiro"
+          alt="A row of GPU cluster cabinets with status displays in a data centre"
           aspect="aspect-[16/7] sm:aspect-[24/5]"
           className="mt-12"
           sizes="100vw"
-          position="center 35%"
+          position="center 60%"
           mono
         />
         <div data-reveal="2" className="mt-8">

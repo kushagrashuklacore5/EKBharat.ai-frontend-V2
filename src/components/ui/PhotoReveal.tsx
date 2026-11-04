@@ -12,6 +12,7 @@ export function PhotoReveal({
   className = '',
   aspect = 'aspect-[16/10]',
   mono = false,
+  soft = false,
   sizes = '(min-width: 1024px) 50vw, 100vw',
   position = 'center',
 }: {
@@ -20,6 +21,8 @@ export function PhotoReveal({
   className?: string
   aspect?: string
   mono?: boolean
+  /** desaturated and lifted, for supporting images that should stay quiet */
+  soft?: boolean
   sizes?: string
   position?: string
 }) {
@@ -44,7 +47,7 @@ export function PhotoReveal({
           alt={alt}
           loading="lazy"
           decoding="async"
-          className={`absolute inset-0 h-full w-full object-cover ${mono ? 'mono-photo' : ''}`}
+          className={`absolute inset-0 h-full w-full object-cover ${mono ? 'mono-photo' : soft ? 'soft-photo' : ''}`}
           style={{ objectPosition: position }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b2034]/45 via-transparent to-transparent" aria-hidden="true" />
