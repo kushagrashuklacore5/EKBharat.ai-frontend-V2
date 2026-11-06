@@ -86,7 +86,7 @@ export function Hero() {
         </div>
 
         {/* 3D stack with interactive floating labels */}
-        <div className="relative -mx-[var(--gutter)] mt-8 h-[380px] sm:mx-0 sm:h-[520px] lg:absolute lg:bottom-6 lg:right-0 lg:top-20 lg:mt-0 lg:h-auto lg:w-[56%]">
+        <div className="relative -mx-[var(--gutter)] mt-4 h-[300px] sm:mx-0 sm:mt-8 sm:h-[520px] lg:absolute lg:bottom-6 lg:right-0 lg:top-20 lg:mt-0 lg:h-auto lg:w-[56%]">
           <Suspense fallback={null}>
             <HeroCanvas />
           </Suspense>

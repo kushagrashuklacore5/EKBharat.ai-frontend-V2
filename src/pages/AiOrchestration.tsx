@@ -8,6 +8,7 @@ import { SectionHeading } from '../components/ui/SectionHeading'
 import { ModelRouter } from '../components/orchestration/ModelRouter'
 import { FinalCta } from '../components/sections/FinalCta'
 import { useReveal } from '../hooks/useReveal'
+import { ORCH_TERMS, PointList } from '../components/sections/RelocatedBlocks'
 
 const FEATURES = [
   { t: 'Unified API access', d: 'Call many models through one interface; provider differences are handled by the gateway.' },
@@ -72,6 +73,9 @@ export default function AiOrchestrationPage() {
       <Section className="pb-24">
         <div className="container-x">
           <ModelRouter />
+          <div className="mt-14">
+            <PointList items={ORCH_TERMS} cols="sm:grid-cols-2 lg:grid-cols-5" />
+          </div>
         </div>
       </Section>
       <Section className="py-24">

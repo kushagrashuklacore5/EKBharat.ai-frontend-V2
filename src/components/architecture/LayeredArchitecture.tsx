@@ -52,7 +52,7 @@ export function LayeredArchitecture() {
       trigger: stage,
       start: 'top 88%',
       end: 'center 52%',
-      scrub: 0.8,
+      scrub: true,
       onUpdate: (self) => (progress.current = self.progress),
     })
     return () => st.kill()
@@ -151,7 +151,7 @@ export function LayeredArchitecture() {
         {/* ── 3D stage ─────────────────────────── */}
         <div
           ref={stageRef}
-          className="relative mx-auto h-[500px] w-full max-w-[640px] [perspective:2000px] sm:h-[540px] lg:h-[700px]"
+          className="relative mx-auto h-[400px] w-full max-w-[640px] [perspective:2000px] max-sm:-my-6 max-sm:scale-[.88] sm:h-[540px] lg:h-[700px]"
           onMouseLeave={() => desktop && setActive(null)}
         >
           {/* floor glow */}

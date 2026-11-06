@@ -10,6 +10,7 @@ import { FinalCta } from '../components/sections/FinalCta'
 import { KIND_META, type NodeKind } from '../components/workflow-studio/workflows'
 import { KIND_ICON } from '../components/workflow-studio/StudioNode'
 import { useReveal } from '../hooks/useReveal'
+import { STUDIO_POINTS, PointList } from '../components/sections/RelocatedBlocks'
 
 const StudioDemo = lazy(() => import('../components/workflow-studio/StudioDemo'))
 
@@ -86,6 +87,11 @@ export default function WorkflowStudioPage() {
         </div>
       </Section>
 
+      <Section className="pb-8">
+        <div className="container-x">
+          <PointList items={STUDIO_POINTS} />
+        </div>
+      </Section>
       <Section className="py-24">
         <div className="container-x">
           <SectionHeading eyebrow="Capabilities" title="Everything a production workflow needs." />
@@ -98,17 +104,17 @@ export default function WorkflowStudioPage() {
       <Section id="nodes" className="py-24">
         <div className="container-x">
           <SectionHeading eyebrow="Node library" title="Building blocks, designed for AI." lead="Each node is a typed, configurable step. Combine them to express anything from a simple notification to a supervised multi-agent process." />
-          <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <ul className="mt-10 grid grid-cols-2 gap-2.5 sm:mt-12 sm:gap-3 lg:grid-cols-5">
             {NODE_DOCS.map((n, i) => {
               const Icon = KIND_ICON[n.kind]
               const m = KIND_META[n.kind]
               return (
-                <li key={n.kind} data-reveal={String(i % 5)} className="panel p-5">
+                <li key={n.kind} data-reveal={String(i % 5)} className="panel p-4 sm:p-5">
                   <span className="grid size-9 place-items-center rounded-xl" style={{ background: `${m.color}1a`, color: m.color }}>
                     <Icon size={16} />
                   </span>
                   <p className="mt-4 text-fg font-semibold">{m.label}</p>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted">{n.d}</p>
+                  <p className="mt-1.5 text-[12px] leading-snug text-muted sm:text-[13px] sm:leading-relaxed">{n.d}</p>
                 </li>
               )
             })}

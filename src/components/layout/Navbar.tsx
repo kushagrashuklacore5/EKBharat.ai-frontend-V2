@@ -56,7 +56,9 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300 ${
-        scrolled || open || menu ? 'bg-ink-900/85 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl' : 'bg-transparent'
+        // no backdrop-filter while the mobile menu is open: it would become the containing
+        // block for the fixed menu panel and collapse it to the header's height
+        open ? 'bg-ink-900 shadow-[0_1px_0_var(--color-line)]' : scrolled || menu ? 'bg-ink-900/85 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl' : 'bg-transparent'
       }`}
     >
       <nav aria-label="Primary" className="container-x flex h-[68px] items-center justify-between">
@@ -75,7 +77,7 @@ export function Navbar() {
             </button>
             <div
               id="platform-menu"
-              className={`absolute left-1/2 top-full w-[760px] -translate-x-1/2 pt-3 transition-[opacity,transform,visibility] duration-300 ease-[cubic-bezier(.16,1,.3,1)] ${
+              className={`absolute left-1/2 top-full w-[760px] -translate-x-1/2 pt-3 max-xl:left-[-12px] max-xl:translate-x-0 transition-[opacity,transform,visibility] duration-300 ease-[cubic-bezier(.16,1,.3,1)] ${
                 menu ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1.5 opacity-0'
               }`}
             >

@@ -264,7 +264,7 @@ function FrictionSection() {
     return () => io.disconnect()
   }, [])
   return (
-    <Section className="surface-dark deep-blend relative overflow-hidden pb-40 pt-40 md:pb-48 md:pt-48">
+    <Section className="surface-dark deep-blend relative overflow-hidden pb-32 pt-36 md:pb-48 md:pt-48">
       <div className="container-x grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
         <div className="lg:sticky lg:top-32 lg:self-start">
           <p data-reveal className="eyebrow">

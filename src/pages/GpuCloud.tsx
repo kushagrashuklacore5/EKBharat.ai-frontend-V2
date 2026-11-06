@@ -10,6 +10,7 @@ import { PhotoReveal } from '../components/ui/PhotoReveal'
 import { FinalCta } from '../components/sections/FinalCta'
 import { useReveal } from '../hooks/useReveal'
 import { CinematicPhoto } from '../components/ui/CinematicPhoto'
+import { GPU_MODES, PointList } from '../components/sections/RelocatedBlocks'
 
 const OFFERS = [
   { t: 'GPU as a Service', d: 'Access GPU compute on demand without buying or maintaining hardware.' },
@@ -118,6 +119,16 @@ export default function GpuCloudPage() {
             title={<>Thousands of accelerators, working as one machine.</>}
             body="Large AI workloads run on clusters like this — GPUs linked by high-speed networks, with power and cooling engineered around them. Our GPU Cloud gives you access to this class of capacity through infrastructure partners, without owning any of it."
           />
+        </div>
+      </Section>
+      <Section id="modes" className="pb-16">
+        <div className="container-x">
+          <p data-reveal className="eyebrow">
+            Ways to use GPU Cloud
+          </p>
+          <div className="mt-8">
+            <PointList items={GPU_MODES} cols="grid-cols-2 lg:grid-cols-6" />
+          </div>
         </div>
       </Section>
       <Section id="catalogue" className="pb-24">

@@ -19,9 +19,10 @@ export interface JetFrame {
 const LANES = [new THREE.Color('#ff9a3c'), new THREE.Color('#f7f8f6'), new THREE.Color('#2c9a46')]
 const PER = 70
 
-export function createJetScene(canvas: HTMLCanvasElement) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75))
+export function createJetScene(canvas: HTMLCanvasElement, opts: { tech: boolean; low: boolean } = { tech: true, low: false }) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !opts.low, alpha: true, powerPreference: 'high-performance' })
+  // phones: fewer pixels to shade keeps the jet smooth while scrolling
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, opts.low ? 1.25 : 1.75))
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.setClearColor(0x000000, 0)
@@ -33,7 +34,8 @@ export function createJetScene(canvas: HTMLCanvasElement) {
   const pmrem = T(new THREE.PMREMGenerator(renderer))
   const env = T(pmrem.fromScene(new RoomEnvironment(), 0.03).texture)
   scene.environment = env
-  const tech = createTechScene(env, T)
+  // the wafer → GPU prelude is only built where it is shown (desktop)
+  const tech = opts.tech ? createTechScene(env, T) : null
   const key = new THREE.DirectionalLight('#fff4e6', 2.2)
   key.position.set(-30, 50, 40)
   scene.add(key)
@@ -104,7 +106,7 @@ export function createJetScene(canvas: HTMLCanvasElement) {
 
   function render(f: JetFrame, _dt: number, time: number) {
     renderer.clear()
-    if (f.tech !== null) tech.render(renderer, f.tech, time, W / H)
+    if (tech && f.tech !== null) tech.render(renderer, f.tech, time, W / H)
     const r = f.ribbon
     if (!r) return
     const depth = 40
@@ -118,7 +120,9 @@ export function createJetScene(canvas: HTMLCanvasElement) {
     const up = new THREE.Vector3().crossVectors(fwd, right).normalize()
     jet.position.copy(p)
     jet.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(right, up, fwd))
-    jet.scale.setScalar(0.46)
+    // keep the jet in proportion to the wordmark on narrow screens
+    const fit = Math.min(1, Math.max(0.42, W / 1200))
+    jet.scale.setScalar(0.46 * fit)
     jet.visible = true
     setJetOpacity(jet, r.fade)
     // trail: three lanes behind the jet along the ribbon, fading into the SVG ribbon
@@ -131,11 +135,11 @@ export function createJetScene(canvas: HTMLCanvasElement) {
           rtAlpha[k] = 0
           continue
         }
-        const off = (1 - lane) * 7
+        const off = (1 - lane) * 7 * fit
         toWorld(s[0] - r.ty * off, s[1] - r.tx * off, depth, tmp)
         rtPos.set([tmp.x + Math.sin(i * 1.7 + time) * 0.05, tmp.y, tmp.z], k * 3)
         const age = i / PER
-        rtSize[k] = 0.5 + age * 1.6
+        rtSize[k] = (0.5 + age * 1.6) * fit
         rtAlpha[k] = (1 - age) * 0.45 * r.fade // light, to match the faded ribbon
       }
     }
@@ -153,7 +157,7 @@ export function createJetScene(canvas: HTMLCanvasElement) {
     },
     dispose() {
       ro.disconnect()
-      tech.dispose()
+      tech?.dispose()
       trash.forEach((x) => x.dispose())
       renderer.dispose()
     },

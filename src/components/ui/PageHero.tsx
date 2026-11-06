@@ -77,7 +77,7 @@ export function PageHero({ eyebrow, title, lead, actions, aside, visual, accent 
 export function FeatureGrid({ items, cols = 3 }: { items: { t: string; d: string; tag?: string }[]; cols?: 2 | 3 | 4 }) {
   const c = cols === 4 ? 'lg:grid-cols-4' : cols === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
   return (
-    <div className={`grid gap-x-10 gap-y-10 sm:grid-cols-2 ${c}`}>
+    <div className={`grid gap-x-10 gap-y-7 sm:grid-cols-2 sm:gap-y-10 ${c}`}>
       {items.map((it, i) => (
         <div key={it.t} data-reveal={String(i % 4)} className="border-t-2 border-line-strong pt-5">
           <div className="flex items-center justify-between">

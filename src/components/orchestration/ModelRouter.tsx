@@ -172,6 +172,38 @@ export function ModelRouter() {
       <div className="grid lg:grid-cols-[1.7fr_1fr]">
         {/* route diagram */}
         <div className="relative border-b border-line p-4 lg:border-b-0 lg:border-r">
+          {/* phones: the same decision as a vertical route — the diagrams are too fine to read at this width */}
+          <ol className="space-y-2 sm:hidden" aria-label={`Request routed to ${POOLS[served].name}`}>
+            <li className="rounded-xl border border-line bg-ink-850 px-4 py-3">
+              <p className="text-[13.5px] font-semibold text-fg">Your application</p>
+              <p className="text-[11.5px] text-muted">one API call · gateway</p>
+            </li>
+            <li aria-hidden="true" className="ml-6 h-4 w-px" style={{ background: color }} />
+            <li className="rounded-xl border px-4 py-3" style={{ borderColor: color }}>
+              <p className="text-[13.5px] font-semibold text-fg">Policy engine</p>
+              <p className="text-[11.5px] text-muted">{POLICIES.find((x) => x.id === policy)!.label.toLowerCase()}</p>
+            </li>
+            <li aria-hidden="true" className="ml-6 h-4 w-px" style={{ background: color }} />
+            {POOL_ORDER.map((pl) => {
+              const isServed = pl === served
+              const isFailed = outage && pl === d.primary && d.primary !== d.fallback
+              return (
+                <li
+                  key={pl}
+                  className={`flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5 transition-colors ${isServed ? 'bg-ink-850 shadow-[var(--shadow-sm)]' : 'opacity-60'}`}
+                  style={{ borderColor: isServed ? POOLS[pl].color : isFailed ? '#c04a4a' : 'var(--color-line)' }}
+                >
+                  <span>
+                    <span className="block text-[13px] font-semibold text-fg">{POOLS[pl].name}</span>
+                    <span className={`block text-[11px] ${isFailed ? 'text-danger' : 'text-muted'}`}>{isFailed ? 'unavailable → fallback' : POOLS[pl].via}</span>
+                  </span>
+                  {isServed && <span className="shrink-0 rounded-full px-2 py-0.5 text-[10.5px] font-semibold text-white" style={{ background: POOLS[pl].color }}>routed</span>}
+                </li>
+              )
+            })}
+            <li className="pt-1 text-[11.5px] text-faint">Outputs are validated against a schema before they are returned.</li>
+          </ol>
+          <div className="hidden sm:block">
           <div className="mb-2 flex justify-end gap-1" role="group" aria-label="Diagram view">
             {(['radial', 'pipeline'] as const).map((v) => (
               <button
@@ -256,6 +288,7 @@ export function ModelRouter() {
             </text>
           </svg>
           )}
+          </div>
         </div>
 
         {/* decision explanation */}

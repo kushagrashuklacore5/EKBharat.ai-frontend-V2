@@ -1,14 +1,8 @@
 import { useEffect } from 'react'
 import { Hero } from '../components/hero/Hero'
 import { ProductExplorer } from '../components/sections/ProductExplorer'
-import { StudioSection } from '../components/workflow-studio/StudioSection'
 import { ArchitectureSection } from '../components/architecture/ArchitectureSection'
-import { AgentsSection } from '../components/sections/AgentsSection'
-import { OrchestrationSection } from '../components/sections/OrchestrationSection'
-import { GpuSection } from '../components/sections/GpuSection'
-import { CustomDevSection } from '../components/sections/CustomDevSection'
 import { IndustriesSection } from '../components/sections/IndustriesSection'
-import { ProcessSection } from '../components/sections/ProcessSection'
 import { PillarsSection } from '../components/sections/PillarsSection'
 import { FinalCta } from '../components/sections/FinalCta'
 import { BrandReveal } from '../components/sections/BrandReveal'
@@ -21,16 +15,11 @@ export default function Home() {
     <>
       <Hero />
       <BrandReveal />
+      {/* overview: each capability links to its product page, where the full detail lives */}
       <ProductExplorer />
-      <StudioSection index="02" />
-      <ArchitectureSection index="03" />
-      <AgentsSection index="04" />
-      <OrchestrationSection index="05" />
-      <GpuSection index="06" />
-      <CustomDevSection index="07" />
-      <IndustriesSection index="08" />
-      <ProcessSection index="09" />
-      <PillarsSection index="10" />
+      <ArchitectureSection index="02" />
+      <IndustriesSection index="03" />
+      <PillarsSection index="04" />
       <FinalCta />
     </>
   )

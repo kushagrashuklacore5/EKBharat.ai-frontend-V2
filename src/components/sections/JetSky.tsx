@@ -6,6 +6,8 @@ export interface JetProgress {
   p: number
   /** logo-sequence progress 0..1 */
   lp: number
+  /** whether the wafer → GPU prelude runs before the logo (desktop only) */
+  prelude: boolean
 }
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
@@ -20,7 +22,7 @@ export const PRELUDE_END = 0.42
  * only loaded when this mounts; rendering runs only while the section is on
  * screen and something is actually visible.
  */
-export function JetSky({ progress, sectionRef }: { progress: MutableRefObject<JetProgress>; sectionRef: RefObject<HTMLElement | null> }) {
+export function JetSky({ progress, sectionRef, prelude }: { progress: MutableRefObject<JetProgress>; sectionRef: RefObject<HTMLElement | null>; prelude: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export function JetSky({ progress, sectionRef }: { progress: MutableRefObject<Je
     let last = performance.now()
     let time = 0
     let cleared = true
+    const samples: { d: string; pts: DOMPoint[] } = { d: '', pts: [] }
 
     const ribbonFrame = (lp: number): JetFrame['ribbon'] => {
       if (lp < 0.64) return null
@@ -41,10 +44,16 @@ export function JetSky({ progress, sectionRef }: { progress: MutableRefObject<Je
       const ctm = path.getScreenCTM()
       if (!ctm) return null
       const cr = canvas.getBoundingClientRect()
-      const len = path.getTotalLength()
       const N = 96
-      const local: { x: number; y: number }[] = []
-      for (let i = 0; i <= N; i++) local.push(path.getPointAtLength((i / N) * len))
+      // sample the centreline once per shape, not every frame
+      const d = path.getAttribute('d') || ''
+      if (d !== samples.d) {
+        const len = path.getTotalLength()
+        samples.d = d
+        samples.pts = []
+        for (let i = 0; i <= N; i++) samples.pts.push(path.getPointAtLength((i / N) * len))
+      }
+      const local = samples.pts
       const scr = local.map((pt) => {
         const q = new DOMPoint(pt.x, pt.y).matrixTransform(ctm)
         return [q.x - cr.left, q.y - cr.top] as [number, number]
@@ -99,7 +108,7 @@ export function JetSky({ progress, sectionRef }: { progress: MutableRefObject<Je
       time += dt
       const { p, lp } = progress.current
       const ribbon = ribbonFrame(lp)
-      const tech = p < PRELUDE_END ? range(p, 0, PRELUDE_END) : null
+      const tech = prelude && p < PRELUDE_END ? range(p, 0, PRELUDE_END) : null
       // the prelude fades in at the top and dissolves just before the logo grows
       canvas.style.opacity = tech === null ? '1' : String(range(tech, 0, 0.05) * (1 - range(tech, 0.86, 0.99)))
       if (api && (ribbon || tech !== null)) {
@@ -114,7 +123,7 @@ export function JetSky({ progress, sectionRef }: { progress: MutableRefObject<Je
 
     import('./jetScene').then(({ createJetScene }) => {
       if (cancelled) return
-      api = createJetScene(canvas)
+      api = createJetScene(canvas, { tech: prelude, low: !prelude })
     })
 
     const io = new IntersectionObserver(([e]) => {
@@ -132,7 +141,7 @@ export function JetSky({ progress, sectionRef }: { progress: MutableRefObject<Je
       cancelAnimationFrame(raf)
       api?.dispose()
     }
-  }, [progress, sectionRef])
+  }, [progress, sectionRef, prelude])
 
   return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-20 block h-full w-full" aria-hidden="true" />
 }

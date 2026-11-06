@@ -9,6 +9,7 @@ import { AgentMesh } from '../components/agents/AgentMesh'
 import { MultilingualAgent } from '../components/agents/MultilingualAgent'
 import { FinalCta } from '../components/sections/FinalCta'
 import { useReveal } from '../hooks/useReveal'
+import { LanguagesBlock } from '../components/sections/RelocatedBlocks'
 
 const CONCEPTS = [
   ['Agent orchestration', 'An orchestrator agent plans the work, decides which specialist handles each part and assembles the final result.', 'Large tasks get done reliably instead of failing in one oversized prompt.'],
@@ -63,6 +64,9 @@ export default function AiAgentsPage() {
           <AgentMesh />
           <div data-reveal className="mt-8">
             <MultilingualAgent />
+          </div>
+          <div className="mt-16">
+            <LanguagesBlock />
           </div>
         </div>
       </Section>

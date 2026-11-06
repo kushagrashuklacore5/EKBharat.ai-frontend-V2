@@ -11,7 +11,7 @@ export function IndustryCard({ ind, i }: { ind: (typeof INDUSTRIES)[number]; i: 
     <Link
       to={`/solutions#${ind.id}`}
       data-reveal={String(i % 4)}
-      className="ind-card group relative flex min-h-[300px] flex-col overflow-hidden rounded-xl border border-line bg-ink-900 p-6 transition-[background-color,box-shadow,transform] duration-500 hover:-translate-y-0.5 hover:bg-ink-850 hover:shadow-[var(--shadow-md)] focus-visible:bg-ink-850"
+      className="ind-card group relative flex w-[78vw] max-w-[340px] shrink-0 snap-start min-h-[300px] flex-col sm:w-auto sm:max-w-none overflow-hidden rounded-xl border border-line bg-ink-900 p-6 transition-[background-color,box-shadow,transform] duration-500 hover:-translate-y-0.5 hover:bg-ink-850 hover:shadow-[var(--shadow-md)] focus-visible:bg-ink-850"
     >
       <div
         className="pointer-events-none absolute -right-20 -top-20 size-56 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-100 group-focus-visible:opacity-100"
@@ -24,11 +24,11 @@ export function IndustryCard({ ind, i }: { ind: (typeof INDUSTRIES)[number]; i: 
       <h3 className="mt-6 text-xl tracking-tight text-fg font-semibold">{ind.name}</h3>
       {/* problem → solution swap */}
       <div className="relative mt-3 flex-1">
-        <div className="transition-all duration-500 group-hover:-translate-y-2 group-hover:opacity-0 group-focus-visible:opacity-0">
+        <div className="transition-all duration-500 [@media(hover:hover)]:group-hover:-translate-y-2 [@media(hover:hover)]:group-hover:opacity-0 [@media(hover:hover)]:group-focus-visible:opacity-0">
           <p className="label text-faint">The problem</p>
           <p className="mt-2 text-[13.5px] leading-relaxed text-muted">{ind.problem}</p>
         </div>
-        <div className="absolute inset-0 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+        <div className="mt-4 transition-all duration-500 [@media(hover:hover)]:absolute [@media(hover:hover)]:inset-0 [@media(hover:hover)]:mt-0 [@media(hover:hover)]:translate-y-2 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-visible:translate-y-0 [@media(hover:hover)]:group-focus-visible:opacity-100">
           <p className="label" style={{ color: ind.color }}>
             How we solve it
           </p>
@@ -53,18 +53,18 @@ export function IndustriesSection({ index = '08' }: { index?: string }) {
               Applied AI for <span className="serif-accent text-gradient">real operations.</span>
             </>
           }
-          lead="The same platform, shaped around the problems each industry actually has. Hover a card to see how we approach it."
+          lead="The same platform, shaped around the problems each industry actually has. Explore a card to see how we approach it."
         />
         {/* AI and machine learning applied to each industry — original illustration */}
         <AiIndustryVisual className="mt-14" />
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="-mx-[var(--gutter)] mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-[var(--gutter)] px-[var(--gutter)] pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
           {INDUSTRIES.map((ind, i) => (
             <IndustryCard key={ind.id} ind={ind} i={i} />
           ))}
           <Link
             to="/build-with-us"
             data-reveal="3"
-            className="group flex min-h-[300px] flex-col justify-between rounded-xl border border-dashed border-line-strong p-6 transition-colors hover:border-fg-soft/40"
+            className="group flex w-[78vw] max-w-[340px] shrink-0 snap-start min-h-[300px] flex-col justify-between rounded-xl sm:w-auto sm:max-w-none border border-dashed border-line-strong p-6 transition-colors hover:border-fg-soft/40"
           >
             <span className="label text-faint">Your industry</span>
             <span>

@@ -104,7 +104,7 @@ const PILLARS = [
 
 export function PillarsSection({ index = '10' }: { index?: string }) {
   return (
-    <Section id="why" labelledBy="why-title" className="surface-dark deep-blend pb-48 pt-48 md:pb-56 md:pt-56">
+    <Section id="why" labelledBy="why-title" className="surface-dark deep-blend pb-28 pt-36 md:pb-56 md:pt-56">
       <div className="container-x">
         <SectionHeading
           id="why-title"

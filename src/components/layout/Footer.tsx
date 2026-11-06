@@ -59,7 +59,7 @@ export function Footer() {
     <footer className="surface-dark relative overflow-hidden" style={{ background: 'radial-gradient(50% 30% at 80% 35%, rgba(56,166,162,.14), transparent 70%), linear-gradient(180deg, #dbe4e9 0px, #9fbfcc 70px, #17475b 190px, #0f2a40 320px, #0b2034 100%)' }}>
       {/* dark Silicon Jaali circuit texture, strongest behind the signature */}
       <Jaali fade="bottom" opacity={0.07} size={46} ink="#bfe3ea" className="top-[200px]" />
-      <div className="container-x relative pb-10 pt-56">
+      <div className="container-x relative pb-10 pt-48 md:pt-56">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_2fr]">
           <div>
             <Logo tone="dark" />

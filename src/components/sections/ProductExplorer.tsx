@@ -149,7 +149,7 @@ export function ProductExplorer() {
         </div>
 
         {/* dark product showcases */}
-        <div className="space-y-6 lg:space-y-10">
+        <div className="-mx-[var(--gutter)] flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-[var(--gutter)] px-[var(--gutter)] pb-4 [scrollbar-width:none] lg:mx-0 lg:block lg:space-y-10 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden">
           {PRODUCTS.map((p, i) => {
             const Visual = PRODUCT_VISUALS[p.visual]
             const on = active === i
@@ -162,7 +162,7 @@ export function ProductExplorer() {
                 ref={(el) => {
                   cardRefs.current[i] = el
                 }}
-                className={`deep-card surface-dark relative overflow-hidden rounded-[18px] transition-[opacity,transform,filter] duration-700 ease-[cubic-bezier(.16,1,.3,1)] lg:min-h-[560px] ${
+                className={`deep-card surface-dark relative w-[84vw] max-w-[420px] shrink-0 snap-start overflow-hidden rounded-[18px] sm:w-[60vw] lg:w-auto lg:max-w-none transition-[opacity,transform,filter] duration-700 ease-[cubic-bezier(.16,1,.3,1)] lg:min-h-[560px] ${
                   on ? '' : 'lg:scale-[.975] lg:brightness-[.82] lg:saturate-[.55]'
                 }`}
               >

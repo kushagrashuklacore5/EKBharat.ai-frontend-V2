@@ -50,7 +50,50 @@ export function GpuCatalogue() {
       </div>
       <div className="grid lg:grid-cols-[1.6fr_1fr]">
         {/* table */}
-        <div className="overflow-x-auto border-b border-line lg:border-b-0 lg:border-r">
+        <div className="border-b border-line lg:border-b-0 lg:border-r">
+          {/* phones: one tappable card per configuration, every column kept */}
+          <ul className="space-y-2 p-3 sm:hidden" role="radiogroup" aria-label="GPU configurations">
+            {TIERS.map((t) => {
+              const on = t.id === sel
+              return (
+                <li key={t.id}>
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={on}
+                    onClick={() => setSel(t.id)}
+                    className={`w-full rounded-xl border p-4 text-left transition-colors ${on ? 'border-cyan/50 bg-ink-850 shadow-[var(--shadow-sm)]' : 'border-line'}`}
+                  >
+                    <span className="flex items-start justify-between gap-3">
+                      <span>
+                        <span className="block font-semibold text-fg">{t.name}</span>
+                        <span className="block text-[12px] text-muted">{t.bestFor}</span>
+                      </span>
+                      <span className="shrink-0 text-right font-mono text-[14px] text-fg">
+                        {t.hourly === null ? <span className="font-sans text-[12px] text-muted">On request</span> : fmt(t.hourly)}
+                        <span className="block font-sans text-[10.5px] text-faint">per GPU-hr*</span>
+                      </span>
+                    </span>
+                    <span className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-fg-soft">
+                      <span className="font-mono">{t.vram} GB VRAM</span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <span className={`size-1.5 rounded-full ${t.availability === 'On demand' ? 'bg-leaf' : t.availability === 'Limited' ? 'bg-amber' : 'bg-electric'}`} />
+                        {t.availability}
+                      </span>
+                    </span>
+                    <span className="mt-2 flex flex-wrap gap-1">
+                      {t.deployment.map((d) => (
+                        <span key={d} className="rounded-md border border-line px-1.5 py-0.5 text-[10.5px] text-muted">
+                          {d}
+                        </span>
+                      ))}
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+          <div className="hidden overflow-x-auto sm:block">
           <table className="w-full min-w-[560px] text-left text-[13px]">
             <caption className="sr-only">GPU configurations and hourly pricing</caption>
             <thead>
@@ -107,6 +150,7 @@ export function GpuCatalogue() {
               })}
             </tbody>
           </table>
+          </div>
           <p className="px-5 pb-4 pt-2 text-[11px] text-faint sm:px-6">
             * Prices in USD per GPU per hour, excluding applicable taxes. Configurations and availability are confirmed with our infrastructure partners at the time of request.
           </p>

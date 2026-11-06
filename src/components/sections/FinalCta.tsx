@@ -12,7 +12,7 @@ export function FinalCta({
   body = 'Whether you need computing power, intelligent automation or a complete enterprise AI ecosystem, let’s build it together.',
 }: Props) {
   return (
-    <Section labelledBy="cta-title" className="overflow-hidden bg-ink-900 py-28 md:py-36">
+    <Section labelledBy="cta-title" className="overflow-hidden bg-ink-900 py-20 md:py-36">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-[radial-gradient(40%_50%_at_50%_55%,rgba(69,211,230,.12),transparent_70%)]" />
         {/* a stepwell seen from above: terraces stepping down to the centre */}
