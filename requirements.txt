@@ -1,0 +1,46 @@
+# Ek भारत.AI — website requirements
+#
+# This is a Node.js (Vite + React + TypeScript) project, not a Python project.
+# The authoritative dependency list is package.json; package-lock.json pins the
+# exact versions. This file summarises what is needed to run and build the site.
+# Do not use `pip install -r` on this file — use `npm install` (see below).
+
+# ── System requirements ─────────────────────────────────────────────
+node >= 20.19          # tested with Node.js 24.20.0
+npm >= 10              # tested with npm 11.19.0
+git                    # to clone the repository
+
+# ── Runtime dependencies (package.json "dependencies") ─────────────
+react==19.3.1
+react-dom==19.3.1
+react-router==7.18.5
+three==0.187.0         # 3D scenes (hero, GPU, jet sequence)
+gsap==3.15.0           # scroll-driven animation
+@xyflow/react==12.12.0 # Workflow Studio canvas
+lucide-react==1.65.0   # icons
+
+# ── Build / development dependencies ("devDependencies") ───────────
+vite==8.3.5
+@vitejs/plugin-react==6.1.2
+typescript==7.0.2
+tailwindcss==4.3.3
+@tailwindcss/vite==4.3.3
+@types/react==19.3.0
+@types/react-dom==19.3.0
+@types/three==0.186.0
+
+# ── External services loaded at runtime ────────────────────────────
+# Google Fonts: Manrope, Mukta, Noto Sans Tamil, Noto Sans Bengali,
+#               IBM Plex Mono, Instrument Serif
+# No API keys or environment variables are required.
+
+# ── Setup ───────────────────────────────────────────────────────────
+#   git clone https://github.com/kushagrashuklacore5/EKBharat.ai-frontend-V2.git
+#   cd EKBharat.ai-frontend-V2
+#   npm install            # installs everything above
+#   npm run dev            # development server → http://localhost:5173
+#   npm run build          # production build into ./dist
+#   npm run preview        # preview the production build → http://localhost:4173
+#
+# Hosting: serve ./dist as a static site and rewrite unknown paths to
+# /index.html (single-page app routing).
