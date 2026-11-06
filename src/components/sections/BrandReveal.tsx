@@ -73,7 +73,8 @@ export function BrandReveal() {
 
   const grow = ease(range(lp, 0, 0.22))
   const wipe = ease(range(lp, 0.02, 0.4))
-  const extrude = ease(range(lp, 0.45, 0.78))
+  // stage 2: depth builds only after the characters have formed, and completes before the jet arrives (lp 0.64)
+  const extrude = ease(range(lp, 0.4, 0.62))
   const settle = ease(range(lp, 0.75, 1))
   // last scroll stage: the logo's tricolour ribbon sweeps across the wordmark
   const ribbonIn = jet ? range(lp, 0.72, 0.94) : ease(range(lp, 0.72, 0.94))

@@ -23,10 +23,7 @@ export function ArchitectureSection({ index = '02' }: { index?: string }) {
             lead="Every Ek भारत.AI workflow, agent and application runs through the same stack — from GPU compute at the foundation to agent orchestration at the top. Explore each layer to see what it does and why it matters."
           />
           <div data-reveal="3" className="w-full max-w-[22rem] shrink-0">
-            <PhotoReveal img="grid-lhc" alt="Rows of computing racks in a large research computing hall" aspect="aspect-[4/3]" sizes="22rem" position="70% center" />
-            <p className="mt-3 font-mono text-[11px] leading-relaxed text-faint">
-              Built like a stepwell: read top-down for how work is coordinated, bottom-up for how it is powered.
-            </p>
+            <PhotoReveal caption={false} img="grid-lhc" alt="Rows of computing racks in a large research computing hall" aspect="aspect-[4/3]" sizes="22rem" position="70% center" />
           </div>
         </div>
         <div className="mt-14 md:mt-6">

@@ -48,9 +48,6 @@ export function AiIndustryVisual({ className = '' }: { className?: string }) {
           </ul>
         </div>
       </div>
-      <figcaption className="mt-2.5 text-[11.5px] text-faint">
-        <span className="font-semibold text-muted">Illustration · </span>original artwork: a Transformer block turning business data into contextual understanding
-      </figcaption>
     </figure>
   )
 }

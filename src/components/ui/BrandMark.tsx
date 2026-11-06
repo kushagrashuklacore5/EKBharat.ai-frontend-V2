@@ -17,6 +17,10 @@ interface Props {
   chakra?: number
   /** 'soft' = light, refined tricolour (large wordmark); 'full' = full-strength colours */
   ribbonTone?: 'soft' | 'full' | 'faded'
+  /** thin dark-petrol keyline behind भारत so its white band separates from light backgrounds (fills untouched) */
+  keyline?: boolean
+  /** approved raster wordmark drawn in place of the letter layers (geometry, ribbon and Chakra are kept) */
+  artwork?: { src: string; aspect: number }
 }
 
 export const BRAND_NAME = 'Ek भारत.AI'
@@ -74,7 +78,7 @@ function smoothPath(p: [number, number][]) {
  * Devanagari face (Mukta), scaled so its headline sits on the cap height of
  * the Latin letters, and filled with the tricolour.
  */
-export function BrandMark({ tone = 'light', className = '', depth = 14, animate = true, extrude, ribbon, ribbonTone = 'soft', chakra }: Props) {
+export function BrandMark({ tone = 'light', className = '', depth = 14, animate = true, extrude, ribbon, ribbonTone = 'soft', chakra, keyline = false, artwork }: Props) {
   const uid = useId().replace(/:/g, '')
   const svgRef = useRef<SVGSVGElement>(null)
   const faceRef = useRef<SVGTextElement>(null)
@@ -313,6 +317,17 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
             </mask>
           </>
         )}
+        {/* keyline halo: crisp petrol edge + a soft dark aura that hugs the glyph shapes */}
+        <filter id={`kl-${uid}`} x="-10%" y="-30%" width="120%" height="160%">
+          <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="grow" />
+          <feGaussianBlur in="grow" stdDeviation="7" result="soft" />
+          <feFlood floodColor="#0b2034" floodOpacity="0.38" />
+          <feComposite in2="soft" operator="in" result="aura" />
+          <feMerge>
+            <feMergeNode in="aura" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
         <filter id={`hs-${uid}`} x="-5%" y="-20%" width="110%" height="140%">
           <feGaussianBlur stdDeviation={depth === 0 ? 3 : 2.2} />
         </filter>
@@ -321,7 +336,7 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
         </filter>
       </defs>
 
-      {depth > 0 && (
+      {depth > 0 && !artwork && (
         <>
           {/* soft directional shadow, furthest back */}
           <g data-layer style={{ opacity: e, transform: `translate(${depth * 1.5 * e}px, ${depth * 1.5 * e}px)` }}>
@@ -341,7 +356,7 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
       {/* Ashoka Chakra: separate animation layer, behind and slightly above भारत */}
       {ink && chakra !== undefined && chakra > 0 && (
         <g
-          transform={`translate(${((ink.hiStart + ink.hiEnd) / 2).toFixed(1)} ${(-ink.cap * 0.92).toFixed(1)}) scale(${(0.82 + 0.18 * chakra).toFixed(3)})`}
+          transform={`translate(${(artwork ? ink.l + (ink.r - ink.l) * 0.465 : (ink.hiStart + ink.hiEnd) / 2).toFixed(1)} ${(-ink.cap * 0.92).toFixed(1)}) scale(${(0.82 + 0.18 * chakra).toFixed(3)})`}
           opacity={0.32 * chakra}
           aria-hidden="true"
         >
@@ -350,7 +365,7 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
       )}
 
       {/* stepped extrusion (matching stroke seals glyph-join seams) */}
-      {steps.map((k) => (
+      {!artwork && steps.map((k) => (
         <g key={k} data-layer style={{ transform: `translate(${k * e}px, ${k * e}px)`, transitionDelay: driven ? '0ms' : `${(depth - k) * 18}ms`, transitionDuration: driven ? '0ms' : undefined }}>
           <text {...FONT} fill={`url(#ex-${uid})`} stroke={`url(#ex-${uid})`} strokeWidth={1.6} strokeLinejoin="round">
             {word(undefined, undefined, false, true)}
@@ -361,17 +376,46 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
       {/* tricolour ribbon, behind the letter faces */}
       {ink && rib !== null && rib > 0 && <g clipPath={`url(#rc-${uid})`}>{bands}</g>}
 
+      {/* approved artwork, laid over the (hidden) text geometry */}
+      {artwork && ink && (() => {
+        const w = ink.r - ink.l
+        const h = w / artwork.aspect
+        return <image href={artwork.src} x={ink.l} y={-ink.cap * 0.5 - h * 0.47} width={w} height={h} preserveAspectRatio="xMidYMid meet" />
+      })()}
+
       {/* soft lift shadow under भारत only — no hard outline */}
-      <text {...FONT} fill="none" aria-hidden="true" filter={`url(#hs-${uid})`} transform="translate(1.5 3)">
+      {!artwork && <text {...FONT} fill="none" aria-hidden="true" filter={`url(#hs-${uid})`} transform="translate(1.5 3)">
         <tspan>Ek </tspan>
         <tspan letterSpacing="0" fontSize={hindiSize} fontWeight={HINDI_WEIGHT} dx={GAP_BEFORE} fill={shadow} fillOpacity={tone === 'light' ? 0.22 : 0.5}>
           {HINDI}
         </tspan>
         <tspan dx={GAP_AFTER}>.AI</tspan>
-      </text>
+      </text>}
+
+      {/* keyline: stroked copy of भारत drawn *behind* the face, so only a hairline shows outside the glyphs */}
+      {keyline && tone === 'light' && (
+        <text {...FONT} fill="none" aria-hidden="true">
+          <tspan>Ek </tspan>
+          <tspan
+            letterSpacing="0"
+            fontSize={hindiSize}
+            fontWeight={HINDI_WEIGHT}
+            dx={GAP_BEFORE}
+            fill="#0f2a40"
+            stroke="#0f2a40"
+            strokeOpacity={0.9}
+            strokeWidth={13}
+            strokeLinejoin="round"
+            filter={`url(#kl-${uid})`}
+          >
+            {HINDI}
+          </tspan>
+          <tspan dx={GAP_AFTER}>.AI</tspan>
+        </text>
+      )}
 
       {/* flat front face */}
-      <text ref={faceRef} {...FONT} fill={face}>
+      <text ref={faceRef} {...FONT} fill={face} opacity={artwork ? 0 : undefined}>
         {word('#f37a1f', aiFace, true)}
       </text>
 

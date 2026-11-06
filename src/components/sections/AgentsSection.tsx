@@ -3,7 +3,7 @@ import { SectionHeading } from '../ui/SectionHeading'
 import { Button } from '../ui/Button'
 import { AgentMesh } from '../agents/AgentMesh'
 import { MultilingualAgent } from '../agents/MultilingualAgent'
-import { PhotoReveal } from '../ui/PhotoReveal'
+import { LanguagesVisual } from '../agents/LanguagesVisual'
 
 export function AgentsSection({ index = '04' }: { index?: string }) {
   return (
@@ -31,7 +31,7 @@ export function AgentsSection({ index = '04' }: { index?: string }) {
           <AgentMesh />
         </div>
         <div className="mt-16 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-          <PhotoReveal img="odia-workshop" alt="Engineering students working on laptops during an Odia-language content workshop" aspect="aspect-[4/3]" sizes="(min-width: 1024px) 40vw, 100vw" soft />
+          <LanguagesVisual />
           <div>
             <p data-reveal className="eyebrow">
               Built for India’s languages

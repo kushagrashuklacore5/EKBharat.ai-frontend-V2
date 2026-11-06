@@ -3,7 +3,6 @@ import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Button } from '../ui/Button'
 import { USE_CASES } from '../../lib/content'
-import { IMAGES } from '../../lib/imageCredits'
 
 const JOURNEY: [string, string][] = [
   ['Idea', 'The process, the decision or the product you want to improve.'],
@@ -61,9 +60,6 @@ export function CustomDevSection({ index = '07' }: { index?: string }) {
             </li>
           ))}
         </ol>
-        <p className="relative mt-4 text-right text-[11px] text-faint">
-          Background: {IMAGES['robotics-bitm'].caption} · {IMAGES['robotics-bitm'].author}, {IMAGES['robotics-bitm'].licence} (representative image)
-        </p>
         </div>
 
         {/* expanding panels */}

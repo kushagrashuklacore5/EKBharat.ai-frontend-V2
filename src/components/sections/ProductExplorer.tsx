@@ -186,7 +186,7 @@ export function ProductExplorer() {
                       {p.cta} <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
-                  <div className="relative -mx-4 sm:mx-0 xl:-my-6 xl:scale-[1.12]">
+                  <div className="pointer-events-none relative z-0 -mx-4 mt-14 sm:mx-0 sm:mt-10 xl:-my-6 xl:mt-0 xl:scale-[1.12]">
                     <Visual />
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { IMAGES, imageSrc, type ImageKey } from '../../lib/imageCredits'
+import { imageSrc, type ImageKey } from '../../lib/imageCredits'
 import { Jaali } from './Jaali'
 
 /**
@@ -23,7 +23,6 @@ export function CinematicPhoto({
   position?: string
   className?: string
 }) {
-  const meta = IMAGES[img]
   const { src, srcSet } = imageSrc(img)
   return (
     <figure className={`surface-dark relative isolate overflow-hidden rounded-[14px] ${className}`}>
@@ -38,13 +37,6 @@ export function CinematicPhoto({
           {body && <p className="mt-4 text-[15px] leading-relaxed text-fg-soft">{body}</p>}
         </div>
       </div>
-      <figcaption className="absolute bottom-3 right-4 max-w-[60%] rounded-md bg-[#0b2034]/60 px-2 py-1 text-right text-[11px] leading-snug text-white/80 backdrop-blur-sm">
-        {meta.representative && <span className="font-semibold">Representative image · </span>}
-        {meta.caption} ·{' '}
-        <a href={meta.source} target="_blank" rel="noreferrer" className="underline-offset-2 hover:underline">
-          {meta.author}, {meta.licence}
-        </a>
-      </figcaption>
     </figure>
   )
 }

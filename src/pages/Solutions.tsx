@@ -10,11 +10,11 @@ import { PhotoReveal } from '../components/ui/PhotoReveal'
 import { INDUSTRIES } from '../lib/content'
 import { useReveal } from '../hooks/useReveal'
 import type { ImageKey } from '../lib/imageCredits'
+import { FinanceVisual } from '../components/sections/FinanceVisual'
 
 /** small supporting photographs for the industries where an authentic, licensed image exists */
 const CARD_PHOTOS: Record<string, { img: ImageKey; alt: string; position?: string } | undefined> = {
   education: { img: 'coding-bangalore', alt: 'School students writing code at computers in a Bengaluru lab' },
-  finance: { img: 'upi-bhopal', alt: 'A BHIM / UPI QR code stand for digital payments', position: 'center 60%' },
   'enterprise-operations': { img: 'noc-architel', alt: 'Staff at workstations in a network operations centre' },
   'customer-support': { img: 'bpo-dantewada', alt: 'Rows of customer-support agents with headsets at computers' },
   manufacturing: { img: 'mg-plant', alt: 'Cars on the production line at a vehicle plant in Gujarat' },
@@ -41,7 +41,7 @@ export default function SolutionsPage() {
         lead="Every sector has its own documents, rules and bottlenecks. These are the problems we most often help with — each delivered with the same platform, governance and engineering process."
         actions={<Button to="/build-with-us">Describe your use case</Button>}
       />
-      <nav aria-label="Industries" className="container-x -mt-6 mb-10 flex flex-wrap gap-2">
+      <nav aria-label="Industries" className="container-x relative z-10 mb-10 flex flex-wrap gap-2 sm:-mt-6">
         {INDUSTRIES.map((i) => (
           <a key={i.id} href={`#${i.id}`} className="rounded-full border border-line px-3.5 py-1.5 text-[12.5px] text-fg-soft transition-colors hover:border-line-strong hover:text-fg">
             {i.name}
@@ -57,6 +57,7 @@ export default function SolutionsPage() {
                   <IndustryGlyph glyph={ind.glyph} color={ind.color} />
                   <p className="mt-6 font-mono text-[11px] text-faint">{String(k + 1).padStart(2, '0')}</p>
                   <h2 className="mt-1 text-3xl tracking-tight text-fg">{ind.name}</h2>
+                  {ind.id === 'finance' && <FinanceVisual className="mt-6 max-w-[22rem]" />}
                   {CARD_PHOTOS[ind.id] && (
                     <PhotoReveal
                       img={CARD_PHOTOS[ind.id]!.img}

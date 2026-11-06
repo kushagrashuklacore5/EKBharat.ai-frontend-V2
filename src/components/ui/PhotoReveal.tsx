@@ -15,6 +15,7 @@ export function PhotoReveal({
   soft = false,
   sizes = '(min-width: 1024px) 50vw, 100vw',
   position = 'center',
+  caption = false,
 }: {
   img: ImageKey
   alt: string
@@ -25,6 +26,8 @@ export function PhotoReveal({
   soft?: boolean
   sizes?: string
   position?: string
+  /** show the caption + credit under the photo (credit stays on the Legal page either way) */
+  caption?: boolean
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
@@ -55,7 +58,7 @@ export function PhotoReveal({
           <Jaali fade="none" opacity={0.9} size={34} ink="#dbe4e9" />
         </div>
       </div>
-      <figcaption className="mt-2.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-[11.5px] leading-snug text-faint">
+      {caption && <figcaption className="mt-2.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-[11.5px] leading-snug text-faint">
         <span>
           {meta.representative && <span className="font-semibold text-muted">Representative image · </span>}
           {meta.caption}
@@ -63,7 +66,7 @@ export function PhotoReveal({
         <a href={meta.source} target="_blank" rel="noreferrer" className="font-mono text-[10.5px] hover:text-fg">
           {meta.author} · {meta.licence}
         </a>
-      </figcaption>
+      </figcaption>}
     </figure>
   )
 }

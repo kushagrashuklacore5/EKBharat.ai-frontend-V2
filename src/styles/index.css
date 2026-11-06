@@ -482,3 +482,5 @@ strong, b { font-weight: 700; }
 @keyframes nn-flow { to { stroke-dashoffset: -400; } }
 .nn-pulse { stroke-dasharray: 26 374; animation: nn-flow 3.4s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .nn-pulse { animation: none; stroke-dasharray: none; opacity: .5; } }
+
+@keyframes fin-scan { from { top: -14%; } to { top: 100%; } }

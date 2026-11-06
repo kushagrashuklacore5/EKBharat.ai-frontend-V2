@@ -42,6 +42,7 @@ export function GpuSection({ index = '06' }: { index?: string }) {
           ))}
         </ul>
         <PhotoReveal
+          caption={false}
           img="gpu-csiro"
           alt="A row of GPU cluster cabinets with status displays in a data centre"
           aspect="aspect-[16/7] sm:aspect-[24/5]"

@@ -44,7 +44,6 @@ export function Hero() {
         <div className="absolute inset-y-0 right-0 hidden w-[64%] md:block [mask-image:radial-gradient(62%_70%_at_62%_45%,#000_25%,transparent_78%)]">
           <img src="/images/gpu-dgx-b200-960.webp" alt="" decoding="async" fetchPriority="low" className="jaali-window mono-photo h-full w-full object-cover opacity-[0.085] blur-[0.6px]" />
         </div>
-        <p className="absolute bottom-3 right-4 hidden text-[10px] text-faint/80 md:block">Background: NVIDIA HGX B200 board · Pokiiri, CC BY-SA 4.0</p>
         <Jaali fade="right" opacity={0.06} size={44} />
         <TriPaths className="absolute inset-x-0 bottom-[6%] hidden h-[48%] w-full opacity-60 md:block" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#d2dee4]" />
