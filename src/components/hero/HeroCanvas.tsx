@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { BookOpen, Bot, Cpu, Network, Workflow, Wrench, type LucideIcon } from 'lucide-react'
 import { createHeroScene, hasWebGL } from './heroScene'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -21,12 +21,13 @@ const LABELS: Label[] = [
   { k: 'Knowledge', sub: 'RAG · your data', icon: BookOpen, to: '/architecture/knowledge', x: 2, y: 58, side: 'l' },
   { k: 'Models', sub: 'Routed per task', icon: Network, to: '/ai-orchestration', x: 4, y: 30, side: 'l' },
   { k: 'AI Agents', sub: 'Delegate · verify', icon: Bot, to: '/ai-agents', x: 80, y: 36, side: 'r' },
-  { k: 'Workflows', sub: 'The Studio canvas', icon: Workflow, to: '/workflow-studio', x: 62, y: 6, side: 'r' },
+  { k: 'Workflows', sub: 'The Studio canvas', icon: Workflow, to: '/workflow-studio#demo', x: 62, y: 6, side: 'r' },
   { k: 'Custom AI', sub: 'Built across the stack', icon: Wrench, to: '/custom-ai-development', x: 8, y: 84, side: 'l' },
 ]
 
 /** WebGL hero stack with interactive floating labels. Lazy-loaded; static fallback without WebGL. */
 export default function HeroCanvas() {
+  const navigate = useNavigate()
   const boxRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const labelRefs = useRef<(HTMLAnchorElement | null)[]>([])
@@ -99,7 +100,25 @@ export default function HeroCanvas() {
 
   return (
     <div ref={boxRef} className={`absolute inset-0 transition-opacity duration-1000 ${ready ? 'opacity-100' : 'opacity-0'}`}>
-      <canvas ref={canvasRef} className="block h-full w-full [mask-image:radial-gradient(70%_72%_at_55%_50%,black_62%,transparent_100%)]" aria-hidden="true" />
+      <canvas
+        ref={canvasRef}
+        onClick={() => navigate('/workflow-studio#demo')}
+        className="block h-full w-full [mask-image:radial-gradient(70%_72%_at_55%_50%,black_62%,transparent_100%)] cursor-pointer"
+        title="Open Workflow Studio"
+        aria-label="Interactive 3D Stack — Click to open Workflow Studio"
+      />
+      {/* Mobile touchable quick chip for Workflows */}
+      <div className="absolute top-2 right-2 sm:hidden z-20">
+        <Link
+          to="/workflow-studio#demo"
+          className="glass-chip flex items-center gap-2 rounded-xl py-1.5 px-3 text-[12px] font-bold text-[#102a40] shadow-md border border-[#1d6a80]/30 bg-white/90 backdrop-blur"
+        >
+          <span className="grid size-6 place-items-center rounded-lg bg-[#102a40] text-[#9ad5e5]">
+            <Workflow size={13} />
+          </span>
+          <span>Workflow Studio</span>
+        </Link>
+      </div>
       <svg className="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible sm:block" aria-hidden="true">
         {LABELS.map((l, i) => (
           <g key={l.k}>

@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
+import { Link } from 'react-router'
 import { Cpu, Network, Sparkles, Workflow } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Jaali } from '../ui/Jaali'
@@ -8,10 +9,10 @@ import { gsap, prefersReducedMotion } from '../../lib/gsap'
 const HeroCanvas = lazy(() => import('./HeroCanvas'))
 
 const PILLARS = [
-  { t: 'Infrastructure', icon: Cpu },
-  { t: 'Intelligence', icon: Sparkles },
-  { t: 'Automation', icon: Workflow },
-  { t: 'Orchestration', icon: Network },
+  { t: 'Infrastructure', icon: Cpu, to: '/gpu-cloud' },
+  { t: 'Intelligence', icon: Sparkles, to: '/ai-orchestration' },
+  { t: 'Automation (Workflows)', icon: Workflow, to: '/workflow-studio#demo', highlight: true },
+  { t: 'Orchestration', icon: Network, to: '/ai-agents' },
 ]
 
 export function Hero() {
@@ -70,16 +71,33 @@ export function Hero() {
             intelligent automation, with a team that can build the whole system for you.
           </p>
           <div data-h="cta" className="mt-9 flex flex-wrap items-center gap-3">
-            <Button to="/workflow-studio">Explore Workflow Studio</Button>
+            <Button to="/workflow-studio#demo">Explore Workflow Studio</Button>
             <Button href="#platform" variant="secondary">
               Explore Platform
             </Button>
           </div>
-          <ul data-h="pillars" className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
-            {PILLARS.map(({ t, icon: Icon }) => (
-              <li key={t} className="flex items-center gap-2 text-[13.5px] font-semibold text-fg-soft">
-                <Icon size={16} className="text-cyan" />
-                {t}
+          <ul data-h="pillars" className="mt-10 flex flex-wrap gap-x-3 gap-y-3">
+            {PILLARS.map(({ t, icon: Icon, to, highlight }) => (
+              <li key={t}>
+                {to ? (
+                  <Link
+                    to={to}
+                    className={`group inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-[13.5px] font-semibold transition-all ${
+                      highlight
+                        ? 'bg-cyan/15 border border-cyan/40 text-fg hover:bg-cyan/25 hover:border-cyan shadow-sm'
+                        : 'bg-white/40 dark:bg-ink-850/60 border border-line text-fg-soft hover:border-cyan/40 hover:text-fg'
+                    }`}
+                    title={highlight ? 'Open Workflow Studio' : undefined}
+                  >
+                    <Icon size={16} className={highlight ? 'text-cyan scale-110' : 'text-cyan group-hover:scale-105 transition-transform'} />
+                    {t}
+                  </Link>
+                ) : (
+                  <span className="flex items-center gap-2 text-[13.5px] font-semibold text-fg-soft">
+                    <Icon size={16} className="text-cyan" />
+                    {t}
+                  </span>
+                )}
               </li>
             ))}
           </ul>

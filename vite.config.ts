@@ -4,6 +4,14 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5501',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     // three.js is lazy-loaded for the hero only; its chunk is expected to be ~550 kB raw / ~135 kB gzip
     chunkSizeWarningLimit: 600,

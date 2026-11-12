@@ -27,7 +27,7 @@ export const PRODUCTS: Product[] = [
     kicker: 'Flagship · visual automation',
     line: 'Drag, connect and run AI-native workflows — triggers, agents, models, data and human approvals on one canvas.',
     points: ['Agent, LLM, RAG and database nodes', 'Branches, loops and parallel paths', 'Execution history and managed deployment'],
-    to: '/workflow-studio',
+    to: '/workflow-studio#demo',
     cta: 'Explore Workflow Studio',
     level: 'L1 · Workflows',
     depth: 0,

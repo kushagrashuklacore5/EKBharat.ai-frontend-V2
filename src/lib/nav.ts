@@ -5,7 +5,7 @@ export interface NavItem {
 }
 
 export const PRODUCTS: NavItem[] = [
-  { label: 'Workflow Studio', to: '/workflow-studio', desc: 'Visual builder for AI-native automation' },
+  { label: 'Workflow Studio', to: '/workflow-studio#demo', desc: 'Visual builder for AI-native automation' },
   { label: 'AI Agents', to: '/ai-agents', desc: 'Specialised agents that work together' },
   { label: 'AI Orchestration', to: '/ai-orchestration', desc: 'Multi-model routing & execution' },
   { label: 'GPU Cloud', to: '/gpu-cloud', desc: 'Partner-powered compute on demand' },
@@ -18,7 +18,7 @@ export const SERVICES: NavItem[] = [
 ]
 
 export const PRIMARY_NAV: NavItem[] = [
-  { label: 'Workflow Studio', to: '/workflow-studio' },
+  { label: 'Workflow Studio', to: '/workflow-studio#demo' },
   { label: 'Agents', to: '/ai-agents' },
   { label: 'Orchestration', to: '/ai-orchestration' },
   { label: 'GPU Cloud', to: '/gpu-cloud' },

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { ArrowUpRight, Boxes, Bot, Cpu, Network, Workflow, Wrench, type LucideIcon } from 'lucide-react'
 import { Section } from '../ui/Section'
 import { SectionHeading } from '../ui/SectionHeading'
@@ -21,7 +21,7 @@ const CAPS: Cap[] = [
     name: 'AI Workflow Studio',
     role: 'Where automation is designed',
     body: 'The visual builder that ties everything together. Workflows call agents, route to models and run on managed compute.',
-    to: '/workflow-studio',
+    to: '/workflow-studio#demo',
     icon: Workflow,
     color: '#2f7fa8',
     angle: -90,
@@ -96,6 +96,7 @@ const pos = (angle: number) => {
 }
 
 export function EcosystemSection({ index = '01' }: { index?: string }) {
+  const navigate = useNavigate()
   const [active, setActive] = useState<string>('studio')
   const cur = CAPS.find((c) => c.id === active)!
   const related = LINKS.filter(([a, b]) => a === active || b === active)
@@ -167,7 +168,13 @@ export function EcosystemSection({ index = '01' }: { index?: string }) {
                   type="button"
                   onMouseEnter={() => setActive(c.id)}
                   onFocus={() => setActive(c.id)}
-                  onClick={() => setActive(c.id)}
+                  onClick={() => {
+                    if (c.id === 'studio' || active === c.id) {
+                      navigate(c.to)
+                    } else {
+                      setActive(c.id)
+                    }
+                  }}
                   aria-pressed={on}
                   className="group absolute -translate-x-1/2 -translate-y-1/2"
                   style={{ left: `${p.x}%`, top: `${p.y}%` }}

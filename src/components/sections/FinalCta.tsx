@@ -5,10 +5,13 @@ import { Jaali } from '../ui/Jaali'
 interface Props {
   title?: string
   body?: string
+  /** primary call to action; defaults to the site-wide one */
+  cta?: { label: string; to: string }
 }
 
 export function FinalCta({
   title = 'Your Next AI System Starts Here.',
+  cta = { label: 'Start Building with Ek भारत.AI', to: '/build-with-us' },
   body = 'Whether you need computing power, intelligent automation or a complete enterprise AI ecosystem, let’s build it together.',
 }: Props) {
   return (
@@ -53,7 +56,7 @@ export function FinalCta({
           {body}
         </p>
         <div data-reveal="3" className="mt-10 flex flex-wrap justify-center gap-3">
-          <Button to="/build-with-us">Start Building with Ek भारत.AI</Button>
+          <Button to={cta.to}>{cta.label}</Button>
           <Button to="/contact" variant="secondary">
             Discuss Your Project
           </Button>

@@ -2,3 +2,12 @@ node_modules
 dist
 *.log
 *.tsbuildinfo
+.env
+.env.local
+.env.*.local
+*.env
+server/.env
+server/mail-config.json
+server/node_modules
+!.env.example
+!server/.env.example

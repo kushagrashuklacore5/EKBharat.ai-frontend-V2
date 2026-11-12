@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
-import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react'
+import { ArrowRight, ChevronDown, Menu, Workflow, X } from 'lucide-react'
 import { Logo } from '../ui/Logo'
 import { PRODUCTS, SERVICES, type NavItem } from '../../lib/nav'
 
@@ -84,9 +84,9 @@ export function Navbar() {
               <div className="panel-raised grid grid-cols-[1fr_1fr_1.05fr] gap-2 p-2.5">
                 <MenuGroup title="Products" items={PRODUCTS} />
                 <MenuGroup title="Services" items={SERVICES} />
-                <Link to="/workflow-studio" className="surface-dark group flex flex-col justify-between rounded-[10px] p-5">
+                <Link to="/workflow-studio#demo" className="surface-dark group flex flex-col justify-between rounded-[10px] p-5">
                   <span>
-                    <span className="label text-cyan">Flagship product</span>
+                    <span className="label text-cyan flex items-center gap-1.5"><Workflow size={13} /> Flagship product</span>
                     <span className="mt-2 block text-[17px] font-semibold leading-snug text-fg">Workflow Studio</span>
                     <span className="mt-1.5 block text-[13px] leading-relaxed text-muted">Design AI-native automation on a visual canvas — then run it.</span>
                   </span>
@@ -98,7 +98,8 @@ export function Navbar() {
               </div>
             </div>
           </div>
-          <NavLink to="/workflow-studio" className={link}>
+          <NavLink to="/workflow-studio#demo" className={link}>
+            <Workflow size={15} className="inline mr-1 text-cyan" />
             Workflow Studio
           </NavLink>
           <NavLink to="/gpu-cloud" className={link}>
