@@ -20,7 +20,20 @@ interface Props {
   /** thin dark-petrol keyline behind भारत so its white band separates from light backgrounds (fills untouched) */
   keyline?: boolean
   /** approved raster wordmark drawn in place of the letter layers (geometry, ribbon and Chakra are kept) */
-  artwork?: { src: string; aspect: number }
+  artwork?: {
+    src: string
+    aspect: number
+    /** optional recoloured face drawn instead of `src` (e.g. the dark-surface version) */
+    face?: string
+    /** optional mask image of the “Bharat” letters, painted with the heritage scene */
+    scene?: string
+    /** the masked letters' box in source pixels: [x0, y0, x1, y1] */
+    sceneBox?: [number, number, number, number]
+    /** extrude only the top part of the artwork (fraction of its height), e.g. to keep a tagline flat */
+    depthTo?: number
+    /** source pixel size [w, h] */
+    px?: [number, number]
+  }
 }
 
 export const BRAND_NAME = 'Ek भारत.AI'
@@ -88,6 +101,8 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
   const [hindi, setHindi] = useState({ scale: 1, top: -FONT.fontSize * 0.72, bottom: 0 })
   /** laid-out positions: wordmark ink box, end of “Ek”, start of भारत */
   const [ink, setInk] = useState<{ l: number; r: number; cap: number; ekEnd: number; hiStart: number; hiEnd: number } | null>(null)
+  /** artwork mode: the logo's own silhouette, filled for the extrusion and the shadow */
+  const [sil, setSil] = useState<{ depth: string; shadow: string } | null>(null)
 
   const measureLayout = useCallback(() => {
     const el = faceRef.current
@@ -193,9 +208,67 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
   const far = tone === 'light' ? '#a9d2cf' : '#1e5961'
   const rim = tone === 'light' ? '#b08a55' : '#d5b68a'
   const shadow = tone === 'light' ? '#102a40' : '#000000'
+  // artwork mode: build the extrusion from the logo image's own outline, so the depth
+  // follows every letter of the supplied artwork exactly (colours of the logo untouched)
+  useEffect(() => {
+    if (!artwork) return
+    let alive = true
+    const img = new Image()
+    img.decoding = 'async'
+    img.src = artwork.src
+    img.onload = () => {
+      if (!alive) return
+      const cut = artwork.depthTo ?? 1
+      const w = img.naturalWidth
+      const h = img.naturalHeight
+      const paint = (fill: (g: CanvasRenderingContext2D) => void) => {
+        const c = document.createElement('canvas')
+        c.width = w
+        c.height = h
+        const g = c.getContext('2d')!
+        fill(g)
+        g.globalCompositeOperation = 'destination-in'
+        g.drawImage(img, 0, 0)
+        if (cut < 1) g.clearRect(0, h * cut, w, h)
+        return c.toDataURL('image/png')
+      }
+      const depthUrl = paint((g) => {
+        const grd = g.createLinearGradient(0, 0, w, h)
+        grd.addColorStop(0, near)
+        grd.addColorStop(1, far)
+        g.fillStyle = grd
+        g.fillRect(0, 0, w, h)
+      })
+      const shadowUrl = paint((g) => {
+        g.fillStyle = shadow
+        g.fillRect(0, 0, w, h)
+      })
+      setSil({ depth: depthUrl, shadow: shadowUrl })
+    }
+    return () => {
+      alive = false
+    }
+  }, [artwork?.src, artwork?.depthTo, near, far, shadow])
+
   const driven = extrude !== undefined
   const e = driven ? Math.max(0, Math.min(1, extrude!)) : open ? 1 : 0
   const steps = Array.from({ length: depth }, (_, i) => depth - i) // far → near
+  const art =
+    artwork && ink
+      ? (() => {
+          const w = ink.r - ink.l
+          const h = w / artwork.aspect
+          return { x: ink.l, y: -ink.cap * 0.5 - h * 0.47, w, h }
+        })()
+      : null
+  const sceneRect =
+    art && artwork?.scene && artwork.sceneBox && artwork.px
+      ? (() => {
+          const [x0, y0, x1, y1] = artwork.sceneBox!
+          const [pw, ph] = artwork.px!
+          return { x: art.x + (x0 / pw) * art.w, y: art.y + (y0 / ph) * art.h, w: ((x1 - x0) / pw) * art.w, h: ((y1 - y0) / ph) * art.h }
+        })()
+      : null
   const pad = 6
   const rib = ribbon === undefined ? null : clamp01(ribbon)
   const soft = ribbonTone === 'soft'
@@ -285,7 +358,7 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
         </linearGradient>
         {/* भारत in the tricolour: saffron · white · green, top to bottom */}
         {/* heritage scene painted inside भारत (falls back to the tricolour gradient until measured) */}
-        {ink && (
+        {ink && !sceneRect && (
           <HeritageScene
             id={`scene-${uid}`}
             x={ink.hiStart - 30}
@@ -293,6 +366,14 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
             width={ink.hiEnd - ink.hiStart + 60}
             height={hindi.bottom - hindi.top + 16}
           />
+        )}
+        {sceneRect && art && (
+          <>
+            <HeritageScene id={`scene-${uid}`} x={sceneRect.x} y={sceneRect.y} width={sceneRect.w} height={sceneRect.h} pad={sceneRect.w * 0.04} gateAt={0.5} />
+            <mask id={`bm-${uid}`} maskUnits="userSpaceOnUse" x={art.x} y={art.y} width={art.w} height={art.h}>
+              <image href={artwork!.scene} x={art.x} y={art.y} width={art.w} height={art.h} preserveAspectRatio="xMidYMid meet" />
+            </mask>
+          </>
         )}
         <linearGradient id={`tri-${uid}`} gradientUnits="userSpaceOnUse" x1="0" x2="0" y1={hindi.top} y2={hindi.bottom}>
           <stop offset="0" stopColor="#f6a24e" />
@@ -353,6 +434,12 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
         </>
       )}
 
+      {art && sil && depth > 0 && (
+        <g data-layer style={{ opacity: e, transform: `translate(${depth * 1.5 * e}px, ${depth * 1.5 * e}px)` }}>
+          <image href={sil.shadow} x={art.x} y={art.y} width={art.w} height={art.h} opacity={tone === 'light' ? 0.14 : 0.45} filter={`url(#sh-${uid})`} />
+        </g>
+      )}
+
       {/* Ashoka Chakra: separate animation layer, behind and slightly above भारत */}
       {ink && chakra !== undefined && chakra > 0 && (
         <g
@@ -365,6 +452,12 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
       )}
 
       {/* stepped extrusion (matching stroke seals glyph-join seams) */}
+      {art && sil &&
+        steps.map((k) => (
+          <g key={k} data-layer style={{ transform: `translate(${k * e}px, ${k * e}px)`, transitionDelay: driven ? '0ms' : `${(depth - k) * 18}ms`, transitionDuration: driven ? '0ms' : undefined }}>
+            <image href={sil.depth} x={art.x} y={art.y} width={art.w} height={art.h} />
+          </g>
+        ))}
       {!artwork && steps.map((k) => (
         <g key={k} data-layer style={{ transform: `translate(${k * e}px, ${k * e}px)`, transitionDelay: driven ? '0ms' : `${(depth - k) * 18}ms`, transitionDuration: driven ? '0ms' : undefined }}>
           <text {...FONT} fill={`url(#ex-${uid})`} stroke={`url(#ex-${uid})`} strokeWidth={1.6} strokeLinejoin="round">
@@ -377,11 +470,9 @@ export function BrandMark({ tone = 'light', className = '', depth = 14, animate 
       {ink && rib !== null && rib > 0 && <g clipPath={`url(#rc-${uid})`}>{bands}</g>}
 
       {/* approved artwork, laid over the (hidden) text geometry */}
-      {artwork && ink && (() => {
-        const w = ink.r - ink.l
-        const h = w / artwork.aspect
-        return <image href={artwork.src} x={ink.l} y={-ink.cap * 0.5 - h * 0.47} width={w} height={h} preserveAspectRatio="xMidYMid meet" />
-      })()}
+      {art && <image href={artwork!.face ?? artwork!.src} x={art.x} y={art.y} width={art.w} height={art.h} preserveAspectRatio="xMidYMid meet" />}
+      {/* heritage scene painted inside the “Bharat” letters */}
+      {sceneRect && <rect x={sceneRect.x} y={sceneRect.y} width={sceneRect.w} height={sceneRect.h} fill={`url(#scene-${uid})`} mask={`url(#bm-${uid})`} />}
 
       {/* soft lift shadow under भारत only — no hard outline */}
       {!artwork && <text {...FONT} fill="none" aria-hidden="true" filter={`url(#hs-${uid})`} transform="translate(1.5 3)">

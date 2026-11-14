@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { JetSky, PRELUDE_END, type JetProgress } from './JetSky'
 import { hasWebGL } from '../hero/heroScene'
 import { BrandMark } from '../ui/BrandMark'
+import { LOGO_ASPECT, LOGO_SRC } from '../ui/Logo'
+
+/** the official logo artwork, animated by the reveal (stable object so effects don't re-run) */
+const LOGO_ART = { src: LOGO_SRC, aspect: LOGO_ASPECT }
 import { ScrollTrigger } from '../../lib/gsap'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 
@@ -115,7 +119,7 @@ export function BrandReveal() {
         >
           <div className="flex items-center justify-center gap-[2.5vw]">
             <div className="min-w-0 flex-1" style={{ clipPath: `inset(-20% ${(1 - wipe) * 100}% -40% 0)`, maxWidth: 980 }}>
-              <BrandMark extrude={extrude} ribbonTone="faded" ribbon={ribbonIn} chakra={chakraIn} depth={16} animate={false} />
+              <BrandMark extrude={extrude} artwork={LOGO_ART} ribbonTone="faded" ribbon={ribbonIn} chakra={chakraIn} depth={16} animate={false} />
             </div>
           </div>
           <p className="mt-6 text-center text-[13px] font-semibold text-muted" style={{ opacity: range(lp, 0.4, 0.6) * (1 - statement) }}>

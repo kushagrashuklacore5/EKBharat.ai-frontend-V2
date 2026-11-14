@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { Logo } from '../ui/Logo'
+import { Logo, LOGO_NIGHT } from '../ui/Logo'
 import { BrandMark } from '../ui/BrandMark'
 import { Jaali } from '../ui/Jaali'
 import { SITE } from '../../lib/config'
@@ -103,8 +103,9 @@ export function Footer() {
           <img src="/images/wafer-12in-960.webp" alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
         </div>
         <div aria-hidden="true" className="tri-hairline mt-20 w-48" />
-        <div className="mt-8 opacity-90">
-          <BrandMark tone="dark" depth={12} />
+        {/* 3D signature of the logo for the dark footer: extrusion follows the artwork's own outline */}
+        <div className="mt-8 opacity-95">
+          <BrandMark tone="dark" depth={12} artwork={LOGO_NIGHT} />
         </div>
         <div className="mt-6 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
           <p className="text-[13px] font-medium tracking-[0.02em] text-muted">Build · Connect · Automate · Orchestrate</p>

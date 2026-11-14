@@ -11,7 +11,7 @@ import { useReveal } from '../hooks/useReveal'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { INDUSTRIES } from '../lib/content'
 import { SITE } from '../lib/config'
-import { LOGO_V2, LOGO_V2_SM } from '../components/ui/Logo'
+import { LogoImage } from '../components/ui/Logo'
 import type { ImageKey } from '../lib/imageCredits'
 
 /* ───────────────────────── content ───────────────────────── */
@@ -128,15 +128,9 @@ export default function AboutPage() {
           {/* the brand, presented */}
           <div data-reveal="2" className="relative mt-12 overflow-hidden rounded-[18px] border border-line bg-ink-850/60 px-5 py-10 sm:px-10 sm:py-14">
             <Jaali fade="radial" opacity={0.05} size={36} />
-            <img
-              src={LOGO_V2}
-              srcSet={`${LOGO_V2_SM} 480w, ${LOGO_V2} 1200w`}
-              sizes="(min-width: 1024px) 900px, 90vw"
-              alt="Ek भारत.AI"
-              width={1495}
-              height={458}
-              className="relative mx-auto block h-auto w-full max-w-[900px]"
-            />
+            <div className="relative mx-auto max-w-[900px] rounded-xl bg-white px-4 py-6 sm:px-8 sm:py-8">
+              <LogoImage className="!h-auto w-full" sizes="(min-width: 1024px) 900px, 90vw" alt="Ek Bharat.AI — One Nation, Infinite Intelligence" />
+            </div>
           </div>
 
           {/* at a glance */}
