@@ -15,6 +15,7 @@ export const router = createBrowserRouter([
       { path: '/', element: <Home /> },
       { path: '/workflow-studio', element: page(() => import('./pages/WorkflowStudio')) },
       { path: '/ai-agents', element: page(() => import('./pages/AiAgents')) },
+      { path: '/ai-agent', element: page(() => import('./pages/AiAgents')) },
       { path: '/ai-orchestration', element: page(() => import('./pages/AiOrchestration')) },
       { path: '/gpu-cloud', element: page(() => import('./pages/GpuCloud')) },
       { path: '/solutions', element: page(() => import('./pages/Solutions')) },

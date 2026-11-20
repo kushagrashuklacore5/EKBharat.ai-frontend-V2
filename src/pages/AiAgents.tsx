@@ -7,6 +7,7 @@ import { Section } from '../components/ui/Section'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { AgentMesh } from '../components/agents/AgentMesh'
 import { MultilingualAgent } from '../components/agents/MultilingualAgent'
+import { AgentShowcase } from '../components/agents/AgentShowcase'
 import { FinalCta } from '../components/sections/FinalCta'
 import { useReveal } from '../hooks/useReveal'
 import { LanguagesBlock } from '../components/sections/RelocatedBlocks'
@@ -52,13 +53,17 @@ export default function AiAgentsPage() {
         lead="We design and build intelligent agent systems that break complex work into steps, use your tools and data, and hand results to people for approval where it matters."
         actions={
           <>
-            <Button to="/build-with-us?type=agents">Build an agent system</Button>
-            <Button to="/workflow-studio" variant="secondary">
+            <Button to="#agents-portfolio">Explore 5 Agents</Button>
+            <Button to="/build-with-us?type=agents" variant="secondary">
+              Build an agent system
+            </Button>
+            <Button to="/workflow-studio" variant="tertiary">
               Agents in Workflow Studio
             </Button>
           </>
         }
       />
+      <AgentShowcase />
       <Section className="pb-24">
         <div className="container-x">
           <AgentMesh />
