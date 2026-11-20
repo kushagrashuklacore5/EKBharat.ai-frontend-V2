@@ -284,9 +284,33 @@ function VaaniInteractiveDemo() {
           </div>
         </div>
 
-        {/* Audio waveform */}
-        <div className="mt-5">
-          <VoiceWaveformVisual active={isPlaying} />
+        {/* Audio waveform & Avatar */}
+        <div className="mt-5 flex items-center gap-4">
+          <div className="relative size-20 shrink-0 overflow-hidden rounded-xl border border-cyan/40 bg-ink-950 shadow-md">
+            <img
+              src={
+                !isPlaying
+                  ? '/brand/vaani_frames/frame_0.webp'
+                  : activeTranscript[currentTurn]?.speaker === 'Vaani'
+                  ? '/brand/vaani_frames/frame_3.webp'
+                  : '/brand/vaani_frames/frame_1.webp'
+              }
+              alt="Vaani gesture"
+              className="h-full w-full object-cover transition-all duration-300"
+            />
+            {isPlaying && (
+              <span
+                className={`absolute bottom-1 right-1 size-2.5 rounded-full border border-ink-950 ${
+                  activeTranscript[currentTurn]?.speaker === 'Vaani'
+                    ? 'bg-saffron animate-ping'
+                    : 'bg-leaf animate-pulse'
+                }`}
+              />
+            )}
+          </div>
+          <div className="flex-1">
+            <VoiceWaveformVisual active={isPlaying} />
+          </div>
         </div>
       </div>
 

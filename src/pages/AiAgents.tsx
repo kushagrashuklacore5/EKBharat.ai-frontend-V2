@@ -7,6 +7,7 @@ import { Section } from '../components/ui/Section'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { AgentMesh } from '../components/agents/AgentMesh'
 import { MultilingualAgent } from '../components/agents/MultilingualAgent'
+import { CharacterShowcase3D } from '../components/agents/CharacterShowcase3D'
 import { AgentShowcase } from '../components/agents/AgentShowcase'
 import { FinalCta } from '../components/sections/FinalCta'
 import { useReveal } from '../hooks/useReveal'
@@ -53,7 +54,7 @@ export default function AiAgentsPage() {
         lead="We design and build intelligent agent systems that break complex work into steps, use your tools and data, and hand results to people for approval where it matters."
         actions={
           <>
-            <Button to="#agents-portfolio">Explore 5 Agents</Button>
+            <Button to="#agents-portfolio">Select 3D Character</Button>
             <Button to="/build-with-us?type=agents" variant="secondary">
               Build an agent system
             </Button>
@@ -63,6 +64,7 @@ export default function AiAgentsPage() {
           </>
         }
       />
+      <CharacterShowcase3D />
       <AgentShowcase />
       <Section className="pb-24">
         <div className="container-x">
