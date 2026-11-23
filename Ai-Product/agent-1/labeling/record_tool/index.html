@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EKBharat Proctor — Mock-Exam Recorder</title>
+<style>
+  :root { --bg:#0b0f14; --panel:#121820; --fg:#e6edf3; --muted:#8b98a5;
+          --blue:#3b82f6; --green:#22c55e; --red:#ef4444; --amber:#f59e0b; }
+  * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--fg);
+      font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:900px; margin:0 auto; padding:16px; }
+  h1 { font-size:20px; } .muted { color:var(--muted); font-size:13px; }
+  .stage { position:relative; width:100%; max-width:720px; aspect-ratio:4/3; background:#000;
+           border-radius:12px; overflow:hidden; border:1px solid #1e2732; }
+  video { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+  .cue { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+         flex-direction:column; text-align:center; background:rgba(0,0,0,0.35); }
+  .cue .act { font-size:30px; font-weight:800; }
+  .cue .sub { color:var(--muted); margin-top:6px; }
+  .cue .count { font-size:14px; margin-top:10px; color:var(--amber); }
+  .row { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; align-items:center; }
+  button { background:var(--panel); border:1px solid #243040; color:var(--fg); padding:8px 14px;
+           border-radius:8px; cursor:pointer; font-size:14px; }
+  button.primary { background:var(--blue); border-color:var(--blue); color:#fff; }
+  button:disabled { opacity:.5; cursor:default; }
+  select, input { background:var(--panel); border:1px solid #243040; color:var(--fg);
+                  padding:6px 8px; border-radius:6px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  td,th { border-bottom:1px solid #1e2732; padding:6px 8px; text-align:left; }
+  .pill { padding:2px 8px; border-radius:10px; font-size:12px; }
+  .ok { color:var(--green); } .rec { color:var(--red); font-weight:700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Mock-Exam Recorder <span class="muted">— scenario mode = auto-labelled data</span></h1>
+  <p class="muted">
+    Records your webcam while cueing scripted behaviours. On stop it downloads the video
+    (.webm) + a labels.json (segments with class + start/end) + browser events. Feed those
+    to <code>training/extract_features.py</code> then <code>train_temporal.py --recorded</code>.
+    Record several <b>different people</b> for a proper split.
+  </p>
+
+  <div class="stage">
+    <video id="vid" autoplay muted playsinline></video>
+    <div class="cue" id="cue" style="display:none">
+      <div class="act" id="cueAct">—</div>
+      <div class="sub" id="cueSub"></div>
+      <div class="count" id="cueCount"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <label>Person ID <input id="pid" type="number" value="1" style="width:70px" /></label>
+    <label>Scenario
+      <select id="scenario">
+        <option value="standard">Standard (balanced, ~90s)</option>
+        <option value="cheating">Cheating-heavy (~90s)</option>
+        <option value="normalonly">Normal-only (baseline, 60s)</option>
+      </select>
+    </label>
+    <button class="primary" id="start">● Start recording</button>
+    <button id="stop" disabled>■ Stop & download</button>
+    <span id="status" class="muted"></span>
+  </div>
+
+  <table id="timeline"><thead><tr><th>t (s)</th><th>class</th><th>cue</th></tr></thead><tbody></tbody></table>
+</div>
+
+<script>
+// Class vocabulary MUST match backend app/pipeline/features.py TEMPORAL_CLASSES.
+const SCENARIOS = {
+  standard: [
+    ["normal","Sit normally, look at the screen",10],
+    ["looking_away","Look away / turn your head",6],
+    ["normal","Back to normal",8],
+    ["phone_use","Pick up your phone and look at it",8],
+    ["normal","Put the phone away, normal",8],
+    ["talking","Talk / mouth words",6],
+    ["normal","Normal",6],
+    ["reading_material","Look down at notes/book",7],
+    ["normal","Normal",6],
+    ["suspicious_hand_movement","Hand to your ear (earpiece)",6],
+    ["normal","Normal",6],
+    ["other_person_present","Have a second person enter the frame",7],
+    ["normal","Second person leaves, normal",6],
+  ],
+  cheating: [
+    ["normal","Normal",6],
+    ["phone_use","Use your phone",10],
+    ["looking_away","Look away at notes beside you",8],
+    ["reading_material","Read from a book/notes",10],
+    ["suspicious_hand_movement","Hand to ear (earpiece)",8],
+    ["other_person_present","Second person helps you",10],
+    ["person_absent","Leave the frame entirely",6],
+    ["normal","Return, normal",6],
+    ["phone_use","Phone again",8],
+    ["normal","Normal",6],
+  ],
+  normalonly: [ ["normal","Just sit and work normally for 60s",60] ],
+};
+
+const vid = document.getElementById("vid");
+const cue = document.getElementById("cue");
+let stream, recorder, chunks = [], t0 = 0, events = [], segments = [], timers = [];
+
+async function initCam(){
+  stream = await navigator.mediaDevices.getUserMedia({ video:{width:640,height:480}, audio:true });
+  vid.srcObject = stream;
+}
+initCam();
+
+// capture browser integrity events with timestamps relative to recording start
+function rel(){ return (performance.now() - t0)/1000; }
+["visibilitychange"].forEach(e=>document.addEventListener(e,()=> t0&&events.push({t:rel(),event:document.hidden?"tab_hidden":"tab_visible"})));
+window.addEventListener("blur",()=> t0&&events.push({t:rel(),event:"blur"}));
+window.addEventListener("focus",()=> t0&&events.push({t:rel(),event:"focus"}));
+document.addEventListener("copy",()=> t0&&events.push({t:rel(),event:"copy"}));
+document.addEventListener("paste",()=> t0&&events.push({t:rel(),event:"paste"}));
+document.addEventListener("contextmenu",()=> t0&&events.push({t:rel(),event:"contextmenu"}));
+
+document.getElementById("start").onclick = () => {
+  const plan = SCENARIOS[document.getElementById("scenario").value];
+  chunks=[]; events=[]; segments=[]; timers.forEach(clearTimeout); timers=[];
+  const tb = document.querySelector("#timeline tbody"); tb.innerHTML="";
+  recorder = new MediaRecorder(stream, { mimeType: pickMime() });
+  recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+  recorder.onstop = finalize;
+  recorder.start(1000);
+  t0 = performance.now();
+  cue.style.display="flex";
+  document.getElementById("start").disabled=true;
+  document.getElementById("stop").disabled=false;
+
+  // schedule cues and build the label segments
+  let acc = 0;
+  plan.forEach(([cls, text, dur]) => {
+    const start = acc, end = acc + dur;
+    segments.push({ start, end, "class": cls });
+    tb.insertAdjacentHTML("beforeend", `<tr><td>${start.toFixed(0)}</td><td>${cls}</td><td class="muted">${text}</td></tr>`);
+    timers.push(setTimeout(()=>showCue(cls,text,dur), start*1000));
+    acc = end;
+  });
+  timers.push(setTimeout(()=>document.getElementById("stop").click(), acc*1000+400));
+  document.getElementById("status").textContent = `recording ${acc}s …`;
+};
+
+function showCue(cls,text,dur){
+  document.getElementById("cueAct").textContent = cls.replace(/_/g," ");
+  document.getElementById("cueSub").textContent = text;
+  let left = dur;
+  document.getElementById("cueCount").textContent = left+"s";
+  const iv = setInterval(()=>{ left--; document.getElementById("cueCount").textContent = Math.max(left,0)+"s"; if(left<=0) clearInterval(iv); },1000);
+}
+
+document.getElementById("stop").onclick = () => {
+  if(recorder && recorder.state!=="inactive") recorder.stop();
+  timers.forEach(clearTimeout); timers=[];
+  cue.style.display="none";
+  document.getElementById("start").disabled=false;
+  document.getElementById("stop").disabled=true;
+};
+
+function finalize(){
+  const blob = new Blob(chunks, { type: chunks[0]?.type || "video/webm" });
+  const pid = parseInt(document.getElementById("pid").value||"1",10);
+  const stem = `session_p${pid}_${Date.now()}`;
+  download(blob, stem+".webm");
+  const labels = { person_id: pid, fps: 10, segments, events };
+  download(new Blob([JSON.stringify(labels,null,2)],{type:"application/json"}), stem+".json");
+  document.getElementById("status").innerHTML = `<span class="ok">saved ${stem}.webm + .json</span>`;
+}
+
+function download(blob, name){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+function pickMime(){
+  for(const m of ["video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"])
+    if(MediaRecorder.isTypeSupported(m)) return m;
+  return "video/webm";
+}
+</script>
+</body>
+</html>

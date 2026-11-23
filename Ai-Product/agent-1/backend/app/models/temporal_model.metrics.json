@@ -1,0 +1,34 @@
+{
+  "version": "20261119_073408",
+  "source": "synthetic:48persons",
+  "window": 50,
+  "feature_dim": 57,
+  "classes": [
+    "normal",
+    "looking_away",
+    "talking",
+    "phone_use",
+    "reading_material",
+    "other_person_present",
+    "person_absent",
+    "identity_mismatch",
+    "suspicious_hand_movement",
+    "screen_switching"
+  ],
+  "val_macro_f1": 0.9962,
+  "test_macro_f1": 0.9941,
+  "per_class_f1": {
+    "normal": 0.9967,
+    "looking_away": 0.9935,
+    "talking": 0.985,
+    "phone_use": 1.0,
+    "reading_material": 1.0,
+    "other_person_present": 1.0,
+    "person_absent": 1.0,
+    "identity_mismatch": 1.0,
+    "suspicious_hand_movement": 1.0,
+    "screen_switching": 0.9655
+  },
+  "n_train": 7028,
+  "n_test": 1722
+}

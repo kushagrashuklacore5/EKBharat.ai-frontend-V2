@@ -1,0 +1,44 @@
+# --- Web / transport ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+websockets==14.1
+python-multipart==0.0.20
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# --- Vision / inference ---
+numpy==1.26.4
+opencv-python==4.10.0.84
+onnx==1.17.0
+onnxruntime==1.20.1          # CPU build. Swap for onnxruntime-gpu on a CUDA host.
+ultralytics==8.3.55          # YOLO11 pose/detect. AGPL-3.0 -- see LICENSES.md
+lapx==0.5.11                 # linear assignment; required by Ultralytics ByteTrack (imports as `lap`)
+mediapipe==0.10.20           # Face Landmarker: 478 landmarks + iris + transform matrix
+hsemotion-onnx==0.3.1        # HSEmotion affect (ONNX, auto-downloads weights)
+requests==2.32.3
+
+# --- Face detection + identity (buffalo_l ONNX, run directly on onnxruntime) ---
+#   SCRFD det_10g.onnx + ArcFace w600k_r50.onnx are fetched by download_models.py --all.
+#   The `insightface` package is NOT required (avoids a Windows build); we run the ONNX
+#   files directly. CHECK the ArcFace weight licence before commercial use (LICENSES.md).
+
+# --- Head pose (6DRepNet) / gaze (L2CS) -- OPTIONAL ONNX upgrades ---
+#   The pipeline ships a tested geometric head-pose (solvePnP) and gaze (iris) estimator
+#   and auto-upgrades to ONNX when app/models/sixdrepnet.onnx / l2cs.onnx are present.
+#   To produce sixdrepnet.onnx:  pip install sixdrepnet torch torchvision
+#                                python scripts/export_onnx.py --sixdrepnet
+#   L2CS needs its Gaze360 checkpoint; see scripts/export_onnx.py --l2cs.
+
+# --- Training (Phase 3) ---
+# torch / torchvision are large; install per your CUDA/CPU target:
+#   CPU:  pip install torch torchvision
+#   CUDA: see https://pytorch.org/get-started/locally/
+
+# --- Persistence (Phase 4) ---
+SQLAlchemy==2.0.36
+alembic==1.14.0
+# psycopg[binary]==3.2.3     # enable when wiring Postgres
+
+# --- Tests / tooling ---
+pytest==8.3.4
+httpx==0.28.1                # TestClient / WS test support

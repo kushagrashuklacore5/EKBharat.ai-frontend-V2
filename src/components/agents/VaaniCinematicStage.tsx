@@ -11,14 +11,27 @@ interface VaaniCinematicStageProps {
   reducedMotion?: boolean
 }
 
-// 360-degree turnaround assets for full-body standing 3D rotation (Pure cyber armor - no corporate suit/blazer)
+// Animated full-body character (transparent WebP; same asset shown across every rotation bin)
+const VAANI_GIF = '/brand/vaani_character.webp'
+
+// Clean, crisp HTML industry chips (replaces the blurry labels that were baked into the GIF).
+// Each has a small horizontal offset to echo the original staggered arrangement.
+const INDUSTRY_LABELS: { text: string; indent: number }[] = [
+  { text: 'Real estate', indent: 0 },
+  { text: 'Healthcare', indent: 34 },
+  { text: 'E-commerce', indent: 8 },
+  { text: 'Restaurants', indent: 46 },
+  { text: 'Lead generation', indent: 22 },
+  { text: 'Education', indent: 0 },
+  { text: 'Collections', indent: 40 },
+]
 const TURNAROUND_ANGLES = {
-  front: '/brand/vaani_turnaround/angle_0.webp',
-  frontRight: '/brand/vaani_standing/vaani_standing_hero.webp',
-  profileRight: '/brand/vaani_turnaround/angle_1.webp',
-  back: '/brand/vaani_turnaround/angle_3.webp',
-  profileLeft: '/brand/vaani_turnaround/angle_left_profile.webp',
-  frontLeft: '/brand/vaani_turnaround/angle_4.webp',
+  front: VAANI_GIF,
+  frontRight: VAANI_GIF,
+  profileRight: VAANI_GIF,
+  back: VAANI_GIF,
+  profileLeft: VAANI_GIF,
+  frontLeft: VAANI_GIF,
 }
 
 export function VaaniCinematicStage({
@@ -35,6 +48,9 @@ export function VaaniCinematicStage({
   const [hasDragged, setHasDragged] = useState<boolean>(false)
   const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 })
   const [floatY, setFloatY] = useState(0)
+  // True while Vaani's hand is open/presenting in the looping animation -> reveal the sector cards
+  const [handOpen, setHandOpen] = useState(false)
+  const loopStartRef = useRef<number>(typeof performance !== 'undefined' ? performance.now() : 0)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Preload all 360 turnaround angle images for instantaneous smooth rotation
@@ -44,6 +60,27 @@ export function VaaniCinematicStage({
       img.src = src
     })
   }, [])
+
+  // Reveal the sector cards exactly when her hand opens in the loop.
+  // The WebP loop is 30 frames x 100ms = 3000ms; palm opens from frame 15.
+  useEffect(() => {
+    if (reducedMotion) {
+      setHandOpen(true)
+      return
+    }
+    const FRAME_MS = 100
+    const TOTAL_MS = 30 * FRAME_MS
+    const OPEN_FROM_FRAME = 15
+    let rafId = 0
+    const tick = () => {
+      const elapsed = performance.now() - loopStartRef.current
+      const frame = Math.floor(((elapsed % TOTAL_MS) + TOTAL_MS) % TOTAL_MS / FRAME_MS)
+      setHandOpen(frame >= OPEN_FROM_FRAME)
+      rafId = requestAnimationFrame(tick)
+    }
+    rafId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafId)
+  }, [reducedMotion])
 
   // Continuous idle breathing loop (60 FPS) & smooth return to straight front (0°) when released
   useEffect(() => {
@@ -202,6 +239,31 @@ export function VaaniCinematicStage({
         }}
       />
 
+      {/* Sector cards — spring out of her open palm when the hand-open pose plays */}
+      <div className="pointer-events-none absolute left-3 top-10 z-20 flex flex-col gap-2 sm:left-5 sm:top-12">
+        {INDUSTRY_LABELS.map((label, i) => (
+          <div
+            key={label.text}
+            className="inline-flex w-fit items-center gap-2 rounded-xl border border-cyan/35 bg-ink-950/70 px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.35)] backdrop-blur-md"
+            style={{
+              marginLeft: `${label.indent}px`,
+              opacity: handOpen ? 1 : 0,
+              transform: handOpen
+                ? 'translateX(0) scale(1)'
+                : 'translateX(-22px) scale(0.82)',
+              transition:
+                'opacity 360ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1)',
+              transitionDelay: handOpen ? `${i * 65}ms` : '0ms',
+            }}
+          >
+            <span className="size-1.5 shrink-0 rounded-full bg-cyan shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+            <span className="whitespace-nowrap font-mono text-[11px] font-semibold text-fg sm:text-[12px]">
+              {label.text}
+            </span>
+          </div>
+        ))}
+      </div>
+
       {/* Floating Speech Caption Bubble when Vaani speaks */}
       {state === 'speaking' && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[90%] max-w-[360px] rounded-2xl border border-cyan/40 bg-ink-950/90 p-3 shadow-[0_0_30px_rgba(34,211,238,0.25)] backdrop-blur-md pointer-events-none animate-in fade-in slide-in-from-top-2 duration-300">
@@ -280,6 +342,10 @@ export function VaaniCinematicStage({
           <img
             src={currentPoseSrc}
             alt="Vaani - Whole Body Voice AI Assistant in 3D Turntable"
+            onLoad={() => {
+              // Align the card-reveal timer with the moment the WebP begins its loop
+              loopStartRef.current = performance.now()
+            }}
             className="relative z-10 w-auto h-[430px] sm:h-[490px] lg:h-[530px] object-contain transition-all duration-200 pointer-events-none"
             style={{
               filter:

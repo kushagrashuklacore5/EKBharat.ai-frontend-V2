@@ -10,6 +10,25 @@ export default defineConfig({
         target: 'http://localhost:5501',
         changeOrigin: true,
       },
+      // Vaani live-demo backend (Ai-Product/server.py — FastAPI on :8800).
+      // Same-origin from the app, forwarded here, incl. the /stream WebSocket.
+      '/vaani-api': {
+        target: 'http://127.0.0.1:8800',
+        changeOrigin: true,
+        ws: true,
+        rewrite: (p) => p.replace(/^\/vaani-api/, ''),
+      },
+      // Anti-cheat proctoring backend (Ai-Product/agent-1/backend — FastAPI on :8000).
+      // The embedded tablet app streams webcam frames over /ws/proctor.
+      '/ws': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        ws: true,
+      },
+      '/health': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
     },
   },
   build: {

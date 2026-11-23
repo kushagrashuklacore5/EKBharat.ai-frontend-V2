@@ -94,88 +94,12 @@ export class VaaniAudioEngine {
   }
 
   /**
-   * Speak a phrase using the browser's native SpeechSynthesis
+   * Voice output is DISABLED — Vaani never speaks out loud.
+   * Returns immediately without using SpeechSynthesis so tapping the avatar
+   * produces no audio.
    */
-  speak(text: string, lang = 'en-IN'): boolean {
-    if (typeof window === 'undefined' || !window.speechSynthesis) {
-      this.setState('speaking')
-      setTimeout(() => this.setState('idle'), 4000)
-      return false
-    }
-
-    try {
-      window.speechSynthesis.cancel()
-
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.rate = 0.98
-      utterance.pitch = 1.05
-
-      // Choose preferred Indian English or natural female voice if available
-      const voices = window.speechSynthesis.getVoices()
-      const preferredVoice =
-        voices.find(
-          (v) =>
-            (v.lang.toLowerCase().includes('in') || v.lang.toLowerCase().includes('hi')) &&
-            (v.name.toLowerCase().includes('female') ||
-              v.name.toLowerCase().includes('natural') ||
-              v.name.toLowerCase().includes('heera') ||
-              v.name.toLowerCase().includes('neerja') ||
-              v.name.toLowerCase().includes('google'))
-        ) ||
-        voices.find((v) => v.lang.toLowerCase().includes('in') || v.lang.toLowerCase().includes('hi')) ||
-        voices.find(
-          (v) =>
-            v.name.toLowerCase().includes('zira') ||
-            v.name.toLowerCase().includes('eva') ||
-            v.name.toLowerCase().includes('female')
-        ) ||
-        voices.find((v) => v.lang.toLowerCase().startsWith('en'))
-
-      if (preferredVoice) {
-        utterance.voice = preferredVoice
-        utterance.lang = preferredVoice.lang
-      } else {
-        utterance.lang = lang
-      }
-
-      this.currentSpeechUtterance = utterance
-
-      let safetyTimer: ReturnType<typeof setTimeout> | null = null
-
-      utterance.onstart = () => {
-        this.setState('speaking')
-        // Safety timeout in case browser speech synthesis hangs
-        safetyTimer = setTimeout(() => {
-          if (this.state === 'speaking') {
-            this.setState('idle')
-          }
-        }, 8500)
-      }
-
-      utterance.onend = () => {
-        if (safetyTimer) clearTimeout(safetyTimer)
-        this.currentSpeechUtterance = null
-        this.setState('idle')
-      }
-
-      utterance.onerror = () => {
-        if (safetyTimer) clearTimeout(safetyTimer)
-        this.currentSpeechUtterance = null
-        this.setState('idle')
-      }
-
-      // Small delay prevents Chromium speech synthesis race condition when cancelling
-      setTimeout(() => {
-        window.speechSynthesis.speak(utterance)
-      }, 30)
-
-      return true
-    } catch (err) {
-      console.warn('[Vaani Audio] Speech synthesis error:', err)
-      this.setState('speaking')
-      setTimeout(() => this.setState('idle'), 4000)
-      return false
-    }
+  speak(_text: string, _lang = 'en-IN'): boolean {
+    return false
   }
 
   /**

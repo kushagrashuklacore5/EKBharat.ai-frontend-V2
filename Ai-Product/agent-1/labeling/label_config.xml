@@ -1,0 +1,43 @@
+<!--
+  Label Studio config for the EKBharat proctoring data.
+
+  Two uses:
+   1) TEMPORAL SEGMENTS over a recorded session video (TimelineLabels) -- the main labels
+      for the temporal cheating model. Classes match app/pipeline/features.py TEMPORAL_CLASSES.
+   2) OBJECT bounding boxes on sampled frames (RectangleLabels) -- for the Phase 3 YOLO
+      fine-tune of the custom object classes.
+
+  Import the recorder's .webm as the <Video> source; the scenario-mode labels.json gives
+  you pre-filled segments to correct rather than label from scratch.
+-->
+<View>
+  <Header value="Proctoring session — temporal behaviour labels"/>
+  <Video name="video" value="$video" sync="audio"/>
+
+  <TimelineLabels name="behaviour" toName="video">
+    <Label value="normal" background="#22c55e"/>
+    <Label value="looking_away" background="#f59e0b"/>
+    <Label value="talking" background="#eab308"/>
+    <Label value="phone_use" background="#ef4444"/>
+    <Label value="reading_material" background="#f97316"/>
+    <Label value="other_person_present" background="#dc2626"/>
+    <Label value="person_absent" background="#7c3aed"/>
+    <Label value="identity_mismatch" background="#db2777"/>
+    <Label value="suspicious_hand_movement" background="#f59e0b"/>
+    <Label value="screen_switching" background="#3b82f6"/>
+  </TimelineLabels>
+
+  <Header value="Object boxes (sampled frames, for YOLO fine-tune)"/>
+  <Image name="frame" value="$frame"/>
+  <RectangleLabels name="objects" toName="frame">
+    <Label value="cell phone" background="#ef4444"/>
+    <Label value="book" background="#f97316"/>
+    <Label value="paper" background="#f59e0b"/>
+    <Label value="tablet" background="#eab308"/>
+    <Label value="earphones" background="#a855f7"/>
+    <Label value="smartwatch" background="#8b5cf6"/>
+    <Label value="calculator" background="#06b6d4"/>
+    <Label value="second_monitor" background="#3b82f6"/>
+    <Label value="another_person" background="#dc2626"/>
+  </RectangleLabels>
+</View>

@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vaani — Live Demo</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif;
+    background:radial-gradient(1200px 800px at 50% -10%, #121826 0%, #080b11 60%, #05070b 100%);
+    color:#e6edf3; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .phone { position:relative; width:360px; height:720px; max-width:94vw; border-radius:46px;
+    background:linear-gradient(180deg,#10141d 0%,#0a0d14 100%); border:2px solid rgba(220,226,236,.55);
+    box-shadow:0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08), inset 0 0 0 2px #0d1017, inset 0 1px 0 rgba(255,255,255,.08);
+    overflow:hidden; }
+  .notch { position:absolute; top:14px; left:50%; transform:translateX(-50%); width:120px; height:26px;
+    background:#0b0e14; border-radius:0 0 16px 16px; z-index:3;
+    border:2px solid rgba(220,226,236,.55); border-top:none; }
+  .cam { position:absolute; top:22px; left:50%; transform:translateX(-50%); width:7px; height:7px;
+    border-radius:50%; background:#262c38; z-index:4; }
+  .screen { position:absolute; inset:0; padding:64px 26px 30px; display:flex; flex-direction:column; align-items:center; }
+  .avatar { width:66px; height:66px; border-radius:50%; background:#161b26; border:1px solid #2a3140;
+    display:flex; align-items:center; justify-content:center; margin:6px 0 16px; flex:0 0 auto; overflow:hidden; }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+  .title { margin:0; font-size:23px; font-weight:700; color:#f3f5f8; text-align:center; }
+  .sub { margin:8px 0 0; font-size:14px; color:#36b0c2; text-align:center; }
+  .aivoice { margin:20px 0 9px; font-size:10.5px; font-weight:700; letter-spacing:.2em; color:#36b0c2; text-align:left; width:100%; }
+  .selwrap { position:relative; width:100%; }
+  .voice { width:100%; appearance:none; -webkit-appearance:none;
+    background:linear-gradient(180deg,#19202e 0%,#141926 100%); color:#eef3f8;
+    border:1px solid #2a3344; border-radius:13px; padding:15px 42px 15px 16px; font-size:15px;
+    cursor:pointer; outline:none; transition:border-color .15s, box-shadow .15s, background .15s; }
+  .voice:hover { border-color:#36b0c2; }
+  .voice:focus { border-color:#36b0c2; box-shadow:0 0 0 3px rgba(43,170,188,.25); }
+  .voice option { background:#141926; color:#eef3f8; padding:10px; }
+  .voice option:checked { background:#1d6f7c; color:#fff; }
+  .selwrap:hover .chev, .voice:focus + .chev { color:#36b0c2; }
+  .chev { position:absolute; right:15px; top:50%; transform:translateY(-50%); color:#8a93a4;
+    pointer-events:none; font-size:10px; transition:color .15s; }
+  .field { width:100%; background:linear-gradient(180deg,#161c28 0%,#121722 100%); color:#eef3f8;
+    border:1px solid #2a3344; border-radius:13px; padding:15px 16px; font-size:15px; margin-top:12px;
+    outline:none; transition:border-color .15s, box-shadow .15s; }
+  .field:hover { border-color:#36b0c2; }
+  .field:focus { border-color:#36b0c2; box-shadow:0 0 0 3px rgba(43,170,188,.25); }
+  .field::placeholder { color:#5b6678; }
+  .grow { flex:1 1 auto; }
+  .cta { width:100%; border:0; border-radius:28px; padding:16px; font-size:16px; font-weight:700; color:#fff;
+    cursor:pointer; background:linear-gradient(180deg,#36b0c2 0%,#258a99 100%); box-shadow:0 10px 24px rgba(43,170,188,.35); }
+  .cta:active { transform:translateY(1px); }
+  .cta:disabled { opacity:.6; cursor:default; }
+  .orb { width:104px; height:104px; border-radius:50%; margin:14px 0 6px; display:flex; align-items:center;
+    justify-content:center; font-size:30px; background:#161b26; border:2px solid #2a3140; transition:.15s; flex:0 0 auto; overflow:hidden; }
+  .orb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .orb.listening { border-color:#36b0c2; animation:pulse 1.5s infinite; }
+  .orb.recording { border-color:#4ade80; box-shadow:0 0 0 10px rgba(74,222,128,.15); }
+  .orb.thinking { border-color:#eab308; }
+  .orb.speaking { border-color:#60a5fa; box-shadow:0 0 0 10px rgba(96,165,250,.15); }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(43,170,188,.45)} 70%{box-shadow:0 0 0 16px rgba(43,170,188,0)} 100%{box-shadow:0 0 0 0 rgba(43,170,188,0)} }
+  .timer { margin:10px 0 2px; font-size:15px; font-weight:700; letter-spacing:.02em; color:#36b0c2;
+    font-variant-numeric:tabular-nums; }
+  .timer.ending { color:#e5484d; animation:timerflash .8s steps(2) infinite; }
+  @keyframes timerflash { 50%{opacity:.4} }
+  .status { color:#aeb7c6; font-size:14px; min-height:20px; margin:6px 0 12px; text-align:center; }
+  .eq { display:flex; align-items:center; justify-content:center; gap:3px; height:46px; width:86%; margin:2px auto 12px; }
+  .eq span { width:4px; height:5px; border-radius:2px; background:#36b0c2; opacity:.55; transition:height .12s ease, opacity .2s; }
+  .eq.talk span { animation:eqbounce var(--d,.7s) ease-in-out infinite; animation-delay:var(--delay,0s); opacity:1; }
+  @keyframes eqbounce { 0%,100%{height:5px} 50%{height:var(--h,26px)} }
+  .log { width:100%; flex:1 1 auto; background:#0e121c; border:1px solid #1e2636; border-radius:14px;
+    padding:12px; overflow:auto; font-size:14px; }
+  .turn { margin:9px 0; line-height:1.45; }
+  .lbl { font-size:10px; text-transform:uppercase; letter-spacing:.06em; opacity:.7; }
+  .you .lbl{ color:#ff9c80; } .bot .lbl{ color:#9ecbff; }
+  .endbtn { width:100%; border:0; border-radius:28px; padding:15px; font-size:15px; font-weight:700; color:#fff;
+    cursor:pointer; background:#e5484d; margin-top:12px; flex:0 0 auto; }
+  .bargewrap { color:#5b6678; font-size:12px; margin-top:8px; flex:0 0 auto; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"></div>
+  <div class="cam"></div>
+
+  <!-- SETUP VIEW -->
+  <div class="screen" id="setupView">
+    <div class="avatar">
+      <img src="/static/vaani.png" alt="Vaani">
+    </div>
+    <h1 class="title" id="demoTitle">Vaani Live Demo</h1>
+    <p class="sub">Choose voice &amp; speak live with Vaani AI</p>
+    <p class="aivoice">AI VOICE</p>
+    <div class="selwrap">
+      <select class="voice" id="voiceSelect"><option>Loading voices…</option></select>
+      <span class="chev">▼</span>
+    </div>
+    <p class="aivoice">SECTOR</p>
+    <div class="selwrap">
+      <select class="voice" id="sectorSelect"><option>Loading sectors…</option></select>
+      <span class="chev">▼</span>
+    </div>
+    <div class="grow"></div>
+    <input class="field" id="nameInput" placeholder="Your Name" autocomplete="off" />
+    <input class="field" id="phoneInput" placeholder="Your Phone Number" inputmode="tel" autocomplete="off" />
+    <div class="grow"></div>
+    <button class="cta" id="start">Start Live Talk</button>
+    <span id="meta" style="display:none"></span>
+    <button id="receive" style="display:none"></button>
+  </div>
+
+  <!-- CALL VIEW -->
+  <div class="screen" id="callView" style="display:none">
+    <div class="orb" id="orb"><img src="/static/vaani.png" alt="Vaani"></div>
+    <div class="timer" id="timer">⏱ 2:00</div>
+    <div class="status" id="state">Connecting…</div>
+    <div class="eq" id="eq"></div>
+    <div class="log" id="log"></div>
+    <button class="endbtn" id="end">End Call</button>
+    <label class="bargewrap"><input type="checkbox" id="barge" /> Allow interrupting Vaani (headphones)</label>
+  </div>
+</div>
+
+<script>
+const API = location.origin;
+let history = [];
+let ctx, analyser, source, stream, recorder, recChunks = [];
+let rafId = null, currentAudio = null, resolveClip = null, clipStartTs = 0;
+let callActive = false, state = 'idle', turn = 0, interrupted = false;
+let demoStartTs = 0, demoTick = null, demoEnding = false;
+const DEMO_TOTAL_MS = 120000;     // 2:00 total demo length
+const DEMO_FAREWELL_MS = 117000;  // begin the goodbye at 1:57, so it lands by 2:00
+let fillerClips = [];
+let noiseFloor = 0.01, speechThresh = 0.02, bargeThresh = 0.08;
+let speechDetected = false, lastVoiceTs = 0, speechStartTs = 0;
+
+// FAST STT: Chrome's built-in Google speech recognition (Web Speech API).
+// It transcribes WHILE you talk, so the text is ready the instant you stop —
+// no 2.6s audio upload. Deepgram stays as an automatic fallback.
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const useWebSpeech = false;   // Deepgram-only for now (per request). Flip to `!!SR` to re-enable instant browser STT.
+let recog = null, utterFinal = '', utterInterim = '';
+function initRecog() {
+  if (!SR) return;
+  recog = new SR();
+  recog.lang = 'en-IN';        // Indian English; Deepgram multi handles heavy Hindi as fallback
+  recog.continuous = true;
+  recog.interimResults = true;
+  recog.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const r = e.results[i];
+      if (r.isFinal) utterFinal += r[0].transcript + ' ';
+      else interim += r[0].transcript;
+    }
+    utterInterim = interim;
+  };
+  recog.onend = () => { if (callActive) { try { recog.start(); } catch(e){} } };
+  recog.onerror = () => {};   // fall back to Deepgram for this turn if it errors
+  try { recog.start(); } catch(e){}
+}
+
+// FAST DEEPGRAM: stream mic PCM to our server (which proxies to Deepgram live),
+// so the transcript is ready ~0.2s after you stop — not a 2.6s upload.
+let streamMode = true;        // use Deepgram streaming; set false to use batch upload
+let wsStream = null, procNode = null, muteNode = null, replyResolver = null;
+
+function openStreamWS() {
+  return new Promise((resolve, reject) => {
+    try {
+      wsStream = new WebSocket(API.replace(/^http/, 'ws') + '/stream');
+      wsStream.binaryType = 'arraybuffer';
+      wsStream.onopen = () => resolve();
+      wsStream.onerror = () => reject(new Error('ws error'));
+      wsStream.onclose = () => {};
+      wsStream.onmessage = (ev) => {
+        let m; try { m = JSON.parse(ev.data); } catch(e){ return; }
+        if (m.type === 'reply' && replyResolver) { const r = replyResolver; replyResolver = null; r(m); }
+        else if (m.type === 'interim') { if (state === 'recording' || state === 'listening') stateEl.textContent = m.text ? ('… ' + m.text) : 'Listening… just speak.'; }
+        else if (m.type === 'error' && replyResolver) { const r = replyResolver; replyResolver = null; r({ error: m.error }); }
+      };
+    } catch (e) { reject(e); }
+  });
+}
+
+// Down-sample the mic (usually 48kHz float) to 16kHz PCM16 and stream it, but only
+// during the user's turn so Vaani's own voice/echo never reaches Deepgram.
+function startPCMStream() {
+  procNode = ctx.createScriptProcessor(4096, 1, 1);
+  muteNode = ctx.createGain(); muteNode.gain.value = 0;   // silent sink so onaudioprocess fires without feedback
+  source.connect(procNode); procNode.connect(muteNode); muteNode.connect(ctx.destination);
+  const inRate = ctx.sampleRate, outRate = 16000, ratio = inRate / outRate;
+  procNode.onaudioprocess = (e) => {
+    if (!wsStream || wsStream.readyState !== 1) return;
+    if (state !== 'listening' && state !== 'recording') return;   // only the user's turn
+    const input = e.inputBuffer.getChannelData(0);
+    const outLen = Math.floor(input.length / ratio);
+    const out = new Int16Array(outLen);
+    for (let i = 0; i < outLen; i++) {
+      let s = input[Math.floor(i * ratio)];
+      s = Math.max(-1, Math.min(1, s));
+      out[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+    }
+    wsStream.send(out.buffer);
+  };
+}
+
+// End of the user's turn: ask the server for the reply, then speak it.
+function endTurnStream() {
+  const myTurn = turn;
+  setState('thinking', 'Thinking…');
+  const replyP = new Promise(res => { replyResolver = res; });
+  try { wsStream.send(JSON.stringify({ type: 'eot', history })); }
+  catch (e) { enterListening(); return; }
+  replyP.then(async (data) => {
+    if (turn !== myTurn || !callActive) return;
+    if (!data || data.error) { stateEl.textContent = '⚠️ ' + (data && data.error || 'error'); enterListening(); return; }
+    if (!data.transcript) { enterListening(); return; }   // nothing heard
+    addTurn('user', data.transcript + (data.emotion ? ` <span style="opacity:.6;font-style:italic">· sensed: ${data.emotion}</span>` : ''));
+    history.push({ role: 'user', content: data.transcript });
+    if (data.reply) { addTurn('bot', data.reply); history.push({ role: 'assistant', content: data.reply }); }
+    setState('speaking', 'Vaani is speaking…');
+    await playClip(data.audio, data.audio_mime);
+    if (turn === myTurn) { await delay(POST_SPEAK_GUARD_MS); if (turn === myTurn) enterListening(); }
+  });
+}
+
+const USE_FILLERS = false;   // no canned "let me check" lines — just a natural pause, like ChatGPT
+const SILENCE_MS = 700;      // how long you can pause before it's "your turn is over"
+const MIN_SPEECH_MS = 300;   // ignore short blips/noise as a "turn"
+const POST_SPEAK_GUARD_MS = 250; // wait after Vaani stops before listening (kills echo tail)
+const BARGE_MS = 700;        // sustained LOUD speech needed to interrupt Vaani
+const BARGE_GRACE_MS = 700;  // never interrupt in the first part of her sentence
+const FILLER_AFTER_MS = 650;
+
+const orb = document.getElementById('orb');
+const stateEl = document.getElementById('state');
+const eq = document.getElementById('eq');
+const log = document.getElementById('log');
+
+// Build the voice equalizer bars once — organic, waveform-like variation.
+const EQ_BARS = 26;
+for (let i = 0; i < EQ_BARS; i++) {
+  const b = document.createElement('span');
+  // taller toward the centre, shorter at the edges (like a real waveform)
+  const centre = 1 - Math.abs(i - (EQ_BARS - 1) / 2) / ((EQ_BARS - 1) / 2);
+  const h = 10 + centre * 20 + Math.random() * 10;
+  b.style.setProperty('--h', h.toFixed(0) + 'px');
+  b.style.setProperty('--d', (0.5 + Math.random() * 0.55).toFixed(2) + 's');
+  b.style.setProperty('--delay', (-Math.random() * 0.8).toFixed(2) + 's');
+  eq.appendChild(b);
+}
+
+fetch(API + '/health/keys').then(r=>r.json()).then(k=>{
+  document.getElementById('meta').textContent = `· ${k.agent} from ${k.company}`;
+}).catch(()=>{});
+
+const delay = ms => new Promise(r => setTimeout(r, ms));
+const randFiller = () => fillerClips.length ? fillerClips[Math.floor(Math.random()*fillerClips.length)] : null;
+
+function setState(s, text) {
+  state = s; orb.className = 'orb ' + s; if (text) stateEl.textContent = text;
+  eq.classList.toggle('talk', s === 'speaking' || s === 'recording');
+}
+function addTurn(role, text) {
+  const d = document.createElement('div'); d.className = 'turn ' + (role==='user'?'you':'bot');
+  d.innerHTML = `<span class="lbl">${role==='user'?'You':'Vaani'}</span><br>${text}`;
+  log.appendChild(d); log.scrollTop = log.scrollHeight;
+}
+function rms() {
+  const buf = new Float32Array(analyser.fftSize); analyser.getFloatTimeDomainData(buf);
+  let s=0; for (let i=0;i<buf.length;i++) s += buf[i]*buf[i]; return Math.sqrt(s/buf.length);
+}
+
+// Plays a base64 audio clip (wav or mp3); resolves on end OR when interrupted/stopped.
+function playClip(b64, mime) {
+  return new Promise(res => {
+    resolveClip = res;
+    if (!b64 || interrupted) { resolveClip = null; return res(); }
+    clipStartTs = performance.now();   // for the barge-in grace period
+    currentAudio = new Audio('data:' + (mime || 'audio/wav') + ';base64,' + b64);
+    const done = () => { currentAudio = null; if (resolveClip) { const r = resolveClip; resolveClip = null; r(); } };
+    currentAudio.onended = done; currentAudio.onerror = done;
+    currentAudio.play().catch(done);
+  });
+}
+function stopSpeaking() {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (resolveClip) { const r = resolveClip; resolveClip = null; r(); }
+}
+
+async function startCall(mode) {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:true, noiseSuppression:true, autoGainControl:true } });
+  } catch (e) { stateEl.textContent = 'Mic error: ' + e.message; return; }
+
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  source = ctx.createMediaStreamSource(stream);
+  analyser = ctx.createAnalyser(); analyser.fftSize = 1024; source.connect(analyser);
+
+  // Warm up the STT/LLM connections so the first reply is fast too.
+  fetch(API + '/warmup', { method: 'POST' }).catch(()=>{});
+
+  // Open the Deepgram streaming socket + start sending mic PCM. If it fails,
+  // fall back to the batch-upload path so the call still works.
+  if (streamMode) {
+    try {
+      await openStreamWS(); startPCMStream();
+      // Tell the server which voice + caller name to use for this call.
+      try { wsStream.send(JSON.stringify({ type:'config', voice: selectedVoice, name: callerName, sector: selectedSector })); } catch(e){}
+    }
+    catch (e) { streamMode = false; }
+  }
+
+  // Start Chrome's live speech recognition for the whole call (instant transcripts).
+  if (useWebSpeech) initRecog();
+
+  callActive = true;
+  startDemoTimer();   // 2-minute demo countdown; auto-ends with a goodbye at 1:57
+  document.getElementById('receive').style.display = 'none';
+  document.getElementById('start').style.display = 'none';
+  document.getElementById('end').style.display = 'inline-block';
+
+  // Calibrate background noise (~500ms).
+  setState('thinking', 'Calibrating mic…');
+  const samples = [], t0 = performance.now();
+  await new Promise(res => { const cal = () => { samples.push(rms()); (performance.now()-t0<500) ? requestAnimationFrame(cal) : res(); }; cal(); });
+  noiseFloor = samples.reduce((a,b)=>a+b,0)/samples.length;
+  // Require clear speech (not ambient noise or Vaani's own echo) to count as the user talking.
+  speechThresh = Math.max(noiseFloor*3.0 + 0.012, 0.028);
+  // Barge-in must be clearly louder than normal speech and well above room echo,
+  // so Vaani is never cut off by her own voice bleeding into the mic.
+  bargeThresh = Math.max(speechThresh * 2.6, noiseFloor*5 + 0.03, 0.08);
+
+  // Pre-render filler clips only if enabled (off by default for a smooth, natural feel).
+  if (USE_FILLERS) {
+    fetch(API + '/fillers').then(r=>r.json()).then(d => { fillerClips = (d.fillers||[]).map(f=>f.audio); }).catch(()=>{});
+  }
+
+  // Vaani greets first.
+  setState('thinking', 'Connecting…');
+  const g = turn;
+  try {
+    const gq = '/greet?mode=' + mode + '&voice=' + encodeURIComponent(selectedVoice||'') + '&name=' + encodeURIComponent(callerName||'') + '&sector=' + encodeURIComponent(selectedSector||'');
+    const r = await fetch(API + gq, { method:'POST' }).then(x=>x.json());
+    if (r.reply) { addTurn('bot', r.reply); history.push({role:'assistant', content:r.reply}); }
+    startVADLoop();
+    setState('speaking', 'Vaani is speaking…');
+    await playClip(r.audio, r.audio_mime);
+  } catch (e) { if (!rafId) startVADLoop(); }
+
+  if (turn === g) { await delay(POST_SPEAK_GUARD_MS); if (turn === g) enterListening(); }
+}
+
+function enterListening() {
+  if (!callActive || demoEnding) return;
+  turn++; interrupted = false;
+  speechDetected = false; lastVoiceTs = 0; speechStartTs = 0; recChunks = [];
+  utterFinal = ''; utterInterim = '';   // fresh transcript for this turn
+  if (streamMode) {
+    // Tell the server to start a fresh transcript for this turn; PCM is already streaming.
+    try { wsStream.send(JSON.stringify({ type: 'start_turn' })); } catch (e) {}
+  } else {
+    try {
+      recorder = new MediaRecorder(stream, { mimeType:'audio/webm;codecs=opus' });
+      recorder.ondataavailable = e => { if (e.data.size) recChunks.push(e.data); };
+      recorder.onstop = onUtteranceEnd;
+      recorder.start();
+    } catch (e) { stateEl.textContent = 'Recorder error: ' + e.message; return; }
+  }
+  setState('listening', 'Listening… just speak.');
+}
+
+function startVADLoop() {
+  const tick = () => {
+    if (!callActive) return;
+    const level = rms();
+    const now = performance.now();
+
+    if (state === 'listening' || state === 'recording') {
+      if (level >= speechThresh) {
+        lastVoiceTs = now;
+        if (!speechDetected) { speechDetected = true; speechStartTs = now; setState('recording', 'Speaking…'); }
+      }
+      if (speechDetected && (now - lastVoiceTs) > SILENCE_MS && (lastVoiceTs - speechStartTs) > MIN_SPEECH_MS) {
+        if (streamMode) { endTurnStream(); }                                   // end of your turn (streaming)
+        else if (recorder && recorder.state === 'recording') recorder.stop();  // end of your turn (batch)
+      }
+    } else if (state === 'speaking') {
+      const allowBarge = document.getElementById('barge').checked;
+      const pastGrace = (now - clipStartTs) > BARGE_GRACE_MS;
+      if (allowBarge && pastGrace && level >= bargeThresh) {   // barge-in (sustained + loud)
+        if (!speechStartTs) speechStartTs = now;
+        if (now - speechStartTs > BARGE_MS) { interrupted = true; stopSpeaking(); enterListening(); }
+      } else { speechStartTs = 0; }
+    }
+    rafId = requestAnimationFrame(tick);
+  };
+  rafId = requestAnimationFrame(tick);
+}
+
+async function onUtteranceEnd() {
+  if (!callActive) return;
+  const myTurn = turn;
+  setState('thinking', 'Thinking…');
+
+  // FAST PATH: use the transcript Chrome already produced while you spoke.
+  const liveText = (utterFinal + ' ' + utterInterim).trim();
+  let chatPromise;
+  if (useWebSpeech && liveText) {
+    const fd = new FormData();
+    fd.append('transcript', liveText);
+    fd.append('history', JSON.stringify(history));
+    fd.append('voice', selectedVoice || '');
+    fd.append('name', callerName || '');
+    fd.append('sector', selectedSector || '');
+    chatPromise = fetch(API + '/chat_text', { method:'POST', body: fd }).then(r=>r.json());
+  } else {
+    // FALLBACK: no browser transcript — upload the recorded audio to Deepgram.
+    const blob = new Blob(recChunks, { type:'audio/webm' });
+    const fd = new FormData();
+    fd.append('audio', blob, 'speech.webm');
+    fd.append('history', JSON.stringify(history));
+    chatPromise = fetch(API + '/chat', { method:'POST', body: fd }).then(r=>r.json());
+  }
+
+  let data = null, done = false;
+  chatPromise.then(d => { data = d; done = true; }).catch(() => { data = { error:'network' }; done = true; });
+
+  if (USE_FILLERS) {
+    await delay(FILLER_AFTER_MS);
+    if (turn !== myTurn) return;
+    setState('speaking', 'Vaani is speaking…');
+    while (!done) { const clip = randFiller(); if (clip) await playClip(clip); else await delay(150); if (turn !== myTurn) return; }
+  } else {
+    // Just wait quietly (a brief natural pause) until her reply is ready — no canned words.
+    while (!done) { await delay(80); if (turn !== myTurn) return; }
+  }
+  if (turn !== myTurn) return;
+
+  if (!data || data.error) { stateEl.textContent = '⚠️ ' + (data && data.error || 'error'); if (turn===myTurn) enterListening(); return; }
+  if (!data.transcript) { if (turn===myTurn) enterListening(); return; }   // nothing heard
+
+  addTurn('user', data.transcript); history.push({role:'user', content:data.transcript});
+  if (data.reply) { addTurn('bot', data.reply); history.push({role:'assistant', content:data.reply}); }
+  setState('speaking', 'Vaani is speaking…');
+  await playClip(data.audio, data.audio_mime);
+  if (turn === myTurn) { await delay(POST_SPEAK_GUARD_MS); if (turn === myTurn) enterListening(); }
+}
+
+// ---- 2-minute demo timer --------------------------------------------------
+function startDemoTimer() {
+  demoEnding = false;
+  demoStartTs = performance.now();
+  const tEl = document.getElementById('timer');
+  if (tEl) { tEl.classList.remove('ending'); tEl.textContent = '⏱ 2:00'; }
+  clearInterval(demoTick);
+  demoTick = setInterval(() => {
+    if (!callActive) { clearInterval(demoTick); return; }
+    const elapsed = performance.now() - demoStartTs;
+    const remain = Math.max(0, DEMO_TOTAL_MS - elapsed);
+    const s = Math.ceil(remain / 1000);
+    if (tEl) tEl.textContent = '⏱ ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    if (!demoEnding && elapsed >= DEMO_FAREWELL_MS) { clearInterval(demoTick); endDemoByTimeout(); }
+  }, 250);
+}
+function stopDemoTimer() { clearInterval(demoTick); demoTick = null; }
+
+// Timer hit 1:57 -> interrupt whatever's happening, say the goodbye in the user's
+// language, then end the call automatically.
+async function endDemoByTimeout() {
+  if (!callActive || demoEnding) return;
+  demoEnding = true;
+  turn++;                                   // invalidate any in-flight turn
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }  // stop VAD loop
+  interrupted = true; stopSpeaking();       // cut Vaani off mid-sentence if talking
+  try { if (recorder && recorder.state === 'recording') recorder.stop(); } catch (e) {}
+  const tEl = document.getElementById('timer');
+  if (tEl) { tEl.classList.add('ending'); tEl.textContent = "⏱ 0:00"; }
+  setState('speaking', 'Wrapping up…');
+
+  let fare = null, mime = 'audio/mpeg', line = '';
+  try {
+    const fd = new FormData();
+    fd.append('history', JSON.stringify(history));
+    fd.append('voice', selectedVoice || '');
+    fd.append('name', callerName || '');
+    const r = await fetch(API + '/timeout_farewell', { method: 'POST', body: fd }).then(x => x.json());
+    line = r.reply || ''; fare = r.audio; mime = r.audio_mime || mime;
+  } catch (e) {}
+  if (!callActive) return;                   // user hung up during the fetch
+  if (line) addTurn('bot', line);
+  interrupted = false;                       // allow THIS farewell clip to play
+  setState('speaking', 'Vaani is speaking…');
+  await playClip(fare, mime);
+  endCall();                                 // back to the setup screen
+}
+
+function endCall() {
+  callActive = false; turn++;
+  stopDemoTimer();
+  if (rafId) cancelAnimationFrame(rafId);
+  interrupted = true; stopSpeaking();
+  try { if (recog) recog.stop(); } catch(e){}
+  try { if (recorder && recorder.state === 'recording') recorder.stop(); } catch(e){}
+  try { if (wsStream && wsStream.readyState === 1) wsStream.send(JSON.stringify({ type:'bye' })); } catch(e){}
+  try { if (procNode) { procNode.disconnect(); procNode.onaudioprocess = null; } if (muteNode) muteNode.disconnect(); } catch(e){}
+  try { if (wsStream) wsStream.close(); } catch(e){}
+  if (stream) stream.getTracks().forEach(t=>t.stop());
+  if (ctx) ctx.close();
+  // Back to the setup screen of the phone.
+  document.getElementById('callView').style.display = 'none';
+  document.getElementById('setupView').style.display = 'flex';
+  const startBtn = document.getElementById('start');
+  startBtn.style.display = '';        // restore the button (startCall had hidden it)
+  startBtn.disabled = false;
+  startBtn.textContent = 'Start Live Talk';
+  history = [];
+}
+
+// ---- Voice dropdown + caller details --------------------------------------
+let selectedVoice = '', selectedSector = '', callerName = '', callerPhone = '';
+const voiceSelect = document.getElementById('voiceSelect');
+const sectorSelect = document.getElementById('sectorSelect');
+
+fetch(API + '/voices').then(r=>r.json()).then(d => {
+  const vs = d.voices || [];
+  voiceSelect.innerHTML = '';
+  vs.forEach(v => { const o = document.createElement('option'); o.value = v.id; o.textContent = v.label; voiceSelect.appendChild(o); });
+  selectedVoice = d.default || (vs[0] && vs[0].id) || '';
+  if (selectedVoice) voiceSelect.value = selectedVoice;
+}).catch(()=>{ voiceSelect.innerHTML = '<option value="">Default voice</option>'; });
+voiceSelect.onchange = () => { selectedVoice = voiceSelect.value; };
+
+fetch(API + '/sectors').then(r=>r.json()).then(d => {
+  const ss = d.sectors || [];
+  sectorSelect.innerHTML = '';
+  ss.forEach(s => { const o = document.createElement('option'); o.value = s.name; o.textContent = s.name + ' — ' + s.company; sectorSelect.appendChild(o); });
+  selectedSector = (ss[0] && ss[0].name) || '';
+  if (selectedSector) sectorSelect.value = selectedSector;
+}).catch(()=>{ sectorSelect.innerHTML = '<option value="">Default</option>'; });
+sectorSelect.onchange = () => { selectedSector = sectorSelect.value; };
+
+// ---- Start Live Talk: move from setup -> call view, then start the call ----
+async function startLiveTalk() {
+  callerName = document.getElementById('nameInput').value.trim();
+  callerPhone = document.getElementById('phoneInput').value.trim();
+  selectedVoice = voiceSelect.value || selectedVoice;
+  selectedSector = sectorSelect.value || selectedSector;
+  const btn = document.getElementById('start');
+  btn.disabled = true; btn.textContent = 'Connecting…';
+  document.getElementById('setupView').style.display = 'none';
+  document.getElementById('callView').style.display = 'flex';
+  startCall('inbound');   // Vaani greets first, like answering the call
+}
+
+document.getElementById('start').onclick = startLiveTalk;
+document.getElementById('end').onclick = endCall;
+</script>
+</body>
+</html>

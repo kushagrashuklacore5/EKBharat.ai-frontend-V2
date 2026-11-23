@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import {
   Mic,
   MicOff,
@@ -35,6 +36,7 @@ const ICONS = {
 }
 
 export function CharacterShowcase3D() {
+  const navigate = useNavigate()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const audioEngineRef = useRef<VaaniAudioEngine | null>(null)
   const [selectedAgentId, setSelectedAgentId] = useState<string>('vaani')
@@ -186,6 +188,16 @@ export function CharacterShowcase3D() {
   }
 
   const handleOpenDemo = (agent: AgentSpec) => {
+    // Vaani's interactive demo opens the dedicated AI Calling Agents page
+    if (agent.id === 'vaani') {
+      navigate('/ai-calling-agents')
+      return
+    }
+    // Cheating Detection opens its dedicated anti-cheat agent page
+    if (agent.id === 'cheating-detection') {
+      navigate('/anti-cheat-agent')
+      return
+    }
     setModalTab('demo')
     setModalAgent(agent)
   }

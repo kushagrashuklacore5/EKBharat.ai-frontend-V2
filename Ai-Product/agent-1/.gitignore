@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Env / secrets
+.env
+*.env
+!.env.example
+
+# Downloaded model weights (re-fetched via scripts/download_models.py --all).
+# These are identical bytes everywhere, so they stay out of git.
+*.onnx
+*.pt
+*.pth
+*.task
+*.tflite
+backend/app/models/*.zip
+
+# ...but DO commit the temporal model we trained ourselves (2.5MB, not downloadable).
+# Keeping it in git guarantees every agent/clone runs the identical temporal model.
+!backend/app/models/temporal_model.onnx
+!backend/app/models/temporal_model.pt
+!backend/app/models/temporal_model.card.md
+!backend/app/models/temporal_model.metrics.json
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Data / snapshots / reports
+data/
+snapshots/
+reports/
+training/datasets/raw/
+*.mp4
+!backend/tests/fixtures/*.mp4
+
+# OS
+.DS_Store
+Thumbs.db
