@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { background: #faf8f5; color: #172e42; font-family: "Manrope", ui-sans-serif, system-ui, sans-serif; }
+
+/* Custom Luxury Golden Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #fbf9f5;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9ccb0;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b99652;
+}
+
+/* Interaction layer: motion and feedback only. No text, shape, spacing or theme changes.
+   In the base layer so any Tailwind utility on an element still wins. */
+@layer base {
+  a, button, label, input, select, textarea, summary {
+    transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease,
+      box-shadow 140ms ease, opacity 140ms ease, transform 100ms ease;
+  }
+  button:not(:disabled):active, a:active { transform: scale(0.97); }
+  :focus-visible { outline: 2px solid #B99652; outline-offset: 2px; }
+}
+
+main { animation: aia-fade 220ms ease-out backwards; }
+.fixed.inset-0 { animation: aia-fade 160ms ease-out backwards; }
+
+[data-testid="aia-question"] label:not(:has(input:disabled)):hover { border-color: #B99652; }
+[data-testid="aia-question"] label:not(:has(input:disabled)):active { transform: scale(0.995); }
+[data-testid="aia-timer"].text-red-600 { animation: aia-pulse 1s ease-in-out infinite; }
+
+[data-testid="aia-result"],
+[data-testid="aia-result-question"] { animation: aia-rise 280ms ease-out backwards; }
+[data-testid="aia-result-question"]:nth-child(2) { animation-delay: 50ms; }
+[data-testid="aia-result-question"]:nth-child(3) { animation-delay: 100ms; }
+[data-testid="aia-result-question"]:nth-child(4) { animation-delay: 150ms; }
+[data-testid="aia-result-question"]:nth-child(n+5) { animation-delay: 200ms; }
+
+@keyframes aia-fade { from { opacity: 0; } }
+@keyframes aia-rise { from { opacity: 0; transform: translateY(6px); } }
+@keyframes aia-pulse { 50% { opacity: 0.55; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  button:not(:disabled):active, a:active { transform: none; }
+}

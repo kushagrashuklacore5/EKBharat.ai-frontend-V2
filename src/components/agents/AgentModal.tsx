@@ -12,6 +12,7 @@ import {
   VolumeX,
   GraduationCap,
   ExternalLink,
+  Sparkles,
 } from 'lucide-react'
 import type { AgentSpec } from './agentsData'
 import { DemoBadge } from '../ui/DemoBadge'
@@ -75,7 +76,13 @@ export function AgentModal({ agent, onClose, initialTab = 'demo' }: Props) {
       />
 
       {/* Modal Dialog */}
-      <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-line-strong bg-ink-850 shadow-[var(--shadow-lg)] text-fg transition-all">
+      <div
+        className={`relative flex max-h-[94vh] w-full flex-col overflow-hidden rounded-2xl border border-line-strong bg-ink-850 shadow-[var(--shadow-lg)] text-fg transition-all ${
+          agent.id === 'assessment' && activeTab === 'demo'
+            ? 'max-w-6xl h-[92vh]'
+            : 'max-w-4xl'
+        }`}
+      >
         {/* Header */}
         <div className="flex items-start justify-between border-b border-line px-5 py-4 sm:px-7">
           <div className="space-y-1">
@@ -136,7 +143,11 @@ export function AgentModal({ agent, onClose, initialTab = 'demo' }: Props) {
         </div>
 
         {/* Body content */}
-        <div className="overflow-y-auto p-5 sm:p-7 space-y-6">
+        <div
+          className={`overflow-y-auto space-y-6 flex-1 ${
+            agent.id === 'assessment' && activeTab === 'demo' ? 'p-3 sm:p-5' : 'p-5 sm:p-7'
+          }`}
+        >
           {activeTab === 'demo' ? (
             <div>
               {agent.id === 'vaani' && <VaaniInteractiveDemo />}
@@ -610,97 +621,22 @@ function CheatingInteractiveDemo() {
 }
 
 /**
- * 04. AI Assessment Agent Interactive Demo
+ * 04. AI Assessment Agent Interactive Demo (Direct Portal Launcher)
  */
 function AssessmentInteractiveDemo() {
-  const [submission, setSubmission] = useState<'economics' | 'cs'>('economics')
-
-  const submissions = {
-    economics: {
-      title: 'Policy Analysis: Impact of Digital Public Infrastructure (UPI) on Financial Inclusion',
-      student: 'Aditya S. · B.A. Economics (Grade: 94/100)',
-      criteria: [
-        { name: 'Conceptual Depth & Economic Theory', score: '24/25', feedback: 'Rigorous application of transaction cost economics and network effect theorems.' },
-        { name: 'Empirical Evidence & Citations', score: '23/25', feedback: 'Cites RBI Bulletins and NPCI transaction volume statistics accurately.' },
-        { name: 'Policy Implications & Critical Analysis', score: '24/25', feedback: 'Exceptional discussion on MDR subsidy sustainability and merchant onboarding.' },
-        { name: 'Structure, Clarity & Syntax', score: '23/25', feedback: 'Structured arguments with coherent transitions between sections.' },
-      ],
-      aiRemarks:
-        'Outstanding submission. The essay accurately synthesizes microeconomic concepts with real-world Indian fintech data. Recommendation: Advance to honours evaluation.',
-    },
-    cs: {
-      title: 'Algorithm Design: Comparative Analysis of Dijkstra vs Bellman-Ford Shortest Path',
-      student: 'Priya K. · B.Tech Computer Science (Grade: 91/100)',
-      criteria: [
-        { name: 'Algorithm Correctness & Proofs', score: '23/25', feedback: 'Sound mathematical induction for non-negative edge weight guarantees.' },
-        { name: 'Complexity Analysis (Time & Space)', score: '24/25', feedback: 'Accurately derives O(E + V log V) with Fibonacci heap and O(VE) for Bellman-Ford.' },
-        { name: 'Negative Cycle Handling', score: '22/25', feedback: 'Explains relaxation step thoroughly; could expand on distributed vector routing.' },
-        { name: 'Code Quality & Modular Implementation', score: '22/25', feedback: 'Clean TypeScript/Python code with typed graph node abstractions.' },
-      ],
-      aiRemarks:
-        'Well-reasoned algorithmic analysis with sound proofs. Edge-case handling for negative cycles was verified correctly.',
-    },
-  }
-
-  const cur = submissions[submission]
-
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <label className="label text-faint">Select a Sample Student Assignment</label>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {(['economics', 'cs'] as const).map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setSubmission(s)}
-              className={`rounded-xl border p-3.5 text-left transition-all ${
-                submission === s
-                  ? 'border-[#3f7d58] bg-ink-850 shadow-sm'
-                  : 'border-line bg-ink-900/50 hover:bg-ink-900'
-              }`}
-            >
-              <p className="font-mono text-[11px] font-semibold text-[#3f7d58] uppercase">
-                {s === 'economics' ? 'Policy & Economics' : 'Computer Science'}
-              </p>
-              <p className="mt-1 text-[13px] font-medium text-fg">{submissions[s].title}</p>
-            </button>
-          ))}
-        </div>
+    <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl border border-line bg-ink-900/60">
+      <div className="grid size-14 place-items-center rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan mb-4 shadow-lg shadow-cyan/10">
+        <Sparkles size={28} />
       </div>
-
-      <div className="rounded-xl border border-line bg-ink-900/80 p-5 space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
-          <div>
-            <h4 className="text-[14px] font-bold text-fg">{cur.title}</h4>
-            <p className="font-mono text-[11.5px] text-muted">{cur.student}</p>
-          </div>
-          <span className="rounded-md bg-[#3f7d58]/15 px-2.5 py-1 font-mono text-[12px] font-bold text-[#3f7d58]">
-            Automated Rubric Score: 93%
-          </span>
-        </div>
-
-        {/* Rubric breakdown */}
-        <div className="space-y-3">
-          <p className="label text-faint">Rubric Criteria &amp; Evidence-Based Scoring</p>
-          {cur.criteria.map((c, i) => (
-            <div key={i} className="rounded-lg border border-line/60 bg-ink-850 p-3 space-y-1">
-              <div className="flex items-center justify-between text-[13px]">
-                <span className="font-semibold text-fg">{c.name}</span>
-                <span className="font-mono text-[12px] font-bold text-[#3f7d58]">{c.score}</span>
-              </div>
-              <p className="text-[12.5px] text-fg-soft leading-relaxed">{c.feedback}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* AI summary remarks */}
-        <div className="rounded-lg border border-[#3f7d58]/30 bg-[#3f7d58]/10 p-3.5 space-y-1">
-          <p className="font-mono text-[11px] font-bold text-[#3f7d58] uppercase tracking-wide">
-            Automated Feedback for Educator Sign-Off
-          </p>
-          <p className="text-[13px] text-fg leading-relaxed">{cur.aiRemarks}</p>
-        </div>
+      <h3 className="text-xl font-bold text-fg">AI Assessment &amp; Grading Studio</h3>
+      <p className="mt-2 max-w-md text-sm text-muted">
+        The interactive assessment demo runs in an immersive dedicated sandbox with real-time AI question generation, rubric scoring, and anti-tamper student autosave.
+      </p>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <Button to="/ai-assessment-agent" variant="primary" size="lg" arrow>
+          Launch Interactive Studio
+        </Button>
       </div>
     </div>
   )

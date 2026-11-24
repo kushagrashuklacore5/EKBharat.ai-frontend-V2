@@ -17,13 +17,13 @@ import { AGENTS_DATA, type AgentSpec } from './agentsData'
 import { createCharacterScene, hasWebGL, type CharacterSceneApi } from './character3dScene'
 import { VaaniAudioEngine, type SpeechState, type AudioTelemetry } from './vaaniAudioEngine'
 import { VaaniCinematicStage } from './VaaniCinematicStage'
-import { TutorCinematicStage } from './TutorCinematicStage'
+import { AssessmentCinematicStage } from './AssessmentCinematicStage'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { Button } from '../ui/Button'
 import { AgentModal } from './AgentModal'
 import {
+  TutorKnowledgeVisual,
   CheatingDetectionVisual,
-  AssessmentRubricVisual,
   OrchestratorNetworkVisual,
 } from './AgentVisuals'
 
@@ -193,11 +193,17 @@ export function CharacterShowcase3D() {
       navigate('/ai-calling-agents')
       return
     }
+    // Assessment Agent opens its dedicated wide laptop sandbox page
+    if (agent.id === 'assessment') {
+      navigate('/ai-assessment-agent')
+      return
+    }
     // Cheating Detection opens its dedicated anti-cheat agent page
     if (agent.id === 'cheating-detection') {
       navigate('/anti-cheat-agent')
       return
     }
+    // All other agents open the interactive modal right here
     setModalTab('demo')
     setModalAgent(agent)
   }
@@ -275,8 +281,8 @@ export function CharacterShowcase3D() {
                 micError={micError}
                 reducedMotion={reducedMotion}
               />
-            ) : currentAgent.id === 'tutor' ? (
-              <TutorCinematicStage reducedMotion={reducedMotion} />
+            ) : currentAgent.id === 'assessment' ? (
+              <AssessmentCinematicStage reducedMotion={reducedMotion} />
             ) : (
               <>
                 {/* 3D Canvas */}
@@ -289,8 +295,8 @@ export function CharacterShowcase3D() {
                     />
                   ) : (
                     <div className="w-full max-w-md p-6">
+                      {currentAgent.id === 'tutor' && <TutorKnowledgeVisual />}
                       {currentAgent.id === 'cheating-detection' && <CheatingDetectionVisual />}
-                      {currentAgent.id === 'assessment' && <AssessmentRubricVisual />}
                       {currentAgent.id === 'orchestrator' && <OrchestratorNetworkVisual />}
                     </div>
                   )}
